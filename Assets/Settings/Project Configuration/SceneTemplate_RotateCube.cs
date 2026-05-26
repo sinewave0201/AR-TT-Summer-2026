@@ -17,6 +17,6 @@ public class SceneTemplate_RotateCube : MonoBehaviour
     void Update()
     {
         //Change the rotation (by the defined orientation * the time that has passed * defined speed)
-        transform.Rotate(objectRotation * Time.deltaTime * rotateSpeed);
+        transform.Rotate(objectRotation * Time.unscaledDeltaTime * rotateSpeed);
     }
 }

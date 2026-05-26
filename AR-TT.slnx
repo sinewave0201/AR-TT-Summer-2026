@@ -13,11 +13,13 @@
   <Project Path="Unity.XR.Simulation.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Editor.csproj" />
   <Project Path="Unity.PerformanceTesting.Editor.csproj" />
+  <Project Path="glTFast.Editor.csproj" />
   <Project Path="UnityEngine.TestRunner.csproj" />
   <Project Path="Unity.XR.ARFoundation.VisualScripting.Editor.csproj" />
   <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.Tutorials.Core.Editor.csproj" />
   <Project Path="Unity.XR.ARKit.csproj" />
+  <Project Path="glTFast.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.csproj" />
   <Project Path="Unity.XR.ARSubsystems.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
@@ -29,6 +31,7 @@
   <Project Path="Unity.XR.Simulation.Editor.csproj" />
   <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="Unity.XR.ARCore.csproj" />
+  <Project Path="glTFast.Documentation.Examples.csproj" />
   <Project Path="UnityEditor.TestRunner.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Runtime.csproj" />
   <Project Path="Unity.UnifiedRayTracing.Runtime.csproj" />
@@ -38,6 +41,7 @@
   <Project Path="Unity.PerformanceTesting.csproj" />
   <Project Path="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.csproj" />
   <Project Path="Unity.TextMeshPro.csproj" />
+  <Project Path="glTFast.Export.csproj" />
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.csproj" />
@@ -47,6 +51,7 @@
   <Project Path="Unity.XR.ARSubsystems.Editor.csproj" />
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
+  <Project Path="glTFast.Newtonsoft.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
   <Project Path="Unity.XR.ARCore.Editor.csproj" />
@@ -77,6 +82,7 @@
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.Editor.csproj" />
   <Project Path="UnityEngine.SpatialTracking.csproj" />
   <Project Path="UnityEngine.XR.LegacyInputHelpers.csproj" />
+  <Project Path="glTFast.dots.csproj" />
   <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Shaders.csproj" />
   <Project Path="Unity.RenderPipelines.Core.Runtime.Shared.csproj" />
