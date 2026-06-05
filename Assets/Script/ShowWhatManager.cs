@@ -24,7 +24,7 @@ public class ShowWhatManager : MonoBehaviour
         mainManager = GetComponent<MainManager>();
     }
 
-    void Update()
+    private void Refresh()
     {
         InputPanel.SetActive(startInput);
 
@@ -37,26 +37,26 @@ public class ShowWhatManager : MonoBehaviour
     public void ActivateInput()
     {
         startInput = true;
-        Time.timeScale = 0f;
+        Refresh();
     }
 
     public void FinishInput()
     {
         startInput = false;
-        Time.timeScale = 1f;
+        Refresh();
         mainManager.ContinueDialogue();
     }
 
     public void ActivateInteract()
     {
         startInteract = true;
-        Time.timeScale = 0f;
+        Refresh();
     }
 
     public void FinishInteract()
     {
         startInteract = false;
-        Time.timeScale = 1f;
+        Refresh();
         mainManager.ContinueDialogue();
     }
 }
