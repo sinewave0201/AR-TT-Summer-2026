@@ -53,7 +53,7 @@ public class MainManager : MonoBehaviour
             showWhatManager = gameObject.AddComponent<ShowWhatManager>();
         }
 
-        StartCoroutine(showText());
+        showTextCoroutine = StartCoroutine(showText());
     }
 
     public void ContinueDialogue()
@@ -71,19 +71,15 @@ public class MainManager : MonoBehaviour
             curText = lines[index].text;
             var command = curText.Trim();
 
-            if (command == "$input$")
+            if (command.Length >= 2 && command[0] == '$' && command[command.Length - 1] == '$')
             {
+                string commandName = command.Substring(1, command.Length - 2).Trim();
                 index++;
-                showWhatManager.ActivateInput();
+                showWhatManager.Activate(commandName);
+                showTextCoroutine = null;
                 yield break;
             }
 
-            else if (command == "$interact$")
-            {
-                index++;
-                showWhatManager.ActivateInteract();
-                yield break;
-            }
 
             else
             {            

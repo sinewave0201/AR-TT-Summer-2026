@@ -1,61 +1,64 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ShowWhatManager : MonoBehaviour
 {
-    [SerializeField] private GameObject InputPanel;
-    [SerializeField] private GameObject InteractPanel;
-    [SerializeField] private GameObject InteractModels;
-    [SerializeField] private GameObject Default;
-    [SerializeField] private GameObject DefaultModels;
+    [System.Serializable]
+    public class StagesGroup
+    {
+        public string name;
+        public GameObject[] objects;
+    }
+
+
+    [SerializeField] private StagesGroup[] groups;
+    [SerializeField] private GameObject[] defaultObjects;
+    private string activeGroup = "";
     [SerializeField] private MainManager mainManager;
-    private bool startInput = false;
-    private bool startInteract = false; 
+
 
     void Start()
     {
-        InputPanel.SetActive(startInput);
-
-        InteractPanel.SetActive(startInteract);
-        InteractModels.SetActive(startInteract);
-
-        Default.SetActive(!(startInput || startInteract));
-        DefaultModels.SetActive(!(startInput || startInteract));
-
+        Refresh();
         mainManager = GetComponent<MainManager>();
     }
 
     private void Refresh()
     {
-        InputPanel.SetActive(startInput);
+        bool hasActiveGroup = !string.IsNullOrEmpty(activeGroup);
 
-        InteractPanel.SetActive(startInteract);
-        InteractModels.SetActive(startInteract);
+        foreach (var group in groups)
+        {
+            bool shouldShow = group.name == activeGroup;
 
-        Default.SetActive(!(startInput || startInteract));
-        DefaultModels.SetActive(!(startInput || startInteract));
+            foreach (var obj in group.objects)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(shouldShow);
+                }
+            }
+        }
+
+        foreach (var obj in defaultObjects)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(!hasActiveGroup);
+            }
+        }
     }
-    public void ActivateInput()
+
+
+    public void Activate(string curGroupName)
     {
-        startInput = true;
+        activeGroup = curGroupName;
         Refresh();
     }
 
-    public void FinishInput()
+    public void Finish()
     {
-        startInput = false;
-        Refresh();
-        mainManager.ContinueDialogue();
-    }
-
-    public void ActivateInteract()
-    {
-        startInteract = true;
-        Refresh();
-    }
-
-    public void FinishInteract()
-    {
-        startInteract = false;
+        activeGroup = "";
         Refresh();
         mainManager.ContinueDialogue();
     }
