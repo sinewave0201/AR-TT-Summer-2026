@@ -18,8 +18,8 @@
   <Project Path="Unity.XR.ARFoundation.VisualScripting.Editor.csproj" />
   <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.Tutorials.Core.Editor.csproj" />
-  <Project Path="Unity.XR.ARKit.csproj" />
   <Project Path="glTFast.csproj" />
+  <Project Path="Unity.XR.ARKit.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.csproj" />
   <Project Path="Unity.XR.ARSubsystems.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />

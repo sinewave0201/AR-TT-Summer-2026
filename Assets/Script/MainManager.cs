@@ -6,8 +6,25 @@ using TMPro;
 
 public class MainManager : MonoBehaviour
 {
-    [Header("Dialogue Texts")]
-    public List<string> lines = new List<string>();
+    public enum RobotAnimation
+    {
+        Idle,
+        Wave,
+        Nod
+    }
+
+    [System.Serializable]
+    public struct DialogueLine
+    {
+        public string text;
+        public RobotAnimation animation;
+    }
+
+    [Header("animation")]
+    public Animator animator;
+
+    [Header("Dialogue")]
+    public List<DialogueLine> lines = new List<DialogueLine>();
 
     [Header("UI")]
     public TMP_Text subtitleText;
@@ -20,6 +37,8 @@ public class MainManager : MonoBehaviour
     public AndroidTTS androidTTS;
     public ShowWhatManager showWhatManager;
     public string curText;
+
+    private Coroutine showTextCoroutine;
 
 
     void Start ()
@@ -37,36 +56,63 @@ public class MainManager : MonoBehaviour
         StartCoroutine(showText());
     }
 
+    public void ContinueDialogue()
+    {
+        if (showTextCoroutine == null && isActiveAndEnabled)
+        {
+            showTextCoroutine = StartCoroutine(showText());
+        }
+    }
+
     IEnumerator showText()
     {
         while (index >= 0 && index < lines.Count)
         {
-            curText = lines[index];
+            curText = lines[index].text;
             var command = curText.Trim();
 
             if (command == "$input$")
             {
                 index++;
                 showWhatManager.ActivateInput();
+                yield break;
             }
 
             else if (command == "$interact$")
             {
                 index++;
                 showWhatManager.ActivateInteract();
+                yield break;
             }
 
             else
             {            
                 subtitleText.text = curText;
                 androidTTS?.Speak(curText);
+                SetAnimation();
                 index++;
+
             }
 
 
-            yield return new WaitForSeconds(4f);
+            float seconds = Mathf.Clamp(1f + curText.Length / 900f * 60f, 2.0f, 12.0f);
+            yield return new WaitForSeconds(seconds);
         }
 
         subtitleText.text = "";
+        showTextCoroutine = null;
+    }
+
+    private void SetAnimation()
+    {
+        RobotAnimation curAnimation = lines[index].animation;
+        Debug.Log("Current animation: " + curAnimation);
+
+        if (curAnimation == RobotAnimation.Idle)
+        {
+            return;
+        }
+
+        animator.SetTrigger(curAnimation.ToString());
     }
 }

@@ -7,6 +7,7 @@ public class ShowWhatManager : MonoBehaviour
     [SerializeField] private GameObject InteractModels;
     [SerializeField] private GameObject Default;
     [SerializeField] private GameObject DefaultModels;
+    [SerializeField] private MainManager mainManager;
     private bool startInput = false;
     private bool startInteract = false; 
 
@@ -19,6 +20,8 @@ public class ShowWhatManager : MonoBehaviour
 
         Default.SetActive(!(startInput || startInteract));
         DefaultModels.SetActive(!(startInput || startInteract));
+
+        mainManager = GetComponent<MainManager>();
     }
 
     void Update()
@@ -41,6 +44,7 @@ public class ShowWhatManager : MonoBehaviour
     {
         startInput = false;
         Time.timeScale = 1f;
+        mainManager.ContinueDialogue();
     }
 
     public void ActivateInteract()
@@ -53,5 +57,6 @@ public class ShowWhatManager : MonoBehaviour
     {
         startInteract = false;
         Time.timeScale = 1f;
+        mainManager.ContinueDialogue();
     }
 }
