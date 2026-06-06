@@ -6,22 +6,32 @@ using TMPro;
 
 public class MainManager : MonoBehaviour
 {
+    public enum BubbleAnimation
+    {
+        Default,
+        Appear,
+        Bigger
+    }
+
     public enum RobotAnimation
     {
         Idle,
         Wave,
-        Nod
+        Nod,
+        GetBubble
     }
 
     [System.Serializable]
     public struct DialogueLine
     {
         public string text;
-        public RobotAnimation animation;
+        public RobotAnimation robotAnimation;
+        public BubbleAnimation bubbleAnimation;
     }
 
     [Header("animation")]
-    public Animator animator;
+    public Animator robotAnimator;
+    public Animator bubbleAnimator;
 
     [Header("Dialogue")]
     public List<DialogueLine> lines = new List<DialogueLine>();
@@ -101,14 +111,33 @@ public class MainManager : MonoBehaviour
 
     private void SetAnimation()
     {
-        RobotAnimation curAnimation = lines[index].animation;
-        Debug.Log("Current animation: " + curAnimation);
+        RobotAnimation curRobotAnimation = lines[index].robotAnimation;
+        BubbleAnimation curBubbleAnimation = lines[index].bubbleAnimation;
 
-        if (curAnimation == RobotAnimation.Idle)
+        if (curRobotAnimation == RobotAnimation.Idle)
         {
-            return;
+            if (curBubbleAnimation == BubbleAnimation.Default)
+            {
+                return;
+            }
+            else
+            {
+                bubbleAnimator.SetTrigger(curBubbleAnimation.ToString());
+            }
         }
 
-        animator.SetTrigger(curAnimation.ToString());
+        else
+        {
+            robotAnimator.SetTrigger(curRobotAnimation.ToString());
+
+            if (curBubbleAnimation == BubbleAnimation.Default)
+            {
+                return;
+            }
+            else
+            {
+                bubbleAnimator.SetTrigger(curBubbleAnimation.ToString());
+            }
+        }
     }
 }

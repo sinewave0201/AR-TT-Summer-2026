@@ -268,8 +268,6 @@ GameObject:
   - component: {fileID: 91069395}
   - component: {fileID: 91069394}
   - component: {fileID: 91069393}
-  - component: {fileID: 91069397}
-  - component: {fileID: 91069398}
   m_Layer: 0
   m_Name: ThoughtBubble
   m_TagString: Untagged
@@ -364,48 +362,12 @@ Transform:
   m_GameObject: {fileID: 91069392}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.69, y: 0.96, z: 6.333}
+  m_LocalPosition: {x: -1.43, y: 0.42, z: 7.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &91069397
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 91069392}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f1cde760808cc6d4eb0a649d7bdc9883, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &91069398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 91069392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db89941ae90856e42a9b4926aa1b096e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BubbleAlphaController
-  bubbleRenderer: {fileID: 91069394}
-  alpha: 0
 --- !u!1 &95632276
 GameObject:
   m_ObjectHideFlags: 0
@@ -2046,42 +2008,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22bc0459e0aa23f4eaec59497ff046fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
-  robotAnimator: {fileID: 2035304734}
-  bubbleAnimator: {fileID: 91069397}
+  animator: {fileID: 2035304734}
   lines:
   - text: Welcome to Thought Trader!
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 1
   - text: 'In this mixture of reality and dream, '
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   - text: "You can trade your negative thoughts for a good night\u2018s sleep. "
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   - text: Before we start, tell me how would you deal with your negative thoughts!
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 1
   - text: $choose$
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   - text: That is a great choice!
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   - text: Now, to trade thoughts, here is a thought bubble!
-    robotAnimation: 0
-    bubbleAnimation: 1
+    animation: 3
   - text: Blow your negative thoughts into the bubble!
-    robotAnimation: 0
-    bubbleAnimation: 2
+    animation: 0
   - text: $input$
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   - text: Great. Now let's address these issues!
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 2
   - text: $interact$
-    robotAnimation: 0
-    bubbleAnimation: 0
+    animation: 0
   subtitleText: {fileID: 922462745}
   audioSource: {fileID: 95632277}
   index: 0
