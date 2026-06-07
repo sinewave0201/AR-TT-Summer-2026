@@ -8,8 +8,10 @@ public class BubbleBehaviorManager : MonoBehaviour
     public bool Activated = false;
     private Action[] BubbleActions;
     private Rigidbody rb;
+    public Animator animator;
     void Awake()
     {
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.isKinematic = true;
@@ -35,7 +37,9 @@ public class BubbleBehaviorManager : MonoBehaviour
         {
             if (BubbleBools[index] == true && Activated)
             {
+                animator.enabled = false;
                 BubbleActions[index]();
+                BubbleBools[index] = false;
                 Debug.Log("Bubble Action performed");
             }
         }
@@ -50,7 +54,6 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void cleanBubble()
     {
-        
     }
 
     void kickBubble()
@@ -62,6 +65,10 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void burnBubble()
     {
-        
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collided with: " + collision.gameObject.name);
     }
 }
