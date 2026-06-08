@@ -13,6 +13,19 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+
+        if (rb == null)
+        {
+            Debug.LogError("BubbleBehaviorManager needs a Rigidbody on the same GameObject.", this);
+            enabled = false;
+            return;
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning("BubbleBehaviorManager did not find an Animator on the same GameObject.", this);
+        }
+
         rb.useGravity = false;
         rb.isKinematic = true;
 
@@ -27,6 +40,12 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void BubbleBehaviorSelect(int index)
     {
+        if (index < 0 || index >= BubbleBools.Length)
+        {
+            Debug.LogError($"Bubble behavior index {index} is out of range.", this);
+            return;
+        }
+
         BubbleBools[index] = true;
     }
 
@@ -37,7 +56,10 @@ public class BubbleBehaviorManager : MonoBehaviour
         {
             if (BubbleBools[index] == true && Activated)
             {
-                animator.enabled = false;
+                if (animator != null)
+                {
+                    animator.enabled = false;
+                }
                 BubbleActions[index]();
                 BubbleBools[index] = false;
                 Debug.Log("Bubble Action performed");

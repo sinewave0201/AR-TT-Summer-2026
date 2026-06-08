@@ -6,9 +6,18 @@ public class BubbleInputManager : MonoBehaviour
     public TMP_InputField inputField;
     public TMP_Text bubbleText;
 
-    // Update is called once per frame
+    private void Awake()
+{
+    if (inputField == null)
+    {
+        inputField = FindFirstObjectByType<TMP_InputField>();
+    }
+}
     public void finishInput()
     {
-        bubbleText.text = inputField.text;
+        if (inputField != null)
+        {
+            bubbleText.text = inputField.text;
+        }
     }
 }

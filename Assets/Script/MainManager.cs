@@ -9,8 +9,7 @@ public class MainManager : MonoBehaviour
     public enum BubbleAnimation
     {
         Default,
-        Appear,
-        Bigger
+        Appear
     }
 
     public enum RobotAnimation
