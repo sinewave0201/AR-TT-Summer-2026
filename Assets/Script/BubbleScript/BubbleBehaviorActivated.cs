@@ -11,15 +11,7 @@ public class BubbleBehaviorActivated : MonoBehaviour
             return;
         }
 
-        bubbleBehaviorManager = GetComponent<BubbleBehaviorManager>();
-        if (bubbleBehaviorManager == null)
-        {
-            bubbleBehaviorManager = GetComponentInParent<BubbleBehaviorManager>();
-        }
-        if (bubbleBehaviorManager == null)
-        {
-            bubbleBehaviorManager = GetComponentInChildren<BubbleBehaviorManager>();
-        }
+        bubbleBehaviorManager = FindFirstObjectByType<BubbleBehaviorManager>();
     }
 
     void Start()

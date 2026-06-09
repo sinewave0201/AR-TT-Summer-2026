@@ -23,6 +23,11 @@ public class TapToPlaceManager : MonoBehaviour
 
     private Animator robotAnimator;
     private Animator bubbleAnimator;
+    private Transform robotTransform;
+
+    [SerializeField] private Transform arCamera;
+    private Vector3 directionToCamera;
+    private Quaternion robotRotation;
 
     private void Awake()
     {
@@ -61,6 +66,7 @@ public class TapToPlaceManager : MonoBehaviour
     private void Start()
     {
         SetDebugText("application started");
+        directionToCamera.y = 0f;
     }
 
     private void Update()
@@ -81,6 +87,7 @@ public class TapToPlaceManager : MonoBehaviour
         handledCurrentPress = true;
         TryPlaceAt(context.ReadValue<Vector2>());
     }
+
 
     private void TryPlaceAt(Vector2 screenPosition)
     {
@@ -114,13 +121,23 @@ public class TapToPlaceManager : MonoBehaviour
 
         if (robotPrefab != null)
         {
-            GameObject robot = Instantiate(robotPrefab, hitPose.position, hitPose.rotation* Quaternion.Euler(0f, -90f, 0f));
+            Vector3 directionToCamera = arCamera.position - hitPose.position;
+            directionToCamera.y = 0f;
+
+            Quaternion robotRotation = Quaternion.LookRotation(directionToCamera);
+
+            GameObject robot = Instantiate(robotPrefab, hitPose.position, robotRotation);
+
             robotAnimator = robot.GetComponent<Animator>();
+            robotTransform = robot.transform;
         }
 
         if (thoughtBubblePrefab != null)
         {
-            GameObject bubble = Instantiate(thoughtBubblePrefab, hitPose.position + Vector3.up * 0.2f + Vector3.right * 0.2f, hitPose.rotation);
+            Vector3 bubblePosition = robotTransform.position + Vector3.up * 0.2f - robotTransform.right * 0.2f;
+
+
+            GameObject bubble = Instantiate(thoughtBubblePrefab, bubblePosition, hitPose.rotation);
             bubbleAnimator = bubble.GetComponent<Animator>();
         }
 
