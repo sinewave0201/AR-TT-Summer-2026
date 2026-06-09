@@ -116,7 +116,6 @@ GameObject:
   - component: {fileID: 5572913895851424419}
   - component: {fileID: 2294255178789976139}
   - component: {fileID: 103920485794978638}
-  - component: {fileID: 3596903896082075999}
   - component: {fileID: 4742302928687071356}
   - component: {fileID: 3356666949493899370}
   m_Layer: 0
@@ -256,20 +255,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BubbleAlphaController
   bubbleRenderer: {fileID: 6517951717210809777}
   alpha: 0
---- !u!114 &3596903896082075999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3685080284654900699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c7429ba94c0ebe4c8af9e5f568d2fd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BubbleInputManager
-  inputField: {fileID: 0}
-  bubbleText: {fileID: 3054497622552108873}
 --- !u!54 &4742302928687071356
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -312,6 +297,7 @@ MonoBehaviour:
   BubbleBools: 00000000
   Activated: 0
   animator: {fileID: 2294255178789976139}
+  bubbleText: {fileID: 3054497622552108873}
 --- !u!1 &5065691160507796833
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +363,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: place holder
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}

@@ -1643,6 +1643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleSelectionManager
   index: 2
+  tMP_InputField: {fileID: 0}
 --- !u!1 &403460189
 GameObject:
   m_ObjectHideFlags: 0
@@ -1802,6 +1803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleSelectionManager
   index: 3
+  tMP_InputField: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2106,7 +2108,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1980, y: 1080}
+  m_ReferenceResolution: {x: 2712, y: 1220}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -2718,6 +2720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleSelectionManager
   index: 0
+  tMP_InputField: {fileID: 0}
 --- !u!1 &922462743
 GameObject:
   m_ObjectHideFlags: 0
@@ -3347,6 +3350,7 @@ GameObject:
   - component: {fileID: 1235741335}
   - component: {fileID: 1235741334}
   - component: {fileID: 1235741333}
+  - component: {fileID: 1235741336}
   m_Layer: 5
   m_Name: Input
   m_TagString: Untagged
@@ -3439,6 +3443,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1235741336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235741331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cc5fe09bb63f844fa9c6b9e1ddf572a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BubbleReferrenceManager
+  index: 0
+  tMP_InputField: {fileID: 1277407808}
 --- !u!1 &1252098531
 GameObject:
   m_ObjectHideFlags: 0
@@ -4125,9 +4143,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 419094651}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
-        m_MethodName: Finish
+      - m_Target: {fileID: 1235741336}
+        m_TargetAssemblyTypeName: BubbleReferrenceManager, Assembly-CSharp
+        m_MethodName: FinishInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4137,9 +4155,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3596903896082075999, guid: 3c90313281705464e92c65a7b46cbd1c, type: 3}
-        m_TargetAssemblyTypeName: BubbleInputManager, Assembly-CSharp
-        m_MethodName: finishInput
+      - m_Target: {fileID: 419094651}
+        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4866,6 +4884,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleSelectionManager
   index: 1
+  tMP_InputField: {fileID: 0}
 --- !u!20 &2512387468973847745
 Camera:
   m_ObjectHideFlags: 0

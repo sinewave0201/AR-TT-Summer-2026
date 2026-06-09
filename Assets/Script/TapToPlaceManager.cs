@@ -137,7 +137,7 @@ public class TapToPlaceManager : MonoBehaviour
             Vector3 bubblePosition = robotTransform.position + Vector3.up * 0.2f - robotTransform.right * 0.2f;
 
 
-            GameObject bubble = Instantiate(thoughtBubblePrefab, bubblePosition, hitPose.rotation);
+            GameObject bubble = Instantiate(thoughtBubblePrefab, bubblePosition, robotRotation);
             bubbleAnimator = bubble.GetComponent<Animator>();
         }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using TMPro;
 
 public class BubbleBehaviorManager : MonoBehaviour
 {
@@ -9,6 +10,13 @@ public class BubbleBehaviorManager : MonoBehaviour
     private Action[] BubbleActions;
     private Rigidbody rb;
     public Animator animator;
+    public TMP_Text bubbleText;
+
+    public void FinishInput(string content)
+    {
+        bubbleText.text = content;
+    }
+
     void Awake()
     {
         animator = GetComponent<Animator>();
