@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Finish
+  m_text: Create
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
   m_sharedMaterial: {fileID: 4039788393265361702, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
@@ -1610,6 +1610,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 326372187}
+  - component: {fileID: 326372188}
   m_Layer: 0
   m_Name: VaultManager
   m_TagString: Untagged
@@ -1633,6 +1634,20 @@ Transform:
   - {fileID: 1434077740}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &326372188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326372186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd355f263881efc41a2539160f7ddfdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VaultManager
+  vault: []
+  inputField: {fileID: 1277407808}
 --- !u!1 &375618478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3650,7 +3665,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1002653538}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 419094650}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 184974784}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1002653538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4968,6 +5007,18 @@ MonoBehaviour:
       - m_Target: {fileID: 419094651}
         m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddToBubbleVault
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

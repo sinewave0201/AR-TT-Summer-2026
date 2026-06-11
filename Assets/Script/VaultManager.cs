@@ -1,16 +1,25 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+using TMPro;
 
 public class VaultManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [System.Serializable]
+    public struct BubbleVault
     {
-        
+        public String bubbleCreatedDate;
+        public String bubbleContent;
     }
+    
+    [Header("bubble Storage")]
+    public List<BubbleVault> vault = new List<BubbleVault>();
+    public TMP_InputField inputField;
 
-    // Update is called once per frame
-    void Update()
+    
+    public void AddToBubbleVault()
     {
-        
+        vault.Add(new BubbleVault{bubbleCreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm"), 
+                                bubbleContent = inputField.text});
     }
 }
