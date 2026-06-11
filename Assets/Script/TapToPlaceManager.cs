@@ -10,9 +10,7 @@ public class TapToPlaceManager : MonoBehaviour
     [SerializeField] private Text debugText;
     [SerializeField] private ARRaycastManager arRaycastManager;
     [SerializeField] private GameObject unActivated;
-    [SerializeField] private GameObject mainManager;
-    [SerializeField] private GameObject robotPrefab;
-    [SerializeField] private GameObject thoughtBubblePrefab;
+    [SerializeField] private GameObject mainPrefab;
     [SerializeField] private string touchActionName = "Touch";
 
     private readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -21,13 +19,11 @@ public class TapToPlaceManager : MonoBehaviour
     private bool handledCurrentPress;
     private bool firstHit = false;
 
-    private Animator robotAnimator;
-    private Animator bubbleAnimator;
-    private Transform robotTransform;
+
 
     [SerializeField] private Transform arCamera;
     private Vector3 directionToCamera;
-    private Quaternion robotRotation;
+
 
     private void Awake()
     {
@@ -119,35 +115,17 @@ public class TapToPlaceManager : MonoBehaviour
             unActivated.SetActive(false);
         }
 
-        if (robotPrefab != null)
+        if (mainPrefab != null)
         {
             Vector3 directionToCamera = arCamera.position - hitPose.position;
             directionToCamera.y = 0f;
 
-            Quaternion robotRotation = Quaternion.LookRotation(directionToCamera);
+            Quaternion mainRotation = Quaternion.LookRotation(directionToCamera)*Quaternion.Euler(0f, 180f, 0f);
 
-            GameObject robot = Instantiate(robotPrefab, hitPose.position, robotRotation);
+            Instantiate(mainPrefab, hitPose.position, mainRotation);
 
-            robotAnimator = robot.GetComponent<Animator>();
-            robotTransform = robot.transform;
         }
 
-        if (thoughtBubblePrefab != null)
-        {
-            Vector3 bubblePosition = robotTransform.position + Vector3.up * 0.2f - robotTransform.right * 0.2f;
-
-
-            GameObject bubble = Instantiate(thoughtBubblePrefab, bubblePosition, robotRotation);
-            bubbleAnimator = bubble.GetComponent<Animator>();
-        }
-
-        if (mainManager != null)
-        {
-            mainManager.SetActive(true);
-            MainManager manager = mainManager.GetComponent<MainManager>();
-            manager.robotAnimator = robotAnimator;
-            manager.bubbleAnimator = bubbleAnimator;
-        }
     }
 
     private bool IsPointerPressed()

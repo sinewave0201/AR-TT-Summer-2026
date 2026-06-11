@@ -1615,7 +1615,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
@@ -1748,7 +1748,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
@@ -2204,7 +2204,7 @@ MonoBehaviour:
   audioSource: {fileID: 95632277}
   index: 0
   androidTTS: {fileID: 551803693}
-  showWhatManager: {fileID: 0}
+  sessionShowManager: {fileID: 0}
   curText: 
 --- !u!114 &551803693
 MonoBehaviour:
@@ -2218,7 +2218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4852e2ede3389d048aad90a96ee6cb6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidTTS
-  mainManager: {fileID: 0}
+  sessionManager: {fileID: 0}
 --- !u!114 &551803694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2230,7 +2230,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f42ac1853e7931442ac385de94a40646, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShowWhatManager
+  m_EditorClassIdentifier: Assembly-CSharp::SessionShowManager
   groups:
   - name: input
     objects:
@@ -2245,7 +2245,7 @@ MonoBehaviour:
   defaultObjects:
   - {fileID: 2035304733}
   - {fileID: 224013481}
-  mainManager: {fileID: 551803691}
+  sessionManager: {fileID: 551803691}
 --- !u!1001 &590997782
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2923,7 +2923,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
@@ -3322,7 +3322,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
@@ -4156,7 +4156,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:
@@ -4949,7 +4949,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 551803694}
-        m_TargetAssemblyTypeName: ShowWhatManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SessionShowManager, Assembly-CSharp
         m_MethodName: Finish
         m_Mode: 1
         m_Arguments:

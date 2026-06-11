@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AndroidTTS : MonoBehaviour
 {
-    public MainManager mainManager;
+    public SessionManager sessionManager;
     private const int TtsSuccess = 0;
     private const int QueueFlush = 0;
     private readonly System.Collections.Generic.Queue<string> pendingTexts = new System.Collections.Generic.Queue<string>();
@@ -42,7 +42,7 @@ public class AndroidTTS : MonoBehaviour
     void Awake()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        mainManager = GetComponent<MainManager>();
+        sessionManager = GetComponent<SessionManager>();
         InitTTS();
 #endif
     }

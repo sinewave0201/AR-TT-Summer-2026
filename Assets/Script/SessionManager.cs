@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 
 
-public class MainManager : MonoBehaviour
+public class SessionManager : MonoBehaviour
 {
     public enum BubbleAnimation
     {
@@ -44,7 +44,7 @@ public class MainManager : MonoBehaviour
 
     public int index = 0;
     public AndroidTTS androidTTS;
-    public ShowWhatManager showWhatManager;
+    public SessionShowManager sessionShowManager;
     public string curText;
 
     private Coroutine showTextCoroutine;
@@ -57,9 +57,9 @@ public class MainManager : MonoBehaviour
             androidTTS = gameObject.AddComponent<AndroidTTS>();
         }
 
-        if (!TryGetComponent(out showWhatManager))
+        if (!TryGetComponent(out sessionShowManager))
         {
-            showWhatManager = gameObject.AddComponent<ShowWhatManager>();
+            sessionShowManager = gameObject.AddComponent<SessionShowManager>();
         }
 
         showTextCoroutine = StartCoroutine(showText());
@@ -84,7 +84,7 @@ public class MainManager : MonoBehaviour
             {
                 string commandName = command.Substring(1, command.Length - 2).Trim();
                 index++;
-                showWhatManager.Activate(commandName);
+                sessionShowManager.Activate(commandName);
                 showTextCoroutine = null;
                 yield break;
             }

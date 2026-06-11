@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class ShowWhatManager : MonoBehaviour
+public class SessionShowManager : MonoBehaviour
 {
     [System.Serializable]
     public class StagesGroup
@@ -14,13 +14,13 @@ public class ShowWhatManager : MonoBehaviour
     [SerializeField] private StagesGroup[] groups;
     [SerializeField] private GameObject[] defaultObjects;
     private string activeGroup = "";
-    [SerializeField] private MainManager mainManager;
+    [SerializeField] private SessionManager sessionManager;
 
 
     void Start()
     {
         Refresh();
-        mainManager = GetComponent<MainManager>();
+        sessionManager = GetComponent<SessionManager>();
     }
 
     private void Refresh()
@@ -60,6 +60,6 @@ public class ShowWhatManager : MonoBehaviour
     {
         activeGroup = "";
         Refresh();
-        mainManager.ContinueDialogue();
+        sessionManager.ContinueDialogue();
     }
 }
