@@ -59,6 +59,7 @@
   <Project Path="Unity.XR.ARFoundation.VisualScripting.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
   <Project Path="Unity.XR.ARSubsystems.Editor.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="glTFast.Newtonsoft.csproj" />
@@ -72,7 +73,6 @@
   <Project Path="Unity.Multiplayer.Center.Common.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Analytics.Editor.csproj" />
   <Project Path="Unity.XR.Management.Editor.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.InputSystem.ForUI.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.CodeSamples.Tests.csproj" />
   <Project Path="Unity.Collections.CodeGen.csproj" />
