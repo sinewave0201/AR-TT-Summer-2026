@@ -107,4 +107,10 @@ public class MainSelectManager : MonoBehaviour
     {
         sessionManager.SetActive(false);
     }
+
+    public void BeginSession()
+    {
+        sessionManager.SetActive(true);
+        sessionManager.GetComponent<SessionManager>().BeginSession();
+    }
 }

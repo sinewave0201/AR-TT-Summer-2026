@@ -24,6 +24,7 @@ public class TapToPlaceManager : MonoBehaviour
     [SerializeField] private Transform arCamera;
     private Vector3 directionToCamera;
 
+    public SessionManager sessionManager;
 
     private void Awake()
     {
@@ -122,8 +123,10 @@ public class TapToPlaceManager : MonoBehaviour
 
             Quaternion mainRotation = Quaternion.LookRotation(directionToCamera)*Quaternion.Euler(0f, 180f, 0f);
 
-            Instantiate(mainPrefab, hitPose.position, mainRotation);
-
+            GameObject spawned = Instantiate(mainPrefab, hitPose.position, mainRotation);
+            PrefabAnimator animRef = spawned.GetComponentInChildren<PrefabAnimator>();
+            sessionManager.bubbleAnimator = animRef.bubbleAnimator;
+            sessionManager.robotAnimator = animRef.robotAnimator;
         }
 
     }

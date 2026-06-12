@@ -49,6 +49,8 @@ public class SessionManager : MonoBehaviour
 
     private Coroutine showTextCoroutine;
 
+    [Header("End Of Session Logic")]
+    public GameObject endSessionPanel;
 
     void Start ()
     {
@@ -61,7 +63,14 @@ public class SessionManager : MonoBehaviour
         {
             sessionShowManager = gameObject.AddComponent<SessionShowManager>();
         }
+    }
 
+
+    public void BeginSession()
+    {
+        index = 0;
+        endSessionPanel.SetActive(false);
+        sessionShowManager.ResetToDefault();
         showTextCoroutine = StartCoroutine(showText());
     }
 
@@ -104,6 +113,7 @@ public class SessionManager : MonoBehaviour
             yield return new WaitForSeconds(seconds);
         }
 
+        Debug.Log("end of session!");
         subtitleText.text = "";
         showTextCoroutine = null;
     }
@@ -138,5 +148,24 @@ public class SessionManager : MonoBehaviour
                 bubbleAnimator.SetTrigger(curBubbleAnimation.ToString());
             }
         }
+    }
+
+    public void EndSession()
+    {
+        // 2. 清掉 session 显示内容
+        subtitleText.text = "";
+
+        // 3. 关掉 EndSession panel
+        endSessionPanel.SetActive(false);
+
+        // 4. 把 SessionShowManager 回到 defaultObjects 状态
+        sessionShowManager.ResetToDefault();
+
+        // 5. 重置 dialogue index 下一次重新开始
+        index = 0;
+        showTextCoroutine = null;
+
+        // 6. 最后关闭整个 session UI / session manager
+        gameObject.SetActive(false);
     }
 }

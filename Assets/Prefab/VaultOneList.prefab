@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7100570112050796290}
   - component: {fileID: 7310639209023646546}
   - component: {fileID: 1873208963877943264}
+  - component: {fileID: 4011780847114894175}
   m_Layer: 0
   m_Name: VaultOneList
   m_TagString: Untagged
@@ -73,6 +74,14 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!222 &4011780847114894175
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6195686106863589675}
+  m_CullTransparentMesh: 1
 --- !u!1 &8179629546751806118
 GameObject:
   m_ObjectHideFlags: 0
