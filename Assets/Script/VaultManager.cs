@@ -60,6 +60,18 @@ public class VaultManager : MonoBehaviour
 
     void RenderList()
     {
+        if (content == null)
+        {
+            Debug.LogError("VaultManager needs a content reference.", this);
+            return;
+        }
+
+        if (itemPrefab == null)
+        {
+            Debug.LogError("VaultManager needs an itemPrefab reference.", this);
+            return;
+        }
+
         foreach (Transform child in content)
         {
             Destroy(child.gameObject);
@@ -69,6 +81,12 @@ public class VaultManager : MonoBehaviour
         {
             GameObject obj = Instantiate(itemPrefab, content);
             ItemUI itemUI = obj.GetComponent<ItemUI>();
+            if (itemUI == null)
+            {
+                Debug.LogError("Vault itemPrefab needs an ItemUI component.", obj);
+                continue;
+            }
+
             itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent);
         }
     }
@@ -81,23 +99,37 @@ public class VaultManager : MonoBehaviour
         };
 
         string json = JsonUtility.ToJson(saveData, true);
-        File.WriteAllText(SavePath, json);
-        Debug.Log($"Bubble vault saved to {SavePath}", this);
+        try
+        {
+            File.WriteAllText(SavePath, json);
+            Debug.Log($"Bubble vault saved to {SavePath}", this);
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"Failed to save bubble vault to {SavePath}: {exception.Message}", this);
+        }
     }
 
     private void LoadVault()
     {
-        if (!File.Exists(SavePath))
+        try
         {
-            return;
+            if (!File.Exists(SavePath))
+            {
+                return;
+            }
+
+            string json = File.ReadAllText(SavePath);
+            BubbleVaultSaveData saveData = JsonUtility.FromJson<BubbleVaultSaveData>(json);
+
+            if (saveData != null && saveData.vault != null)
+            {
+                vault = saveData.vault;
+            }
         }
-
-        string json = File.ReadAllText(SavePath);
-        BubbleVaultSaveData saveData = JsonUtility.FromJson<BubbleVaultSaveData>(json);
-
-        if (saveData != null && saveData.vault != null)
+        catch (Exception exception)
         {
-            vault = saveData.vault;
+            Debug.LogError($"Failed to load bubble vault from {SavePath}: {exception.Message}", this);
         }
     }
 }
