@@ -9,6 +9,8 @@ public class BubbleBehaviorManager : MonoBehaviour
     public bool Activated = false;
     private Action[] BubbleActions;
     private Rigidbody rb;
+    private BubbleKick bubbleKick;
+    private BubbleBurn bubbleBurn;
     public Animator animator;
     public TMP_Text bubbleText;
 
@@ -21,6 +23,8 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        bubbleKick = GetComponent<BubbleKick>();
+        bubbleBurn = GetComponent<BubbleBurn>();
 
         if (rb == null)
         {
@@ -36,6 +40,16 @@ public class BubbleBehaviorManager : MonoBehaviour
 
         rb.useGravity = false;
         rb.isKinematic = true;
+
+        if (bubbleKick == null)
+        {
+            bubbleKick = gameObject.AddComponent<BubbleKick>();
+        }
+
+        if (bubbleBurn == null)
+        {
+            bubbleBurn = gameObject.AddComponent<BubbleBurn>();
+        }
 
         BubbleActions = new Action[]
         {
@@ -55,6 +69,14 @@ public class BubbleBehaviorManager : MonoBehaviour
         }
 
         BubbleBools[index] = true;
+    }
+
+    public void ResetBubblePosition()
+    {
+        if (bubbleKick != null)
+        {
+            bubbleKick.ResetBubblePosition();
+        }
     }
 
 
@@ -78,23 +100,30 @@ public class BubbleBehaviorManager : MonoBehaviour
     void flyBubble()
     {
         Debug.Log("flyBubble Activated");
+        bubbleBurn.DisableBurn();
+        bubbleKick.DisableKickInteraction();
         rb.isKinematic = false;
         rb.AddForce(Vector3.up * 5F, ForceMode.Force);
     }
 
     void cleanBubble()
     {
+        bubbleBurn.DisableBurn();
+        bubbleKick.DisableKickInteraction();
     }
 
     void kickBubble()
     {
         Debug.Log("kickBubble Activated");
-        rb.isKinematic = false;
-        rb.useGravity = true;
+        bubbleBurn.DisableBurn();
+        bubbleKick.EnableKickInteraction();
     }
 
     void burnBubble()
     {
+        Debug.Log("burnBubble Activated");
+        bubbleKick.EnableKickInteraction();
+        bubbleBurn.EnableBurn();
     }
 
     void OnCollisionEnter(Collision collision)

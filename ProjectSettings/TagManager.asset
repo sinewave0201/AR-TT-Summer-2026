@@ -6,11 +6,13 @@ TagManager:
   tags:
   - Vault
   - RobotSession
+  - Ignite
+  - Fireplace
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Bubble
   - Water
   - UI
   - 
