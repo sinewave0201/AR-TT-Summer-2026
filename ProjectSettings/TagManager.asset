@@ -6,8 +6,8 @@ TagManager:
   tags:
   - Vault
   - RobotSession
-  - Ignite
   - Fireplace
+  - Calendar
   layers:
   - Default
   - TransparentFX

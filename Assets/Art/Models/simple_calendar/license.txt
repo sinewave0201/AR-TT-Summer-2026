@@ -1,0 +1,11 @@
+Model Information:
+* title:	Simple Calendar
+* source:	https://sketchfab.com/3d-models/simple-calendar-023e3d2170f54b219d4d44bea2075f36
+* author:	rikugo.studio (https://sketchfab.com/rikugo.studio)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Simple Calendar" (https://sketchfab.com/3d-models/simple-calendar-023e3d2170f54b219d4d44bea2075f36) by rikugo.studio (https://sketchfab.com/rikugo.studio) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

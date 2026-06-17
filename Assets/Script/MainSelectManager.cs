@@ -16,6 +16,7 @@ public class MainSelectManager : MonoBehaviour
 
     public GameObject sessionManager;
     public GameObject vaultManager;
+    public GameObject calendarManager;
         
     void Awake()
     {
@@ -95,6 +96,12 @@ public class MainSelectManager : MonoBehaviour
                 Debug.Log("touch robot!!");
                 sessionManager.SetActive(true);
             }
+
+            if (hit.collider.CompareTag("Calendar"))
+            {
+                Debug.Log("touch calendar!!");
+                calendarManager.SetActive(true);
+            }
         }
     }
 
@@ -107,6 +114,12 @@ public class MainSelectManager : MonoBehaviour
     {
         sessionManager.SetActive(false);
     }
+
+    public void CloseCalendar()
+    {
+        calendarManager.SetActive(false);
+    }
+
 
     public void BeginSession()
     {
