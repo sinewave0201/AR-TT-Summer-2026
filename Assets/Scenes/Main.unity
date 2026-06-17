@@ -130,8 +130,9 @@ GameObject:
   - component: {fileID: 5383338}
   - component: {fileID: 5383340}
   - component: {fileID: 5383339}
+  - component: {fileID: 5383341}
   m_Layer: 5
-  m_Name: BubbleCreated
+  m_Name: Status
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,8 +154,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 819, y: 541}
-  m_SizeDelta: {x: 498.314, y: 49.093}
+  m_AnchoredPosition: {x: 576, y: 541}
+  m_SizeDelta: {x: 1152, y: 49.093}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5383339
 MonoBehaviour:
@@ -256,6 +257,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5383337}
   m_CullTransparentMesh: 1
+--- !u!114 &5383341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5383337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2b4ef6425cb01e4eae9046daf0cc445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SessionTracker
+  status: {fileID: 5383339}
+  vaultManager: {fileID: 326372188}
 --- !u!1 &88084593
 GameObject:
   m_ObjectHideFlags: 0
@@ -9467,6 +9482,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 5383341}
+        m_TargetAssemblyTypeName: SessionTracker, Assembly-CSharp
+        m_MethodName: SetStatus
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
