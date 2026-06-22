@@ -53,6 +53,18 @@ public class VaultManager : MonoBehaviour
         RenderList();
     }
 
+    public void AIAddToBubbleVault(string bubbleContent)
+    {
+        vault.Add(new BubbleVault
+        {
+            bubbleCreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+            bubbleContent = bubbleContent
+        });
+
+        SaveVault();
+        RenderList();
+    }
+
     void OnEnable()
     {
         RenderList();

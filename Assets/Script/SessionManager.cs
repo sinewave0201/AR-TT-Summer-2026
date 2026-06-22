@@ -78,7 +78,12 @@ public class SessionManager : MonoBehaviour
     {
         if (showTextCoroutine == null && isActiveAndEnabled)
         {
+            Debug.Log($"Continuing dialogue from index {index}. Total lines: {lines.Count}");
             showTextCoroutine = StartCoroutine(showText());
+        }
+        else
+        {
+            Debug.Log($"ContinueDialogue ignored. Coroutine active: {showTextCoroutine != null}, active and enabled: {isActiveAndEnabled}");
         }
     }
 
@@ -113,9 +118,10 @@ public class SessionManager : MonoBehaviour
             yield return new WaitForSeconds(seconds);
         }
 
-        Debug.Log("end of session!");
+        Debug.Log("Dialogue reached the end. Waiting for AI reply.");
         subtitleText.text = "";
         showTextCoroutine = null;
+        yield break;
     }
 
     private void SetAnimation()
@@ -167,5 +173,11 @@ public class SessionManager : MonoBehaviour
 
         // 6. 最后关闭整个 session UI / session manager
         gameObject.SetActive(false);
+    }
+
+    public void AddLinesToSession(string line, RobotAnimation rA, BubbleAnimation ba)
+    {
+        DialogueLine newLine = new DialogueLine{text = line, robotAnimation = rA, bubbleAnimation = ba};
+        lines.Add(newLine);
     }
 }
