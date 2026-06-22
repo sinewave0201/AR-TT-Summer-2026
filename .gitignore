@@ -67,6 +67,14 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Local secrets
+.env
+.env.*
+*.secret
+*.secrets
+*apikey*
+*api_key*
+
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 

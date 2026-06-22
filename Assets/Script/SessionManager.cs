@@ -92,6 +92,13 @@ public class SessionManager : MonoBehaviour
         while (index >= 0 && index < lines.Count)
         {
             curText = lines[index].text;
+            if (string.IsNullOrEmpty(curText))
+            {
+                Debug.LogWarning($"Skipping empty dialogue line at index {index}.");
+                index++;
+                continue;
+            }
+
             var command = curText.Trim();
 
             if (command.Length >= 2 && command[0] == '$' && command[command.Length - 1] == '$')

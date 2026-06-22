@@ -15,7 +15,7 @@ public class AINetworking : MonoBehaviour
     [System.Serializable]
     public class ChatResponse
     {
-        public string message;
+        public string reply;
         public string action;
         public string[] thoughts;
     }
@@ -26,12 +26,17 @@ public class AINetworking : MonoBehaviour
     [Header("Session")]
     public SessionManager sessionManager;
     public VaultManager vaultManager;
+    public GeminiThoughtSummarizer thoughtSummarizer;
 
     [Header("Input")]
     public TMP_InputField inputField;
 
+    [Header("UI")]
+    public GameObject loading;
+
     void Start()
     {
+        loading.SetActive(false);
         string newId = System.Guid.NewGuid().ToString();
         sessionId = newId;
     }
@@ -44,6 +49,8 @@ public class AINetworking : MonoBehaviour
 
     IEnumerator SendChatRequest(string msg)
     {
+        loading.SetActive(true);
+
         float startTime = Time.realtimeSinceStartup;
         ChatRequest newCR = new ChatRequest{message = msg, session_id = sessionId};
         string json = JsonUtility.ToJson(newCR);
@@ -68,6 +75,8 @@ public class AINetworking : MonoBehaviour
         {
             Debug.Log($"AI reply received after {elapsed:F1}s. status={request.responseCode}, body={request.downloadHandler.text}");
             ChatResponse response = JsonUtility.FromJson<ChatResponse>(request.downloadHandler.text);
+            
+            loading.SetActive(false);
             ResponseHandeler(response);
         }
     }
@@ -81,11 +90,19 @@ public class AINetworking : MonoBehaviour
         }
 
         string action = response.action;
-        Debug.Log($"Handling AI response. action={action}, message={response.message}");
+        string responseText = response.reply;
+
+        Debug.Log($"Handling AI response. action={action}, message={responseText}");
 
         if (string.IsNullOrEmpty(action) || action == "null")
         {
-            sessionManager.AddLinesToSession(response.message, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
+            if (string.IsNullOrEmpty(responseText))
+            {
+                Debug.LogError("AI response did not contain message or reply text.");
+                return;
+            }
+
+            AddResponseTextToSession(responseText);
             sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
             sessionManager.ContinueDialogue();
         }
@@ -108,14 +125,50 @@ public class AINetworking : MonoBehaviour
             sessionManager.ContinueDialogue();
 
 
-            //store the bubble
-            //a function to turn response.thoughts into strings, or maybe call llm to summarize it
-            //vaultManager.AIAddToVault(string);
+            if (thoughtSummarizer != null)
+            {
+                thoughtSummarizer.SummarizeThoughtsToVault(response.thoughts, vaultManager);
+            }
+            else
+            {
+                Debug.LogError("AINetworking needs a GeminiThoughtSummarizer reference.");
+            }
         }
 
         else
         {
             Debug.LogWarning($"Unhandled AI action: {action}");
+        }
+    }
+
+    private string NormalizeLineEndings(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return text;
+        }
+
+        return text
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Replace("\\r\\n", "\n")
+            .Replace("\\n", "\n");
+    }
+
+    private void AddResponseTextToSession(string responseText)
+    {
+        string normalizedText = NormalizeLineEndings(responseText);
+        string[] lines = normalizedText.Split(new[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string line in lines)
+        {
+            string trimmedLine = line.Trim();
+            if (string.IsNullOrEmpty(trimmedLine))
+            {
+                continue;
+            }
+
+            sessionManager.AddLinesToSession(trimmedLine, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
         }
     }
 }
