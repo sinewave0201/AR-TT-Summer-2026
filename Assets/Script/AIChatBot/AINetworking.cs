@@ -26,7 +26,6 @@ public class AINetworking : MonoBehaviour
     [Header("Session")]
     public SessionManager sessionManager;
     public VaultManager vaultManager;
-    public GeminiThoughtSummarizer thoughtSummarizer;
 
     [Header("Input")]
     public TMP_InputField inputField;
@@ -125,14 +124,7 @@ public class AINetworking : MonoBehaviour
             sessionManager.ContinueDialogue();
 
 
-            if (thoughtSummarizer != null)
-            {
-                thoughtSummarizer.SummarizeThoughtsToVault(response.thoughts, vaultManager);
-            }
-            else
-            {
-                Debug.LogError("AINetworking needs a GeminiThoughtSummarizer reference.");
-            }
+            SaveRiverThoughtToVault(response);
         }
 
         else
@@ -170,5 +162,39 @@ public class AINetworking : MonoBehaviour
 
             sessionManager.AddLinesToSession(trimmedLine, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
         }
+    }
+
+    private void SaveRiverThoughtToVault(ChatResponse response)
+    {
+        if (vaultManager == null)
+        {
+            Debug.LogError("AINetworking needs a VaultManager reference to save river thoughts.");
+            return;
+        }
+
+        string bubbleContent = response.reply;
+        if (string.IsNullOrWhiteSpace(bubbleContent))
+        {
+            bubbleContent = BuildThoughtsText(response.thoughts);
+        }
+
+        if (string.IsNullOrWhiteSpace(bubbleContent))
+        {
+            Debug.LogWarning("River response did not include reply or thoughts. Nothing was saved to vault.");
+            return;
+        }
+
+        vaultManager.AIAddToBubbleVault(bubbleContent.Trim());
+        Debug.Log($"River thought saved to vault: {bubbleContent}");
+    }
+
+    private string BuildThoughtsText(string[] thoughts)
+    {
+        if (thoughts == null || thoughts.Length == 0)
+        {
+            return null;
+        }
+
+        return string.Join("\n", thoughts);
     }
 }

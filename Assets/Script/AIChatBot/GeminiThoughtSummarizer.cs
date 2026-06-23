@@ -47,7 +47,7 @@ public class GeminiThoughtSummarizer : MonoBehaviour
     [SerializeField] private string apiKeyEnvironmentVariable = "GEMINI_API_KEY";
     [SerializeField] private string model = "gemini-2.5-flash";
     [SerializeField] private int maxOutputTokens = 80;
-    [SerializeField] private float temperature = 0.2f;
+    [SerializeField] private float temperature = 0.5f;
 
     public void SummarizeThoughtsToVault(string[] thoughts, VaultManager vaultManager)
     {
@@ -66,7 +66,8 @@ public class GeminiThoughtSummarizer : MonoBehaviour
         string apiKey = GetApiKey();
         if (string.IsNullOrWhiteSpace(apiKey))
         {
-            Debug.LogError($"Gemini API key is empty. Set the {apiKeyEnvironmentVariable} environment variable before starting Unity.");
+            Debug.LogWarning($"Gemini API key is empty. Saving raw thoughts to vault instead. Set the {apiKeyEnvironmentVariable} environment variable before starting Unity.");
+            SaveRawThoughtsToVault(thoughts, vaultManager);
             return;
         }
 
@@ -112,6 +113,7 @@ public class GeminiThoughtSummarizer : MonoBehaviour
         {
             Debug.LogError($"Gemini thought summary failed. status={request.responseCode}, error={request.error}");
             Debug.LogError($"Gemini error body: {request.downloadHandler.text}");
+            SaveRawThoughtsToVault(thoughts, vaultManager);
             yield break;
         }
 
@@ -119,6 +121,7 @@ public class GeminiThoughtSummarizer : MonoBehaviour
         if (string.IsNullOrWhiteSpace(summary))
         {
             Debug.LogError($"Gemini summary response did not contain text. body={request.downloadHandler.text}");
+            SaveRawThoughtsToVault(thoughts, vaultManager);
             yield break;
         }
 
@@ -138,6 +141,29 @@ public class GeminiThoughtSummarizer : MonoBehaviour
             + "Return only the summary text, no bullets, no quotes, max 20 words.\n\n"
             + "Thoughts:\n- "
             + joinedThoughts;
+    }
+
+    private void SaveRawThoughtsToVault(string[] thoughts, VaultManager vaultManager)
+    {
+        string rawThoughts = BuildRawThoughtsText(thoughts);
+        if (string.IsNullOrWhiteSpace(rawThoughts))
+        {
+            Debug.LogWarning("Raw thoughts were empty. Nothing was saved to vault.");
+            return;
+        }
+
+        vaultManager.AIAddToBubbleVault(rawThoughts);
+        Debug.Log($"Raw thoughts saved to vault: {rawThoughts}");
+    }
+
+    private string BuildRawThoughtsText(string[] thoughts)
+    {
+        if (thoughts == null || thoughts.Length == 0)
+        {
+            return null;
+        }
+
+        return string.Join("\n", thoughts);
     }
 
     private string ExtractSummary(string responseJson)

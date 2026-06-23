@@ -971,7 +971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206af9c5953b4da68506a05a2ad19a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleKick
-  forceMultiplier: 12
+  forceMultiplier: 4
   maxDragDistance: 2
   interactionCamera: {fileID: 0}
   hitLayers:
@@ -981,7 +981,7 @@ MonoBehaviour:
   guideLineWidth: 0.01
   guideLineColor: {r: 1, g: 1, b: 1, a: 1}
   guideLineAlpha: 0.7
-  guideDashLength: 0.04
+  guideDashLength: 0.02
   guideGapLength: 0.05
   guideLineAlwaysOnTop: 1
   kickLinearDamping: 3

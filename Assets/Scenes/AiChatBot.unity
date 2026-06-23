@@ -1890,7 +1890,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &205435885
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4487,6 +4487,7 @@ GameObject:
   - component: {fileID: 419094652}
   - component: {fileID: 419094651}
   - component: {fileID: 419094655}
+  - component: {fileID: 419094656}
   m_Layer: 0
   m_Name: StartSession
   m_TagString: Untagged
@@ -4591,6 +4592,7 @@ MonoBehaviour:
   sessionManager: {fileID: 419094653}
   vaultManager: {fileID: 326372188}
   inputField: {fileID: 1277407808}
+  loading: {fileID: 205435884}
 --- !u!1 &527192068
 GameObject:
   m_ObjectHideFlags: 0
