@@ -1666,8 +1666,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 470.335, y: -37.35}
-  m_SizeDelta: {x: 940.67, y: 74.7}
+  m_AnchoredPosition: {x: 189.42, y: -37.35}
+  m_SizeDelta: {x: 378.84, y: 74.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &181112002
 MonoBehaviour:
@@ -1689,7 +1689,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Blow your thoughts into the bubble!
+  m_text: Talk to TT Bot!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
   m_sharedMaterial: {fileID: 4039788393265361702, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
@@ -4487,7 +4487,6 @@ GameObject:
   - component: {fileID: 419094652}
   - component: {fileID: 419094651}
   - component: {fileID: 419094655}
-  - component: {fileID: 419094656}
   m_Layer: 0
   m_Name: StartSession
   m_TagString: Untagged
@@ -8774,7 +8773,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 167}
-  m_SizeDelta: {x: 940.67, y: 74.7}
+  m_SizeDelta: {x: 378.84, y: 74.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1496917877
 MonoBehaviour:

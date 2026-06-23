@@ -6,6 +6,8 @@ using TMPro;
 
 public class VaultManager : MonoBehaviour
 {
+    public event Action VaultChanged;
+
     [System.Serializable]
     public struct BubbleVault
     {
@@ -51,6 +53,7 @@ public class VaultManager : MonoBehaviour
 
         SaveVault();
         RenderList();
+        VaultChanged?.Invoke();
     }
 
     public void AIAddToBubbleVault(string bubbleContent)
@@ -63,6 +66,7 @@ public class VaultManager : MonoBehaviour
 
         SaveVault();
         RenderList();
+        VaultChanged?.Invoke();
     }
 
     void OnEnable()
@@ -137,6 +141,7 @@ public class VaultManager : MonoBehaviour
             if (saveData != null && saveData.vault != null)
             {
                 vault = saveData.vault;
+                VaultChanged?.Invoke();
             }
         }
         catch (Exception exception)
