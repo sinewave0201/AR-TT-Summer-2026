@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using Unity.VisualScripting;
 
 public class MainSelectManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class MainSelectManager : MonoBehaviour
     public GameObject sessionManager;
     public GameObject vaultManager;
     public GameObject calendarManager;
+    private AudioSource audioSource;
+    private bool OpenUI = false;
         
     void Awake()
     {
@@ -85,19 +88,26 @@ public class MainSelectManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.collider.CompareTag("Vault"))
+            audioSource = hit.collider.GetComponent<AudioSource>();
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
+
+            if (hit.collider.CompareTag("Vault") && !OpenUI)
             {
                 Debug.Log("touch vault!!");
+                OpenUI = true;
                 vaultManager.SetActive(true);
             }
 
-            if (hit.collider.CompareTag("RobotSession"))
+            if (hit.collider.CompareTag("RobotSession") && !OpenUI)
             {
                 Debug.Log("touch robot!!");
                 sessionManager.SetActive(true);
             }
 
-            if (hit.collider.CompareTag("Calendar"))
+            if (hit.collider.CompareTag("Calendar") && !OpenUI)
             {
                 Debug.Log("touch calendar!!");
                 calendarManager.SetActive(true);
@@ -108,16 +118,19 @@ public class MainSelectManager : MonoBehaviour
     public void CloseVault()
     {
         vaultManager.SetActive(false);
+        OpenUI = false;
     }
 
     public void CloseSession()
     {
         sessionManager.SetActive(false);
+        OpenUI = false;
     }
 
     public void CloseCalendar()
     {
         calendarManager.SetActive(false);
+        OpenUI = false;
     }
 
 

@@ -8,6 +8,7 @@ public class BubbleBurn : MonoBehaviour
 
     private bool burnEnabled;
     private bool burned;
+    private AudioSource audioSource;
 
     private void Awake()
     {
@@ -62,6 +63,9 @@ public class BubbleBurn : MonoBehaviour
         burned = true;
         PlayHealEffect();
         bubbleRootToDisable.SetActive(false);
+
+        audioSource = other.GetComponent<AudioSource>();
+        audioSource.Play();
     }
 
     private bool IsFireplace(GameObject other)

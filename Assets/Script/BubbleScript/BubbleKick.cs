@@ -29,6 +29,7 @@ public class BubbleKick : MonoBehaviour
     [SerializeField] private float stopDelay = 0.35f;
 
     private Rigidbody rb;
+    private AudioSource audioSource;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
     private bool hasOriginalTransform;
@@ -44,6 +45,7 @@ public class BubbleKick : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
         originalLinearDamping = rb.linearDamping;
         originalAngularDamping = rb.angularDamping;
         CaptureOriginalTransform();
@@ -75,6 +77,7 @@ public class BubbleKick : MonoBehaviour
         else if (!pressed && dragging)
         {
             ReleaseKick(lastScreenPosition);
+            audioSource.Play();
         }
     }
 

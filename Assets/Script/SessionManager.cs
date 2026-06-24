@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 
 
@@ -37,6 +38,8 @@ public class SessionManager : MonoBehaviour
 
     [Header("UI")]
     public TMP_Text subtitleText;
+    [SerializeField] private int subtitleMaxCharactersPerLine = 42;
+    [SerializeField] private bool forceSubtitleLineBreaks = true;
 
     [Header("Audio / TTS")]
     // public TTSClient ttsClient;
@@ -63,6 +66,8 @@ public class SessionManager : MonoBehaviour
         {
             sessionShowManager = gameObject.AddComponent<SessionShowManager>();
         }
+
+        ConfigureSubtitleText();
     }
 
 
@@ -113,7 +118,7 @@ public class SessionManager : MonoBehaviour
 
             else
             {            
-                subtitleText.text = curText;
+                subtitleText.text = FormatSubtitleText(curText);
                 androidTTS?.Speak(curText);
                 SetAnimation();
                 index++;
@@ -161,6 +166,105 @@ public class SessionManager : MonoBehaviour
                 bubbleAnimator.SetTrigger(curBubbleAnimation.ToString());
             }
         }
+    }
+
+    private void ConfigureSubtitleText()
+    {
+        if (subtitleText == null)
+        {
+            Debug.LogWarning("SessionManager subtitleText is not assigned.");
+            return;
+        }
+
+        subtitleText.enableWordWrapping = true;
+        subtitleText.overflowMode = TextOverflowModes.Overflow;
+    }
+
+    private string FormatSubtitleText(string text)
+    {
+        if (!forceSubtitleLineBreaks || string.IsNullOrEmpty(text) || subtitleMaxCharactersPerLine <= 0)
+        {
+            return text;
+        }
+
+        string normalizedText = text
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Replace("\\r\\n", "\n")
+            .Replace("\\n", "\n");
+
+        string[] sourceLines = normalizedText.Split('\n');
+        StringBuilder wrappedText = new StringBuilder(normalizedText.Length + sourceLines.Length);
+
+        for (int i = 0; i < sourceLines.Length; i++)
+        {
+            if (i > 0)
+            {
+                wrappedText.Append('\n');
+            }
+
+            wrappedText.Append(WrapSubtitleLine(sourceLines[i], subtitleMaxCharactersPerLine));
+        }
+
+        return wrappedText.ToString();
+    }
+
+    private string WrapSubtitleLine(string line, int maxCharactersPerLine)
+    {
+        if (string.IsNullOrEmpty(line) || line.Length <= maxCharactersPerLine)
+        {
+            return line;
+        }
+
+        StringBuilder result = new StringBuilder(line.Length + line.Length / maxCharactersPerLine);
+        StringBuilder currentLine = new StringBuilder(maxCharactersPerLine + 16);
+
+        foreach (char character in line)
+        {
+            currentLine.Append(character);
+
+            if (currentLine.Length < maxCharactersPerLine)
+            {
+                continue;
+            }
+
+            int breakIndex = FindLastSubtitleBreak(currentLine, Mathf.RoundToInt(maxCharactersPerLine * 0.55f));
+            if (breakIndex < 0)
+            {
+                result.Append(currentLine.ToString().TrimEnd());
+                result.Append('\n');
+                currentLine.Length = 0;
+                continue;
+            }
+
+            result.Append(currentLine.ToString(0, breakIndex + 1).TrimEnd());
+            result.Append('\n');
+
+            string remainder = currentLine.ToString(breakIndex + 1, currentLine.Length - breakIndex - 1).TrimStart();
+            currentLine.Length = 0;
+            currentLine.Append(remainder);
+        }
+
+        if (currentLine.Length > 0)
+        {
+            result.Append(currentLine.ToString().Trim());
+        }
+
+        return result.ToString();
+    }
+
+    private int FindLastSubtitleBreak(StringBuilder line, int minBreakIndex)
+    {
+        for (int i = line.Length - 1; i >= minBreakIndex; i--)
+        {
+            char character = line[i];
+            if (char.IsWhiteSpace(character) || char.IsPunctuation(character))
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void EndSession()
