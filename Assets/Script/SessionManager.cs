@@ -18,6 +18,7 @@ public class SessionManager : MonoBehaviour
         Idle,
         Wave,
         Nod,
+        Agreeing,
         GetBubble
     }
 
