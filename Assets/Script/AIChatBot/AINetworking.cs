@@ -43,9 +43,16 @@ public class AINetworking : MonoBehaviour
 
     void Start()
     {
-        SetLoading(false);
-        string newId = System.Guid.NewGuid().ToString();
-        sessionId = newId;
+        if (PlayerPrefs.HasKey("device_session_id"))
+        {
+            sessionId = PlayerPrefs.GetString("device_session_id");
+        }
+        else
+        {
+            sessionId = System.Guid.NewGuid().ToString();
+            PlayerPrefs.SetString("device_session_id", sessionId);
+            PlayerPrefs.Save();
+        }
     }
 
     public void SendMSGToAI()

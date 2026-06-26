@@ -15,27 +15,40 @@ public class ItemUI : MonoBehaviour
     {
         timeTxt.text = time;
         contentTxt.text = content;
-        ResizeToFitText();
+        RefreshLayout();
     }
 
-    private void ResizeToFitText()
+    public void RefreshLayout()
     {
-        contentTxt.ForceMeshUpdate();
-        timeTxt.ForceMeshUpdate();
-
         RectTransform contentRect = contentTxt.rectTransform;
-        Vector2 contentSize = contentRect.sizeDelta;
-        contentSize.y = contentTxt.preferredHeight;
-        contentRect.sizeDelta = contentSize;
+        float contentWidth = Mathf.Max(1f, contentRect.rect.width);
+        float contentHeight = contentTxt.GetPreferredValues(
+            contentTxt.text,
+            contentWidth,
+            0f
+        ).y;
+
+        contentRect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            contentHeight
+        );
+
+        float timeWidth = Mathf.Max(1f, timeTxt.rectTransform.rect.width);
+        float timeHeight = timeTxt.GetPreferredValues(
+            timeTxt.text,
+            timeWidth,
+            0f
+        ).y;
 
         float preferredHeight = Mathf.Max(
             minHeight,
-            verticalPadding + timeTxt.preferredHeight + spacing + contentTxt.preferredHeight);
+            verticalPadding + timeHeight + spacing + contentHeight);
 
         RectTransform rootRect = (RectTransform)transform;
-        Vector2 rootSize = rootRect.sizeDelta;
-        rootSize.y = preferredHeight;
-        rootRect.sizeDelta = rootSize;
+        rootRect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            preferredHeight
+        );
 
         LayoutElement layoutElement = GetComponent<LayoutElement>();
         if (layoutElement != null)
@@ -43,6 +56,6 @@ public class ItemUI : MonoBehaviour
             layoutElement.preferredHeight = preferredHeight;
         }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rootRect);
+        LayoutRebuilder.MarkLayoutForRebuild(rootRect);
     }
 }

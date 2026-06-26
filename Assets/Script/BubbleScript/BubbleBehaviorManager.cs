@@ -9,8 +9,9 @@ public class BubbleBehaviorManager : MonoBehaviour
     public bool Activated = false;
     private Action[] BubbleActions;
     private Rigidbody rb;
-    private BubbleKick bubbleKick;
+    private BubbleBloom bubbleBloom;
     private BubbleBurn bubbleBurn;
+    private BubbleClean bubbleClean;
     public Animator animator;
     public TMP_Text bubbleText;
 
@@ -23,8 +24,9 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        bubbleKick = GetComponent<BubbleKick>();
+        bubbleBloom = GetComponent<BubbleBloom>();
         bubbleBurn = GetComponent<BubbleBurn>();
+        bubbleClean = GetComponent<BubbleClean>();
 
         if (rb == null)
         {
@@ -41,9 +43,9 @@ public class BubbleBehaviorManager : MonoBehaviour
         rb.useGravity = false;
         rb.isKinematic = true;
 
-        if (bubbleKick == null)
+        if (bubbleBloom == null)
         {
-            bubbleKick = gameObject.AddComponent<BubbleKick>();
+            bubbleBloom = gameObject.AddComponent<BubbleBloom>();
         }
 
         if (bubbleBurn == null)
@@ -51,11 +53,16 @@ public class BubbleBehaviorManager : MonoBehaviour
             bubbleBurn = gameObject.AddComponent<BubbleBurn>();
         }
 
+        if (bubbleClean == null)
+        {
+            bubbleClean = gameObject.AddComponent<BubbleClean>();
+        }
+
         BubbleActions = new Action[]
         {
             flyBubble,
             cleanBubble,
-            kickBubble,
+            bloomBubble,
             burnBubble
         };
     }
@@ -73,9 +80,14 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void ResetBubblePosition()
     {
-        if (bubbleKick != null)
+        if (bubbleBurn != null)
         {
-            bubbleKick.ResetBubblePosition();
+            bubbleBurn.ResetBubblePosition();
+        }
+
+        if (bubbleClean != null)
+        {
+            bubbleClean.ResetBubbleClean();
         }
     }
 
@@ -101,7 +113,7 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         Debug.Log("flyBubble Activated");
         bubbleBurn.DisableBurn();
-        bubbleKick.DisableKickInteraction();
+        bubbleBurn.DisableKickInteraction();
         rb.isKinematic = false;
         rb.AddForce(Vector3.up * 5F, ForceMode.Force);
     }
@@ -109,20 +121,21 @@ public class BubbleBehaviorManager : MonoBehaviour
     void cleanBubble()
     {
         bubbleBurn.DisableBurn();
-        bubbleKick.DisableKickInteraction();
+        bubbleBurn.DisableKickInteraction();
+        bubbleClean.StartClean();
     }
 
-    void kickBubble()
+    void bloomBubble()
     {
-        Debug.Log("kickBubble Activated");
+        Debug.Log("bloomBubble Activated");
         bubbleBurn.DisableBurn();
-        bubbleKick.EnableKickInteraction();
+        bubbleBurn.DisableKickInteraction();
     }
 
     void burnBubble()
     {
         Debug.Log("burnBubble Activated");
-        bubbleKick.EnableKickInteraction();
+        bubbleBurn.EnableKickInteraction();
         bubbleBurn.EnableBurn();
     }
 

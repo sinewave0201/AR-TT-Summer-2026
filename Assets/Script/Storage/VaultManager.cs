@@ -1,8 +1,10 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
+using UnityEngine.UI;
 
 public class VaultManager : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class VaultManager : MonoBehaviour
     [Header("UI Rendering")]
     public Transform content;
     public GameObject itemPrefab;
+    private Coroutine rebuildLayoutCoroutine;
 
     private const string SaveFileName = "bubble_vault.json";
     private string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
@@ -90,6 +93,7 @@ public class VaultManager : MonoBehaviour
 
         foreach (Transform child in content)
         {
+            child.gameObject.SetActive(false);
             Destroy(child.gameObject);
         }
 
@@ -105,6 +109,40 @@ public class VaultManager : MonoBehaviour
 
             itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent);
         }
+
+        if (rebuildLayoutCoroutine != null)
+        {
+            StopCoroutine(rebuildLayoutCoroutine);
+        }
+
+        rebuildLayoutCoroutine = StartCoroutine(RebuildLayoutNextFrame());
+    }
+
+    private IEnumerator RebuildLayoutNextFrame()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+
+        foreach (Transform child in content)
+        {
+            if (!child.gameObject.activeSelf)
+            {
+                continue;
+            }
+
+            if (child.TryGetComponent(out ItemUI itemUI))
+            {
+                itemUI.RefreshLayout();
+            }
+        }
+
+        if (content is RectTransform contentRect)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+        }
+
+        Canvas.ForceUpdateCanvases();
+        rebuildLayoutCoroutine = null;
     }
 
     private void SaveVault()

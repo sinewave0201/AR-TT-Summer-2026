@@ -1023,6 +1023,7 @@ MonoBehaviour:
   sessionManager: {fileID: 563997949}
   vaultManager: {fileID: 1434077739}
   calendarManager: {fileID: 325144139}
+  bubbleClean: {fileID: 0}
 --- !u!114 &132936758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1093,7 +1094,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Burn it down
+  m_text: Angry
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
@@ -1230,7 +1231,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Clean it up
+  m_text: confused
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
@@ -3204,8 +3205,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 542.45, y: -62.25}
-  m_SizeDelta: {x: 1084.9, y: 124.5}
+  m_AnchoredPosition: {x: 544.22, y: -31.125}
+  m_SizeDelta: {x: 1088.44, y: 62.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &291707227
 MonoBehaviour:
@@ -3227,9 +3228,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'If you have the chance,
-
-    How would you deal with your negative thoughts?'
+  m_text: What emotion does this thought bubble give you?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
   m_sharedMaterial: {fileID: 4039788393265361702, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
@@ -4448,6 +4447,8 @@ MonoBehaviour:
     robotAnimation: 0
     bubbleAnimation: 0
   subtitleText: {fileID: 922462745}
+  subtitleMaxCharactersPerLine: 42
+  forceSubtitleLineBreaks: 1
   audioSource: {fileID: 0}
   index: 0
   androidTTS: {fileID: 419094652}
@@ -4933,7 +4934,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Let it fly away
+  m_text: regretting
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
@@ -5149,7 +5150,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Kick it!
+  m_text: Anxious
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
@@ -9865,7 +9866,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -425}
-  m_SizeDelta: {x: 1084.9, y: 124.5}
+  m_SizeDelta: {x: 1088.44, y: 62.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1715034589
 MonoBehaviour:

@@ -16,6 +16,7 @@ public class TapToPlaceManager : MonoBehaviour
     private readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private PlayerInput playerInput;
     private InputAction touchAction;
+    private MainSelectManager mainSelectManager;
     private bool handledCurrentPress;
     private bool firstHit = false;
 
@@ -29,6 +30,7 @@ public class TapToPlaceManager : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        mainSelectManager = GetComponent<MainSelectManager>();
         touchAction = playerInput != null && playerInput.actions != null
             ? playerInput.actions.FindAction(touchActionName)
             : null;
@@ -124,6 +126,9 @@ public class TapToPlaceManager : MonoBehaviour
             Quaternion mainRotation = Quaternion.LookRotation(directionToCamera)*Quaternion.Euler(0f, 180f, 0f);
 
             GameObject spawned = Instantiate(mainPrefab, hitPose.position, mainRotation);
+            BubbleClean spawnedBubbleClean = spawned.GetComponentInChildren<BubbleClean>(true);
+            mainSelectManager?.SetBubbleClean(spawnedBubbleClean);
+
             PrefabAnimator animRef = spawned.GetComponentInChildren<PrefabAnimator>();
             sessionManager.bubbleAnimator = animRef.bubbleAnimator;
             sessionManager.robotAnimator = animRef.robotAnimator;
