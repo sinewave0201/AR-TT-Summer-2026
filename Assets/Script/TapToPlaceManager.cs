@@ -132,6 +132,8 @@ public class TapToPlaceManager : MonoBehaviour
             PrefabAnimator animRef = spawned.GetComponentInChildren<PrefabAnimator>();
             sessionManager.bubbleAnimator = animRef.bubbleAnimator;
             sessionManager.robotAnimator = animRef.robotAnimator;
+
+            mainSelectManager?.NotifyPrefabPlaced();
         }
 
     }

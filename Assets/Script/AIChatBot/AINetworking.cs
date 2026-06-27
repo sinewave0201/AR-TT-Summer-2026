@@ -33,8 +33,13 @@ public class AINetworking : MonoBehaviour
     [Header("UI")]
     public GameObject loading;
 
+    [Header("End Session")]
+    [SerializeField] private MainSelectManager mainSelectManager;
+    [SerializeField] private GameObject completedSessionCanvas;
+    [SerializeField] private SessionTracker sessionTracker;
+
     [Header("Networking")]
-    [SerializeField] private int requestTimeoutSeconds = 30;
+    [SerializeField, Min(1)] private int requestTimeoutSeconds = 90;
     [SerializeField] private int maxRetryCount = 1;
     [SerializeField] private float retryDelaySeconds = 1.5f;
     [SerializeField] private string requestFailedMessage = "Sorry, I could not reach the AI service. Please check your internet connection and try again.";
@@ -192,7 +197,7 @@ public class AINetworking : MonoBehaviour
 
         else if (action == "end")
         {
-            sessionManager.EndSession();
+            EndSessionFromAI();
         }
 
         else if (action == "river")
@@ -216,6 +221,20 @@ public class AINetworking : MonoBehaviour
             Debug.LogWarning($"Unhandled AI action: {action}");
             ShowRequestFailedMessage();
         }
+    }
+
+    private void EndSessionFromAI()
+    {
+        sessionManager.sessionShowManager.Finish();
+        sessionManager.EndSession();
+        mainSelectManager?.CloseSession();
+
+        if (completedSessionCanvas != null)
+        {
+            completedSessionCanvas.SetActive(true);
+        }
+
+        sessionTracker?.SetStatus();
     }
 
     private string NormalizeLineEndings(string text)

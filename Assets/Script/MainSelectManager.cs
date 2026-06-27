@@ -12,6 +12,7 @@ public class MainSelectManager : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction touchAction;
     private bool handledCurrentPress;
+    private bool suppressSelectionUntilRelease;
     [SerializeField] private ARRaycastManager arRaycastManager;
     [SerializeField] private string touchActionName = "Touch";
 
@@ -19,7 +20,7 @@ public class MainSelectManager : MonoBehaviour
     public GameObject vaultManager;
     public GameObject calendarManager;
     private AudioSource audioSource;
-    private bool OpenUI = false;
+    public bool OpenUI = true;
 
     [Header ("BubbleClean")]
     [SerializeField] private BubbleClean bubbleClean;
@@ -31,6 +32,9 @@ public class MainSelectManager : MonoBehaviour
     private Vector3 broomVelocity;
     private Vector3 lastSurfacePoint;
     private bool hasLastSurfacePoint;
+    
+    [Header("Sound Effects")]
+    public AudioSource broomSound;
         
     void Awake()
     {
@@ -86,6 +90,13 @@ public class MainSelectManager : MonoBehaviour
             if (draggingBroom)
             {
                 bubbleClean?.EndCleanStroke();
+
+                if (broomSound != null)
+                {
+                    broomSound.Stop();
+                    broomSound.loop = false;
+                    broomSound = null;
+                }
             }
 
             handledCurrentPress = false;
@@ -93,12 +104,18 @@ public class MainSelectManager : MonoBehaviour
             draggedBroom = null;
             broomVelocity = Vector3.zero;
             hasLastSurfacePoint = false;
+
+            if (suppressSelectionUntilRelease)
+            {
+                suppressSelectionUntilRelease = false;
+                OpenUI = false;
+            }
         }
     }
 
     private void OnTouchPerformed(InputAction.CallbackContext context)
     {
-        if (handledCurrentPress)
+        if (handledCurrentPress || suppressSelectionUntilRelease)
         {
             return;
         }
@@ -124,6 +141,7 @@ public class MainSelectManager : MonoBehaviour
             audioSource = hit.collider.GetComponent<AudioSource>();
             if (audioSource != null)
             {
+                audioSource.loop = false;
                 audioSource.Play();
             }
 
@@ -153,6 +171,13 @@ public class MainSelectManager : MonoBehaviour
                 Debug.Log("touch broom!!");
                 if (bubbleClean != null && bubbleClean.BroomEnabled)
                 {
+                    broomSound = hit.collider.GetComponent<AudioSource>();
+                    if (broomSound != null)
+                    {
+                        broomSound.loop = true;
+                        broomSound.Play();
+                    }
+
                     draggingBroom = true;
                     draggedBroom = hit.collider.transform;
                     broomVelocity = Vector3.zero;
@@ -167,6 +192,32 @@ public class MainSelectManager : MonoBehaviour
     public void SetBubbleClean(BubbleClean spawnedBubbleClean)
     {
         bubbleClean = spawnedBubbleClean;
+    }
+
+    public void ResetBroomInteraction()
+    {
+        bubbleClean?.EndCleanStroke();
+        bubbleClean?.ResetBubbleClean();
+
+        if (broomSound != null)
+        {
+            broomSound.Stop();
+            broomSound.loop = false;
+            broomSound = null;
+        }
+
+        draggingBroom = false;
+        draggedBroom = null;
+        broomVelocity = Vector3.zero;
+        hasLastSurfacePoint = false;
+    }
+
+    public void NotifyPrefabPlaced()
+    {
+        // The placement press must not also select a collider on the new prefab.
+        suppressSelectionUntilRelease = true;
+        handledCurrentPress = true;
+        OpenUI = true;
     }
 
     public void CloseVault()

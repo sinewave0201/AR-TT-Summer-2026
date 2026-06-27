@@ -11,7 +11,7 @@ public class BubbleBehaviorActivated : MonoBehaviour
             return;
         }
 
-        bubbleBehaviorManager = FindFirstObjectByType<BubbleBehaviorManager>();
+        ResolveBubbleBehaviorManager();
     }
 
     void Start()
@@ -25,5 +25,32 @@ public class BubbleBehaviorActivated : MonoBehaviour
 
         bubbleBehaviorManager.Activated = true;
         Debug.Log("Bubble Activated");
+    }
+
+    public void BubbleBehaviorEnd()
+    {
+        ResolveBubbleBehaviorManager();
+
+        if (bubbleBehaviorManager == null)
+        {
+            Debug.LogError(
+                "BubbleBehaviorActivated could not find a BubbleBehaviorManager.",
+                this
+            );
+            return;
+        }
+
+        bubbleBehaviorManager.BubbleBehaviorEnd();
+    }
+
+    private void ResolveBubbleBehaviorManager()
+    {
+        if (bubbleBehaviorManager == null)
+        {
+            bubbleBehaviorManager =
+                FindFirstObjectByType<BubbleBehaviorManager>(
+                    FindObjectsInactive.Include
+                );
+        }
     }
 }

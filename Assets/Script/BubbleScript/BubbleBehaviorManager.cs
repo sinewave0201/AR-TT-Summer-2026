@@ -84,13 +84,45 @@ public class BubbleBehaviorManager : MonoBehaviour
         {
             bubbleBurn.ResetBubblePosition();
         }
+    }
 
-        if (bubbleClean != null)
+    public void BubbleBehaviorEnd()
+    {
+        EndFlyBehavior();
+        EndCleanBehavior();
+        EndBloomBehavior();
+        EndBurnBehavior();
+
+        Array.Clear(BubbleBools, 0, BubbleBools.Length);
+
+        if (animator != null)
         {
-            bubbleClean.ResetBubbleClean();
+            animator.enabled = true;
         }
     }
 
+    private void EndFlyBehavior()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.useGravity = false;
+        rb.isKinematic = true;
+    }
+
+    private void EndCleanBehavior()
+    {
+        bubbleClean?.ResetBubbleClean();
+    }
+
+    private void EndBloomBehavior()
+    {
+        bubbleBloom?.EndBloom();
+    }
+
+    private void EndBurnBehavior()
+    {
+        bubbleBurn?.EndBurn();
+    }
 
     void Update()
     {

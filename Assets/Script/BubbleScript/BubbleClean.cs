@@ -40,6 +40,24 @@ public class BubbleClean : MonoBehaviour
     private Vector3 broomOriginalPosition;
     private Quaternion broomOriginalRotation;
 
+    private void Awake()
+    {
+        if (thoughtBubbleText == null &&
+            TryGetComponent(out BubbleBehaviorManager behaviorManager))
+        {
+            thoughtBubbleText = behaviorManager.bubbleText;
+        }
+
+        if (thoughtBubbleText == null)
+        {
+            Debug.LogWarning(
+                "BubbleClean has no Thought Bubble Text reference. " +
+                "Assign the bubble TMP_Text in the prefab Inspector.",
+                this
+            );
+        }
+    }
+
     private void Start()
     {
         broomOriginalPosition = Broom.transform.position;
@@ -76,7 +94,10 @@ public class BubbleClean : MonoBehaviour
         ResetCleanMasks();
         coatingRoot.SetActive(true);
         BroomEnabled = true;
-        thoughtBubbleText.text = string.Empty;
+        if (thoughtBubbleText != null)
+        {
+            thoughtBubbleText.text = string.Empty;
+        }
         ThoughtBubble.enabled = false;
     }
 
@@ -96,6 +117,12 @@ public class BubbleClean : MonoBehaviour
             broomOriginalPosition,
             broomOriginalRotation
         );
+
+        if (Broom.TryGetComponent(out AudioSource broomAudio))
+        {
+            broomAudio.Stop();
+            broomAudio.loop = false;
+        }
 
         if (Broom.TryGetComponent(out Rigidbody broomRigidbody))
         {

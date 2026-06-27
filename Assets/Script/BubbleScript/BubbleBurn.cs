@@ -73,6 +73,13 @@ public class BubbleBurn : MonoBehaviour
                 healEffect = foundEffect.gameObject;
             }
         }
+
+        // This object is only a template for PlayHealEffect().
+        // Keep it hidden so prefab instantiation cannot play it once on Awake.
+        if (healEffect != null)
+        {
+            healEffect.SetActive(false);
+        }
     }
 
     private void Update()
@@ -146,6 +153,12 @@ public class BubbleBurn : MonoBehaviour
     public void DisableBurn()
     {
         burnEnabled = false;
+    }
+
+    public void EndBurn()
+    {
+        DisableBurn();
+        DisableKickInteraction();
     }
 
     public void ResetBurnState()
