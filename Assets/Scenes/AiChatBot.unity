@@ -6680,7 +6680,7 @@ GameObject:
   - component: {fileID: 1114206119}
   - component: {fileID: 1114206118}
   m_Layer: 5
-  m_Name: EndSession
+  m_Name: EndBubbleBehavior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

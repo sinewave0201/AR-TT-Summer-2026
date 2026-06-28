@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8560417966175293733
 Transform:
   m_ObjectHideFlags: 0
@@ -2047,7 +2047,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BubbleClean
   impactEffect: {fileID: 2887873752148789071}
   ThoughtBubble: {fileID: 7233760622076334772}
-  thoughtBubbleText: {fileID: 0}
+  thoughtBubbleText: {fileID: 1474032910424123468}
+  bubbleSound: {fileID: 974794719726938043}
   Broom: {fileID: 7298076591907817366}
   coatingRoot: {fileID: 2416012594984527670}
   coatingMaterial: {fileID: 2100000, guid: bc884f4b833a9ff43bfdac540a6cda34, type: 2}
@@ -2066,6 +2067,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206af9c5953b4da68506a05a2ad19a92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BubbleBloom
+--- !u!114 &1474032910424123468 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3054497622552108873, guid: 3c90313281705464e92c65a7b46cbd1c, type: 3}
+  m_PrefabInstance: {fileID: 4474062863244130053}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!95 &2432441421367512910 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2294255178789976139, guid: 3c90313281705464e92c65a7b46cbd1c, type: 3}

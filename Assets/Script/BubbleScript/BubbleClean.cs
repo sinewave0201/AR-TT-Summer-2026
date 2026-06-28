@@ -15,10 +15,11 @@ public class BubbleClean : MonoBehaviour
         public Vector2 LastUv;
         public bool HasLastUv;
     }
-
+    [Header("Bubble effect & broom")]
     [SerializeField] private GameObject impactEffect;
     [SerializeField] private Renderer ThoughtBubble;
     [SerializeField] private TMP_Text thoughtBubbleText;
+    [SerializeField] private AudioSource bubbleSound;
     [SerializeField] private GameObject Broom;
 
     [Header("Coating Logic")]
@@ -27,6 +28,8 @@ public class BubbleClean : MonoBehaviour
     [SerializeField, Min(64)] private int maskResolution = 256;
     [SerializeField, Range(0.005f, 0.25f)]
     private float maskBrushRadius = 0.04f;
+
+
 
     [Header("Broom")]
     public bool BroomEnabled = false;
@@ -77,7 +80,8 @@ public class BubbleClean : MonoBehaviour
     {
         ParticleSystem[] particles =
             impactEffect.GetComponentsInChildren<ParticleSystem>();
-
+        
+        //play the particle effect
         foreach (ParticleSystem particle in particles)
         {
             ParticleSystem.MainModule main = particle.main;
@@ -89,7 +93,11 @@ public class BubbleClean : MonoBehaviour
             particle.Play();
         }
 
+        //play the popping sound
+        bubbleSound.Play();
+
         yield return new WaitForSeconds(0.05f);
+
 
         ResetCleanMasks();
         coatingRoot.SetActive(true);
@@ -117,12 +125,6 @@ public class BubbleClean : MonoBehaviour
             broomOriginalPosition,
             broomOriginalRotation
         );
-
-        if (Broom.TryGetComponent(out AudioSource broomAudio))
-        {
-            broomAudio.Stop();
-            broomAudio.loop = false;
-        }
 
         if (Broom.TryGetComponent(out Rigidbody broomRigidbody))
         {
