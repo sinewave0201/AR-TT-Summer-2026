@@ -22,6 +22,7 @@ public class AINetworking : MonoBehaviour
 
     private string sessionId;
     private string chatUrl = "https://tt-chatbot.onrender.com/chat";
+    private string resetUrl = "https://tt-chatbot.onrender.com/reset";
 
     [Header("Session")]
     public SessionManager sessionManager;
@@ -45,6 +46,7 @@ public class AINetworking : MonoBehaviour
     [SerializeField] private string requestFailedMessage = "Sorry, I could not reach the AI service. Please check your internet connection and try again.";
 
     private bool isWaitingForAI;
+    private bool isNewSession = true;
 
     void Start()
     {
@@ -74,14 +76,31 @@ public class AINetworking : MonoBehaviour
             return;
         }
 
-        Debug.Log($"MSG sent to AI: {inputField.text}");
-        StartCoroutine(SendChatRequest(inputField.text));
+        string message = inputField.text;
+        Debug.Log($"MSG sent to AI: {message}");
+        StartCoroutine(SendChatRequest(message));
     }
 
     IEnumerator SendChatRequest(string msg)
     {
         isWaitingForAI = true;
         SetLoading(true);
+
+        if (isNewSession)
+        {
+            bool resetSucceeded = false;
+            yield return ResetAIConversation(succeeded => resetSucceeded = succeeded);
+
+            if (!resetSucceeded)
+            {
+                isWaitingForAI = false;
+                SetLoading(false);
+                ShowRequestFailedMessage();
+                yield break;
+            }
+
+            isNewSession = false;
+        }
 
         float startTime = Time.realtimeSinceStartup;
         ChatRequest newCR = new ChatRequest{message = msg, session_id = sessionId};
@@ -137,9 +156,45 @@ public class AINetworking : MonoBehaviour
         ResponseHandeler(response);
     }
 
+    private IEnumerator ResetAIConversation(System.Action<bool> onCompleted)
+    {
+        ChatRequest resetRequest = new ChatRequest
+        {
+            message = string.Empty,
+            session_id = sessionId
+        };
+
+        string json = JsonUtility.ToJson(resetRequest);
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+
+        using (UnityWebRequest request = CreatePostRequest(resetUrl, bodyRaw))
+        {
+            Debug.Log($"Resetting AI conversation. url={resetUrl}, session_id={sessionId}");
+            yield return request.SendWebRequest();
+
+            bool succeeded = request.result == UnityWebRequest.Result.Success;
+            if (succeeded)
+            {
+                Debug.Log($"AI conversation reset successfully. status={request.responseCode}");
+            }
+            else
+            {
+                Debug.LogError($"AI conversation reset failed. result={request.result}, status={request.responseCode}, error={request.error}");
+                Debug.LogError($"AI reset error body: {request.downloadHandler.text}");
+            }
+
+            onCompleted?.Invoke(succeeded);
+        }
+    }
+
     private UnityWebRequest CreateChatRequest(byte[] bodyRaw)
     {
-        UnityWebRequest request = new UnityWebRequest(chatUrl, "POST");
+        return CreatePostRequest(chatUrl, bodyRaw);
+    }
+
+    private UnityWebRequest CreatePostRequest(string url, byte[] bodyRaw)
+    {
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -197,7 +252,20 @@ public class AINetworking : MonoBehaviour
 
         else if (action == "end")
         {
-            EndSessionFromAI();
+            //call the five ending functions
+            sessionManager.sessionShowManager.Finish();
+            sessionManager.EndSession();
+            mainSelectManager?.CloseSession();
+
+            if (completedSessionCanvas != null)
+            {
+                completedSessionCanvas.SetActive(true);
+            }
+
+            sessionTracker?.SetStatus();
+
+            //reset isNewSession
+            isNewSession = true;
         }
 
         else if (action == "river")
@@ -223,19 +291,7 @@ public class AINetworking : MonoBehaviour
         }
     }
 
-    private void EndSessionFromAI()
-    {
-        sessionManager.sessionShowManager.Finish();
-        sessionManager.EndSession();
-        mainSelectManager?.CloseSession();
 
-        if (completedSessionCanvas != null)
-        {
-            completedSessionCanvas.SetActive(true);
-        }
-
-        sessionTracker?.SetStatus();
-    }
 
     private string NormalizeLineEndings(string text)
     {
