@@ -76,6 +76,10 @@ public class BubbleBehaviorManager : MonoBehaviour
         }
 
         BubbleBools[index] = true;
+        Debug.Log(
+            $"Bubble behavior {index} selected. Activated={Activated}",
+            this
+        );
     }
 
     public void ResetBubblePosition()
@@ -162,6 +166,7 @@ public class BubbleBehaviorManager : MonoBehaviour
         Debug.Log("bloomBubble Activated");
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();
+        bubbleBloom.StartBloom();
     }
 
     void burnBubble()

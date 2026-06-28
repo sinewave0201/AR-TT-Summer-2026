@@ -1027,7 +1027,10 @@ MonoBehaviour:
   bubbleClean: {fileID: 0}
   broomSurfaceOffset: 0.01
   broomSmoothTime: 0.04
+  bubbleBloom: {fileID: 0}
+  waterSmoothTime: 0.04
   broomSound: {fileID: 0}
+  waterSound: {fileID: 0}
 --- !u!114 &132936758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4417,34 +4420,25 @@ MonoBehaviour:
   robotAnimator: {fileID: 0}
   bubbleAnimator: {fileID: 0}
   lines:
-  - text: Welcome to Thought Trader!
+  - text: I'm glab that youre here. Whats been on your mind lately?
     robotAnimation: 1
     bubbleAnimation: 0
-  - text: 'In this mixture of reality and dream, '
-    robotAnimation: 0
-    bubbleAnimation: 0
-  - text: "You can trade your negative thoughts for a good night\u2018s sleep. "
-    robotAnimation: 0
-    bubbleAnimation: 0
-  - text: Before we start, tell me how would you deal with your negative thoughts!
-    robotAnimation: 1
-    bubbleAnimation: 0
-  - text: $choose$
-    robotAnimation: 0
-    bubbleAnimation: 0
-  - text: That is a great choice!
-    robotAnimation: 2
-    bubbleAnimation: 0
-  - text: Now, to trade thoughts, here is a thought bubble!
+  - text: Tell me everything about your thoughts!
     robotAnimation: 3
-    bubbleAnimation: 1
-  - text: Blow your negative thoughts into the bubble!
-    robotAnimation: 1
     bubbleAnimation: 0
   - text: $input$
     robotAnimation: 0
     bubbleAnimation: 0
-  - text: Great. Now watch what happend to the bubble...
+  - text: I understand. Now, tell me what emotion does the thought brings you.
+    robotAnimation: 2
+    bubbleAnimation: 0
+  - text: $choose$
+    robotAnimation: 0
+    bubbleAnimation: 0
+  - text: Now, here is the bubble that your thought transform into..
+    robotAnimation: 4
+    bubbleAnimation: 1
+  - text: Watch what happend to the bubble..
     robotAnimation: 0
     bubbleAnimation: 0
   - text: $bubbleBehavior$
@@ -6691,7 +6685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1114206117
 RectTransform:
   m_ObjectHideFlags: 0

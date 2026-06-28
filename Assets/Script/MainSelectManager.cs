@@ -28,14 +28,20 @@ public class MainSelectManager : MonoBehaviour
     [SerializeField, Min(0.001f)] private float broomSmoothTime = 0.04f;
     private bool draggingBroom;
     private Transform draggedBroom;
-    private float dragDistanceFromCamera;
+    private float broomDragDistanceFromCamera;
     private Vector3 broomVelocity;
-    private Vector3 lastSurfacePoint;
-    private bool hasLastSurfacePoint;
+    private Vector3 broomLastSurfacePoint;
+    private bool broomHasLastSurfacePoint;
+
+    [Header("Bubble Bloom")]
+    [SerializeField] private BubbleBloom bubbleBloom;
+    private bool trackingWaterGesture;
     
     [Header("Sound Effects")]
-    public AudioSource broomSound;
-        
+    [SerializeField] private AudioSource broomSound;
+    [SerializeField] private AudioSource waterSound; 
+    
+
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -79,11 +85,18 @@ public class MainSelectManager : MonoBehaviour
             handledCurrentPress = false;
         }
 
+        //dragBroom logic in bubble clean
         if (pressed && draggingBroom && draggedBroom != null)
         {
             DragBroom();
         }
 
+        if (pressed && trackingWaterGesture)
+        {
+            bubbleBloom?.UpdateWateringGesture(GetPointerPosition().x);
+        }
+
+        UpdateWaterSound();
 
         if (!pressed)
         {
@@ -99,11 +112,17 @@ public class MainSelectManager : MonoBehaviour
                 }
             }
 
+            if (trackingWaterGesture)
+            {
+                bubbleBloom?.EndWateringGesture();
+            }
+
             handledCurrentPress = false;
             draggingBroom = false;
             draggedBroom = null;
             broomVelocity = Vector3.zero;
-            hasLastSurfacePoint = false;
+            broomHasLastSurfacePoint = false;
+            trackingWaterGesture = false;
 
             if (suppressSelectionUntilRelease)
             {
@@ -166,6 +185,7 @@ public class MainSelectManager : MonoBehaviour
                 calendarManager.SetActive(true);
             }
 
+            //used for bubble clean bubblem behavior
             if (hit.collider.CompareTag("Broom"))
             {
                 Debug.Log("touch broom!!");
@@ -181,9 +201,30 @@ public class MainSelectManager : MonoBehaviour
                     draggingBroom = true;
                     draggedBroom = hit.collider.transform;
                     broomVelocity = Vector3.zero;
-                    hasLastSurfacePoint = false;
+                    broomHasLastSurfacePoint = false;
                     bubbleClean.EndCleanStroke();
-                    dragDistanceFromCamera = Vector3.Distance(Camera.main.transform.position, draggedBroom.position);
+                    broomDragDistanceFromCamera = Vector3.Distance(Camera.main.transform.position, draggedBroom.position);
+                }
+            }
+
+            //used for bubble bloom behavior
+            if (hit.collider.CompareTag("wateringCan"))
+            {
+                Debug.Log("touch waterCan!!");
+                if (bubbleBloom != null && bubbleBloom.waterCanEnabled)
+                {
+                    waterSound = hit.collider.GetComponent<AudioSource>();
+                    trackingWaterGesture = true;
+                    bubbleBloom.BeginWateringGesture(screenPos.x);
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "Watering can drag rejected. " +
+                        $"BubbleBloom assigned={bubbleBloom != null}, " +
+                        $"waterCanEnabled={bubbleBloom != null && bubbleBloom.waterCanEnabled}.",
+                        hit.collider
+                    );
                 }
             }
         }
@@ -193,6 +234,12 @@ public class MainSelectManager : MonoBehaviour
     {
         bubbleClean = spawnedBubbleClean;
     }
+
+    public void SetBubbleBloom(BubbleBloom spawnedBubbleBloom)
+    {
+        bubbleBloom = spawnedBubbleBloom;
+    }
+
 
     public void ResetBroomInteraction()
     {
@@ -209,7 +256,7 @@ public class MainSelectManager : MonoBehaviour
         draggingBroom = false;
         draggedBroom = null;
         broomVelocity = Vector3.zero;
-        hasLastSurfacePoint = false;
+        broomHasLastSurfacePoint = false;
     }
 
     public void NotifyPrefabPlaced()
@@ -279,11 +326,32 @@ public class MainSelectManager : MonoBehaviour
                 broomSmoothTime
             );
 
-            lastSurfacePoint = surfaceHit.point;
-            hasLastSurfacePoint = true;
+            broomLastSurfacePoint = surfaceHit.point;
+            broomHasLastSurfacePoint = true;
             bubbleClean?.CleanAt(surfaceHit);
         }
     }
+
+    private void UpdateWaterSound()
+    {
+        if (waterSound == null)
+        {
+            return;
+        }
+
+        bool shouldPlay = bubbleBloom != null && bubbleBloom.watering;
+        waterSound.loop = shouldPlay;
+
+        if (shouldPlay && !waterSound.isPlaying)
+        {
+            waterSound.Play();
+        }
+        else if (!shouldPlay && waterSound.isPlaying)
+        {
+            waterSound.Stop();
+        }
+    }
+
 
     private RaycastHit SelectContinuousSurfaceHit(RaycastHit[] surfaceHits)
     {
@@ -321,8 +389,8 @@ public class MainSelectManager : MonoBehaviour
                 continue;
             }
 
-            float score = hasLastSurfacePoint
-                ? Vector3.SqrMagnitude(candidate.point - lastSurfacePoint)
+            float score = broomHasLastSurfacePoint
+                ? Vector3.SqrMagnitude(candidate.point - broomLastSurfacePoint)
                 : candidate.distance;
 
             if (score < bestScore)

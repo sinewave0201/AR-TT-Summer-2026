@@ -9,6 +9,8 @@ TagManager:
   - Fireplace
   - Calendar
   - Broom
+  - wateringCan
+  - pot
   layers:
   - Default
   - TransparentFX
