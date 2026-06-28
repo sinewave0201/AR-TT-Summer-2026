@@ -270,6 +270,7 @@ public class AINetworking : MonoBehaviour
 
         else if (action == "river")
         {
+            AddResponseTextToSession(responseText);
             sessionManager.AddLinesToSession("Now, Choose a way to deal with your thought!", 
                 SessionManager.RobotAnimation.Wave, SessionManager.BubbleAnimation.Appear);
             sessionManager.AddLinesToSession("$choose$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
