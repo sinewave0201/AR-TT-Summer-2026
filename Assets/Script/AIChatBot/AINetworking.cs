@@ -252,37 +252,45 @@ public class AINetworking : MonoBehaviour
 
         else if (action == "end")
         {
-            //call the five ending functions
-            sessionManager.sessionShowManager.Finish();
-            sessionManager.EndSession();
-            mainSelectManager?.CloseSession();
-
-            if (completedSessionCanvas != null)
+            //add the last sentence
+            AddResponseTextToSession(responseText);
+            
+            //call the five ending functions if the dialogue done playing
+            if (sessionManager.dialogueDisplayEnd)
             {
-                completedSessionCanvas.SetActive(true);
+                sessionManager.sessionShowManager.Finish();
+                sessionManager.EndSession();
+                mainSelectManager?.CloseSession();
+
+                if (completedSessionCanvas != null)
+                {
+                    completedSessionCanvas.SetActive(true);
+                }
+
+                sessionTracker?.SetStatus();
+
+                //reset isNewSession
+                isNewSession = true;
             }
-
-            sessionTracker?.SetStatus();
-
-            //reset isNewSession
-            isNewSession = true;
         }
 
         else if (action == "river")
         {
             AddResponseTextToSession(responseText);
-            sessionManager.AddLinesToSession("Now, Choose a way to deal with your thought!", 
+            sessionManager.AddLinesToSession("Now, tell me what emotion does this thought brings you.", 
                 SessionManager.RobotAnimation.Wave, SessionManager.BubbleAnimation.Appear);
             sessionManager.AddLinesToSession("$choose$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
-            sessionManager.AddLinesToSession("That's a great choice!", 
+            sessionManager.AddLinesToSession("Thats how you feel. I see..", 
                 SessionManager.RobotAnimation.Nod, SessionManager.BubbleAnimation.Default);
             sessionManager.AddLinesToSession("Watch what happend to the bubble..", 
                 SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
             sessionManager.AddLinesToSession("$bubbleBehavior$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
             sessionManager.ContinueDialogue();
 
-
             SaveRiverThoughtToVault(response);
+
+            //you will have to send something to the AI bot to continue from river
+            StartCoroutine(SendChatRequest("reply"));
         }
 
         else

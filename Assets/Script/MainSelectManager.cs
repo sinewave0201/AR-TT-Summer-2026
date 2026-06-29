@@ -32,10 +32,6 @@ public class MainSelectManager : MonoBehaviour
     private Vector3 broomVelocity;
     private Vector3 broomLastSurfacePoint;
     private bool broomHasLastSurfacePoint;
-
-    [Header("Bubble Bloom")]
-    [SerializeField] private BubbleBloom bubbleBloom;
-    private bool trackingWaterGesture;
     
     [Header("Sound Effects")]
     [SerializeField] private AudioSource broomSound;
@@ -91,13 +87,6 @@ public class MainSelectManager : MonoBehaviour
             DragBroom();
         }
 
-        if (pressed && trackingWaterGesture)
-        {
-            bubbleBloom?.UpdateWateringGesture(GetPointerPosition().x);
-        }
-
-        UpdateWaterSound();
-
         if (!pressed)
         {
             if (draggingBroom)
@@ -111,18 +100,11 @@ public class MainSelectManager : MonoBehaviour
                     broomSound = null;
                 }
             }
-
-            if (trackingWaterGesture)
-            {
-                bubbleBloom?.EndWateringGesture();
-            }
-
             handledCurrentPress = false;
             draggingBroom = false;
             draggedBroom = null;
             broomVelocity = Vector3.zero;
             broomHasLastSurfacePoint = false;
-            trackingWaterGesture = false;
 
             if (suppressSelectionUntilRelease)
             {
@@ -206,38 +188,12 @@ public class MainSelectManager : MonoBehaviour
                     broomDragDistanceFromCamera = Vector3.Distance(Camera.main.transform.position, draggedBroom.position);
                 }
             }
-
-            //used for bubble bloom behavior
-            if (hit.collider.CompareTag("wateringCan"))
-            {
-                Debug.Log("touch waterCan!!");
-                if (bubbleBloom != null && bubbleBloom.waterCanEnabled)
-                {
-                    waterSound = hit.collider.GetComponent<AudioSource>();
-                    trackingWaterGesture = true;
-                    bubbleBloom.BeginWateringGesture(screenPos.x);
-                }
-                else
-                {
-                    Debug.LogWarning(
-                        "Watering can drag rejected. " +
-                        $"BubbleBloom assigned={bubbleBloom != null}, " +
-                        $"waterCanEnabled={bubbleBloom != null && bubbleBloom.waterCanEnabled}.",
-                        hit.collider
-                    );
-                }
-            }
         }
     }
 
     public void SetBubbleClean(BubbleClean spawnedBubbleClean)
     {
         bubbleClean = spawnedBubbleClean;
-    }
-
-    public void SetBubbleBloom(BubbleBloom spawnedBubbleBloom)
-    {
-        bubbleBloom = spawnedBubbleBloom;
     }
 
 
@@ -331,27 +287,6 @@ public class MainSelectManager : MonoBehaviour
             bubbleClean?.CleanAt(surfaceHit);
         }
     }
-
-    private void UpdateWaterSound()
-    {
-        if (waterSound == null)
-        {
-            return;
-        }
-
-        bool shouldPlay = bubbleBloom != null && bubbleBloom.watering;
-        waterSound.loop = shouldPlay;
-
-        if (shouldPlay && !waterSound.isPlaying)
-        {
-            waterSound.Play();
-        }
-        else if (!shouldPlay && waterSound.isPlaying)
-        {
-            waterSound.Stop();
-        }
-    }
-
 
     private RaycastHit SelectContinuousSurfaceHit(RaycastHit[] surfaceHits)
     {

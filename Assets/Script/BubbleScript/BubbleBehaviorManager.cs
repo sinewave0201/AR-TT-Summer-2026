@@ -76,10 +76,6 @@ public class BubbleBehaviorManager : MonoBehaviour
         }
 
         BubbleBools[index] = true;
-        Debug.Log(
-            $"Bubble behavior {index} selected. Activated={Activated}",
-            this
-        );
     }
 
     public void ResetBubblePosition()
@@ -134,10 +130,6 @@ public class BubbleBehaviorManager : MonoBehaviour
         {
             if (BubbleBools[index] == true && Activated)
             {
-                if (animator != null)
-                {
-                    animator.enabled = false;
-                }
                 BubbleActions[index]();
                 BubbleBools[index] = false;
                 Debug.Log("Bubble Action performed");

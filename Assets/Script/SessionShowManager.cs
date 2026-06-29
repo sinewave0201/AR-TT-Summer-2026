@@ -60,12 +60,5 @@ public class SessionShowManager : MonoBehaviour
     {
         activeGroup = "";
         Refresh();
-        sessionManager.ContinueDialogue();
-    }
-
-    public void ResetToDefault()
-    {
-        activeGroup = "";
-        Refresh();
     }
 }

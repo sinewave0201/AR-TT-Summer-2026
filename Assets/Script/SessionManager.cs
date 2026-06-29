@@ -39,7 +39,7 @@ public class SessionManager : MonoBehaviour
 
     [Header("UI")]
     public TMP_Text subtitleText;
-    [SerializeField] private int subtitleMaxCharactersPerLine = 42;
+    [SerializeField] private int subtitleMaxCharactersPerLine = 65;
     [SerializeField] private bool forceSubtitleLineBreaks = true;
 
     [Header("Audio / TTS")]
@@ -55,6 +55,7 @@ public class SessionManager : MonoBehaviour
 
     [Header("End Of Session Logic")]
     public GameObject endSessionPanel;
+    public bool dialogueDisplayEnd;
 
     void Start ()
     {
@@ -76,7 +77,7 @@ public class SessionManager : MonoBehaviour
     {
         index = 0;
         endSessionPanel.SetActive(false);
-        sessionShowManager.ResetToDefault();
+        sessionShowManager.Finish();
         showTextCoroutine = StartCoroutine(showText());
     }
 
@@ -97,6 +98,7 @@ public class SessionManager : MonoBehaviour
     {
         while (index >= 0 && index < lines.Count)
         {
+            dialogueDisplayEnd = false;
             curText = lines[index].text;
             if (string.IsNullOrEmpty(curText))
             {
@@ -134,6 +136,9 @@ public class SessionManager : MonoBehaviour
         Debug.Log("Dialogue reached the end. Waiting for AI reply.");
         subtitleText.text = "";
         showTextCoroutine = null;
+
+        //used to indicate the whole dialogue has run to an end
+        dialogueDisplayEnd = true;
         yield break;
     }
 
@@ -277,7 +282,7 @@ public class SessionManager : MonoBehaviour
         endSessionPanel.SetActive(false);
 
         // 4. 把 SessionShowManager 回到 defaultObjects 状态
-        sessionShowManager.ResetToDefault();
+        sessionShowManager.Finish();
 
         // 5. 重置 dialogue index 下一次重新开始
         index = 0;

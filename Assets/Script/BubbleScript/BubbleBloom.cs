@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BubbleBloom : MonoBehaviour
 {
@@ -13,17 +14,20 @@ public class BubbleBloom : MonoBehaviour
     [SerializeField] private Animator bubbleAnimator;
     [SerializeField] private Animator flowerAnimator;
     [SerializeField] private Animator wateringCanAnimator;
-    [SerializeField] private string bubbleBloomState = "Bloom";
-    [SerializeField] private string flowerBloomState = "Armature|Bloom";
-    [SerializeField] private string movingTrigger = "moving";
-    [SerializeField] private string movingState = "Moving";
-    [SerializeField] private string wateringParameter = "watering";
-    [SerializeField] private string wateringState = "watering";
-    [SerializeField] private string wateringIdleState = "idle";
+    private string bubbleBloomState = "Bloom";
+    private string flowerBloomState = "Armature|Bloom";
+    private string movingTrigger = "moving";
+    private string movingState = "Moving";
+    private string wateringParameter = "watering";
+    private string wateringState = "watering";
+    private string wateringIdleState = "idle";
 
-    [Header("Watering gesture")]
-    [SerializeField, Min(1f)] private float horizontalPixelsToWater = 20f;
-    [SerializeField, Min(0.1f)] private float wateringDuration = 2f;
+    [Header("Watering gesture & InputSystem")]
+    [SerializeField] private InputActionReference pressAction;
+    [SerializeField] private InputActionReference positionAction;
+    private float WaterCanPrevPointerX;
+    private int WaterCanPrevDirection;
+    private bool WaterCanWasPressed;
 
     [Header("Growth")]
     [SerializeField, Min(0.01f)] private float waterPerSecond = 1f;
@@ -44,8 +48,6 @@ public class BubbleBloom : MonoBehaviour
         System.Array.Empty<ParticleSystem>();
     private Coroutine startRoutine;
     private float wateringUntil;
-    private float previousPointerX;
-    private float horizontalTravel;
     private bool trackingGesture;
     private bool wateringVisualInitialized;
     private bool flowerBloomStarted;
@@ -79,9 +81,7 @@ public class BubbleBloom : MonoBehaviour
 
     private void Update()
     {
-        ApplyWatering(
-            waterCanEnabled && Time.time < wateringUntil
-        );
+        DetactWatering();
 
         if (!watering)
         {
@@ -163,44 +163,6 @@ public class BubbleBloom : MonoBehaviour
         }
     }
 
-    public void BeginWateringGesture(float pointerX)
-    {
-        if (!waterCanEnabled)
-        {
-            return;
-        }
-
-        trackingGesture = true;
-        previousPointerX = pointerX;
-        horizontalTravel = 0f;
-    }
-
-    public void UpdateWateringGesture(float pointerX)
-    {
-        if (!trackingGesture || !waterCanEnabled)
-        {
-            return;
-        }
-
-        horizontalTravel += Mathf.Abs(pointerX - previousPointerX);
-        previousPointerX = pointerX;
-
-        if (horizontalTravel < horizontalPixelsToWater)
-        {
-            return;
-        }
-
-        horizontalTravel = 0f;
-        wateringUntil = Time.time + wateringDuration;
-        ApplyWatering(true);
-    }
-
-    public void EndWateringGesture()
-    {
-        trackingGesture = false;
-        horizontalTravel = 0f;
-    }
-
     private IEnumerator StartBloomSequence()
     {
         waterCanEnabled = false;
@@ -219,8 +181,6 @@ public class BubbleBloom : MonoBehaviour
 
         if (bubbleAnimator != null)
         {
-            bubbleAnimator.enabled = true;
-            bubbleAnimator.speed = 1f;
             bubbleAnimator.Play(bubbleBloomState, 0, 0f);
             bubbleAnimator.Update(0f);
             yield return WaitForStateToFinish(
@@ -231,7 +191,7 @@ public class BubbleBloom : MonoBehaviour
 
         if (wateringCanAnimator != null)
         {
-            wateringCanAnimator.enabled = true;
+            //watering Can animator speed will be set to 0f on default
             wateringCanAnimator.speed = 1f;
             wateringCanAnimator.ResetTrigger(movingTrigger);
             wateringCanAnimator.SetTrigger(movingTrigger);
@@ -248,6 +208,76 @@ public class BubbleBloom : MonoBehaviour
             this
         );
     }
+
+    #region input system functions to detact watering
+    private void OnEnable()
+    {
+        pressAction?.action.Enable();
+        positionAction?.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        pressAction?.action.Disable();
+        positionAction?.action.Disable();
+
+        WaterCanWasPressed = false;
+        WaterCanPrevDirection = 0;
+    }
+
+    private void DetactWatering()
+    {
+        //if bloom is started
+        if (!waterCanEnabled ||
+        pressAction == null ||
+        positionAction == null)
+        {
+            WaterCanWasPressed = false;
+            WaterCanPrevDirection = 0;
+            return;
+        }
+
+        //whether pressed or not
+        bool pressed = pressAction.action.IsPressed();
+        float pointerX = positionAction.action.ReadValue<Vector2>().x;
+
+
+        if (!pressed)
+        {
+            WaterCanWasPressed = false;
+            WaterCanPrevDirection = 0;
+            ApplyWatering(false);
+            return;
+        }
+
+        if (!WaterCanWasPressed)
+        {
+            WaterCanWasPressed = true;
+            WaterCanPrevPointerX = pointerX;
+            WaterCanPrevDirection = 0;
+            return;
+        }
+
+        float deltaX = pointerX - WaterCanPrevPointerX;
+        WaterCanPrevPointerX = pointerX;
+
+        if (Mathf.Abs(deltaX) < 0.2f)
+        {
+            return;
+        }
+
+        int currentDirection = deltaX > 0f ? 1 : -1;
+
+        if (WaterCanPrevDirection != 0 &&
+            currentDirection != WaterCanPrevDirection)
+        {
+            Debug.Log($"Direction changed: {WaterCanPrevDirection} -> {currentDirection}");
+            ApplyWatering(waterCanEnabled);
+        }
+
+        WaterCanPrevDirection = currentDirection;
+    }
+    #endregion
 
     private static IEnumerator WaitForStateToFinish(
         Animator target,
@@ -372,23 +402,6 @@ public class BubbleBloom : MonoBehaviour
             {
                 aliveParticles += particle.particleCount;
             }
-        }
-
-        if (aliveParticles == 0)
-        {
-            Debug.LogError(
-                "Watering effect was played, but all Particle Systems " +
-                "still contain 0 particles.",
-                wateringEffect
-            );
-        }
-        else
-        {
-            Debug.Log(
-                $"Watering effect is emitting {aliveParticles} particles. " +
-                "If it is invisible, check its very small scale and position.",
-                wateringEffect
-            );
         }
     }
 

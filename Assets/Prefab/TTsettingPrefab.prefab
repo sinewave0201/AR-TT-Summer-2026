@@ -2457,15 +2457,8 @@ MonoBehaviour:
   bubbleAnimator: {fileID: 2432441421367512910}
   flowerAnimator: {fileID: 5786034938761123369}
   wateringCanAnimator: {fileID: 6123408484006774816}
-  bubbleBloomState: Bloom
-  flowerBloomState: Armature|Bloom
-  movingTrigger: moving
-  movingState: Moving
-  wateringParameter: watering
-  wateringState: watering
-  wateringIdleState: idle
-  horizontalPixelsToWater: 20
-  wateringDuration: 2
+  pressAction: {fileID: 6551098298045437305, guid: 5f707aa64c9cb034a88c3d332d50fdd4, type: 3}
+  positionAction: {fileID: 4701595053503004486, guid: 5f707aa64c9cb034a88c3d332d50fdd4, type: 3}
   waterPerSecond: 1
   bloomStartsAt: 5
   maximumWaterScale: 10

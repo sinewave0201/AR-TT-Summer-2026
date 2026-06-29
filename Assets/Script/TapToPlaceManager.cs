@@ -130,7 +130,6 @@ public class TapToPlaceManager : MonoBehaviour
             BubbleBloom spawnedBubbleBloom = spawned.GetComponentInChildren<BubbleBloom>(true);
 
             mainSelectManager?.SetBubbleClean(spawnedBubbleClean);
-            mainSelectManager?.SetBubbleBloom(spawnedBubbleBloom);
             PrefabAnimator animRef = spawned.GetComponentInChildren<PrefabAnimator>();
             sessionManager.bubbleAnimator = animRef.bubbleAnimator;
             sessionManager.robotAnimator = animRef.robotAnimator;
