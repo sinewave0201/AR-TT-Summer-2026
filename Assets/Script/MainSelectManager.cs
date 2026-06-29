@@ -8,13 +8,19 @@ using Unity.VisualScripting;
 
 public class MainSelectManager : MonoBehaviour
 {
+    private const string PressActionPath = "TouchControls/Press";
+    private const string PositionActionPath = "TouchControls/Position";
+
+    [Header("Player inputs")]
     private readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private PlayerInput playerInput;
-    private InputAction touchAction;
+    private InputAction pressAction;
+    private InputAction positionAction;
     private bool handledCurrentPress;
     private bool suppressSelectionUntilRelease;
     [SerializeField] private ARRaycastManager arRaycastManager;
-    [SerializeField] private string touchActionName = "Touch";
+
+    [Header("references")]
 
     public GameObject sessionManager;
     public GameObject vaultManager;
@@ -37,13 +43,49 @@ public class MainSelectManager : MonoBehaviour
     [SerializeField] private AudioSource broomSound;
     [SerializeField] private AudioSource waterSound; 
     
+    #region Player input
+    private void OnEnable()
+    {
+        if (pressAction == null || positionAction == null)
+        {
+            Debug.LogError("Press or Position Input Action was not found.", this);
+            return;
+        }
 
+        pressAction.performed += OnPressPerformed;
+
+        pressAction.Enable();
+        positionAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        if (pressAction != null)
+        {
+            pressAction.performed -= OnPressPerformed;
+        }
+    }
+
+    private void OnPressPerformed(InputAction.CallbackContext context)
+    {
+        if (handledCurrentPress || suppressSelectionUntilRelease)
+        {
+            return;
+        }
+
+        Vector2 screenPos = positionAction.ReadValue<Vector2>();
+        MainSelectAction(screenPos);
+    }
+    #endregion
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-        touchAction = playerInput != null && playerInput.actions != null
-            ? playerInput.actions.FindAction(touchActionName)
-            : null;
+
+        if (playerInput != null && playerInput.actions != null)
+        {
+            pressAction = playerInput.actions.FindAction(PressActionPath);
+            positionAction = playerInput.actions.FindAction(PositionActionPath);
+        }
 
         if (arRaycastManager == null)
         {
@@ -51,26 +93,6 @@ public class MainSelectManager : MonoBehaviour
         }
     }
     
-    private void OnEnable()
-    {
-        if (touchAction == null)
-        {
-            return;
-        }
-
-        touchAction.performed += OnTouchPerformed;
-        touchAction.Enable();
-    }
-
-    private void OnDisable()
-    {
-        if (touchAction == null)
-        {
-            return;
-        }
-
-        touchAction.performed -= OnTouchPerformed;
-    }
 
     private void Update()
     {
@@ -114,22 +136,9 @@ public class MainSelectManager : MonoBehaviour
         }
     }
 
-    private void OnTouchPerformed(InputAction.CallbackContext context)
-    {
-        if (handledCurrentPress || suppressSelectionUntilRelease)
-        {
-            return;
-        }
-
-        handledCurrentPress = true;
-        MainSelectAction(context.ReadValue<Vector2>());
-    }
-
     private bool IsPointerPressed()
     {
-        bool touchPressed = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed;
-        bool mousePressed = Mouse.current != null && Mouse.current.leftButton.isPressed;
-        return touchPressed || mousePressed;
+        return pressAction != null && pressAction.IsPressed();
     }
 
     private void MainSelectAction(Vector2 screenPos)
@@ -139,6 +148,9 @@ public class MainSelectManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            //only handle when ray was success
+            handledCurrentPress = true;
+
             audioSource = hit.collider.GetComponent<AudioSource>();
             if (audioSource != null)
             {
@@ -340,16 +352,8 @@ public class MainSelectManager : MonoBehaviour
 
     private Vector2 GetPointerPosition()
     {
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
-        {
-            return Touchscreen.current.primaryTouch.position.ReadValue();
-        }
-
-        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
-        {
-            return Mouse.current.position.ReadValue();
-        }
-
-        return Vector2.zero;
+        return positionAction != null
+            ? positionAction.ReadValue<Vector2>()
+            : Vector2.zero;
     }
 }

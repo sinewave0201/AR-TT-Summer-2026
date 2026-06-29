@@ -947,8 +947,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 17.206656, y: 68.56327, z: 4.132827}
-  m_Center: {x: -12.167976, y: 46.476387, z: 15.9804945}
+  m_Size: {x: 20.484287, y: 68.56328, z: 6.834595}
+  m_Center: {x: -12.178256, y: 46.476444, z: 15.83467}
 --- !u!54 &1432170295166612516
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2457,8 +2457,8 @@ MonoBehaviour:
   bubbleAnimator: {fileID: 2432441421367512910}
   flowerAnimator: {fileID: 5786034938761123369}
   wateringCanAnimator: {fileID: 6123408484006774816}
-  pressAction: {fileID: 6551098298045437305, guid: 5f707aa64c9cb034a88c3d332d50fdd4, type: 3}
-  positionAction: {fileID: 4701595053503004486, guid: 5f707aa64c9cb034a88c3d332d50fdd4, type: 3}
+  pressAction: {fileID: 6551098298045437305, guid: d230bc01e24ee8d4f9eab673f79dd1f1, type: 3}
+  positionAction: {fileID: 4701595053503004486, guid: d230bc01e24ee8d4f9eab673f79dd1f1, type: 3}
   waterPerSecond: 1
   bloomStartsAt: 5
   maximumWaterScale: 10

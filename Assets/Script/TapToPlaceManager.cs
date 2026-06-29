@@ -7,21 +7,21 @@ using UnityEngine.XR.ARSubsystems;
 
 public class TapToPlaceManager : MonoBehaviour
 {
+    private const string PressActionPath = "TouchControls/Press";
+    private const string PositionActionPath = "TouchControls/Position";
+
     [SerializeField] private Text debugText;
     [SerializeField] private ARRaycastManager arRaycastManager;
     [SerializeField] private GameObject unActivated;
     [SerializeField] private GameObject mainPrefab;
-    [SerializeField] private string touchActionName = "Touch";
 
     private readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private PlayerInput playerInput;
-    private InputAction touchAction;
+    private InputAction pressAction;
+    private InputAction positionAction;
     private MainSelectManager mainSelectManager;
     private bool handledCurrentPress;
     private bool firstHit = false;
-
-
-
     [SerializeField] private Transform arCamera;
     private Vector3 directionToCamera;
 
@@ -31,9 +31,12 @@ public class TapToPlaceManager : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         mainSelectManager = GetComponent<MainSelectManager>();
-        touchAction = playerInput != null && playerInput.actions != null
-            ? playerInput.actions.FindAction(touchActionName)
-            : null;
+
+        if (playerInput != null && playerInput.actions != null)
+        {
+            pressAction = playerInput.actions.FindAction(PressActionPath);
+            positionAction = playerInput.actions.FindAction(PositionActionPath);
+        }
 
         if (arRaycastManager == null)
         {
@@ -43,23 +46,28 @@ public class TapToPlaceManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (touchAction == null)
+        if (pressAction == null || positionAction == null)
         {
+            Debug.LogError(
+                "TapToPlaceManager could not find the Press or Position Input Action.",
+                this
+            );
             return;
         }
 
-        touchAction.performed += OnTouchPerformed;
-        touchAction.Enable();
+        pressAction.performed += OnPressPerformed;
+        pressAction.Enable();
+        positionAction.Enable();
     }
 
     private void OnDisable()
     {
-        if (touchAction == null)
+        if (pressAction == null)
         {
             return;
         }
 
-        touchAction.performed -= OnTouchPerformed;
+        pressAction.performed -= OnPressPerformed;
     }
 
     private void Start()
@@ -76,15 +84,15 @@ public class TapToPlaceManager : MonoBehaviour
         }
     }
 
-    private void OnTouchPerformed(InputAction.CallbackContext context)
+    private void OnPressPerformed(InputAction.CallbackContext context)
     {
-        if (handledCurrentPress)
+        if (handledCurrentPress || positionAction == null)
         {
             return;
         }
 
         handledCurrentPress = true;
-        TryPlaceAt(context.ReadValue<Vector2>());
+        TryPlaceAt(positionAction.ReadValue<Vector2>());
     }
 
 
@@ -141,9 +149,7 @@ public class TapToPlaceManager : MonoBehaviour
 
     private bool IsPointerPressed()
     {
-        bool touchPressed = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed;
-        bool mousePressed = Mouse.current != null && Mouse.current.leftButton.isPressed;
-        return touchPressed || mousePressed;
+        return pressAction != null && pressAction.IsPressed();
     }
 
     private void SetDebugText(string text)
