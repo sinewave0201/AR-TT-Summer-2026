@@ -222,6 +222,7 @@ public class AINetworking : MonoBehaviour
         sessionManager.ContinueDialogue();
     }
 
+    #region handles AI responses
     void ResponseHandeler(ChatResponse response)
     {
         if (response == null)
@@ -307,6 +308,8 @@ public class AINetworking : MonoBehaviour
         //reset isNewSession
         isNewSession = true;
     }
+    #endregion
+    
     private string NormalizeLineEndings(string text)
     {
         if (string.IsNullOrEmpty(text))
