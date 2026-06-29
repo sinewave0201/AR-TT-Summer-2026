@@ -254,24 +254,11 @@ public class AINetworking : MonoBehaviour
         {
             //add the last sentence
             AddResponseTextToSession(responseText);
+
+            sessionManager.dialogueDisplayEnd = false;
+            sessionManager.ContinueDialogue();
             
-            //call the five ending functions if the dialogue done playing
-            if (sessionManager.dialogueDisplayEnd)
-            {
-                sessionManager.sessionShowManager.Finish();
-                sessionManager.EndSession();
-                mainSelectManager?.CloseSession();
-
-                if (completedSessionCanvas != null)
-                {
-                    completedSessionCanvas.SetActive(true);
-                }
-
-                sessionTracker?.SetStatus();
-
-                //reset isNewSession
-                isNewSession = true;
-            }
+            StartCoroutine(WaitForFinalDialogue());
         }
 
         else if (action == "river")
@@ -301,7 +288,25 @@ public class AINetworking : MonoBehaviour
     }
 
 
+    private IEnumerator WaitForFinalDialogue()
+    {
+        //wait till the last sentence was over
+        yield return new WaitUntil(() => sessionManager.dialogueDisplayEnd);
 
+        sessionManager.sessionShowManager.Finish();
+        sessionManager.EndSession();
+        mainSelectManager?.CloseSession();
+
+        if (completedSessionCanvas != null)
+        {
+            completedSessionCanvas.SetActive(true);
+        }
+
+        sessionTracker?.SetStatus();
+
+        //reset isNewSession
+        isNewSession = true;
+    }
     private string NormalizeLineEndings(string text)
     {
         if (string.IsNullOrEmpty(text))
