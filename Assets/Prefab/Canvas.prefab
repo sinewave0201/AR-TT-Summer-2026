@@ -1174,7 +1174,6 @@ GameObject:
   - component: {fileID: 6667429838885163465}
   - component: {fileID: 15883388598460930}
   - component: {fileID: 8078735771917038066}
-  - component: {fileID: 7804394520712922446}
   - component: {fileID: 964991379388641908}
   m_Layer: 5
   m_Name: Canvas
@@ -1288,24 +1287,9 @@ MonoBehaviour:
   - 'Tell me how do you feel about these thoughts: '
   - '$interact$ '
   subtitleText: {fileID: 8603419380712211232}
-  audioSource: {fileID: 0}
   index: 0
-  androidTTS: {fileID: 7804394520712922446}
   sessionShowManager: {fileID: 0}
   curText: 
---- !u!114 &7804394520712922446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5624743675372559924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4852e2ede3389d048aad90a96ee6cb6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AndroidTTS
-  sessionManager: {fileID: 0}
 --- !u!114 &964991379388641908
 MonoBehaviour:
   m_ObjectHideFlags: 0

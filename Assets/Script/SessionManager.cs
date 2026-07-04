@@ -42,12 +42,10 @@ public class SessionManager : MonoBehaviour
     [SerializeField] private int subtitleMaxCharactersPerLine = 65;
     [SerializeField] private bool forceSubtitleLineBreaks = true;
 
-    [Header("Audio / TTS")]
-    // public TTSClient ttsClient;
-    public AudioSource audioSource;
+    [Header("Robot Voice")]
+    [SerializeField] private AudioSource robotAudioSource;
 
     public int index = 0;
-    public AndroidTTS androidTTS;
     public SessionShowManager sessionShowManager;
     public string curText;
 
@@ -59,11 +57,6 @@ public class SessionManager : MonoBehaviour
 
     void Start ()
     {
-        if (!TryGetComponent(out androidTTS))
-        {
-            androidTTS = gameObject.AddComponent<AndroidTTS>();
-        }
-
         if (!TryGetComponent(out sessionShowManager))
         {
             sessionShowManager = gameObject.AddComponent<SessionShowManager>();
@@ -122,7 +115,7 @@ public class SessionManager : MonoBehaviour
             else
             {            
                 subtitleText.text = FormatSubtitleText(curText);
-                androidTTS?.Speak(curText);
+                PlayRobotVoice();
                 SetAnimation();
                 index++;
 
@@ -140,6 +133,23 @@ public class SessionManager : MonoBehaviour
         //used to indicate the whole dialogue has run to an end
         dialogueDisplayEnd = true;
         yield break;
+    }
+
+    private void PlayRobotVoice()
+    {
+        if (robotAudioSource == null || robotAudioSource.clip == null)
+        {
+            return;
+        }
+
+        if (!robotAudioSource.isActiveAndEnabled)
+        {
+            Debug.LogWarning("Robot AudioSource is not active and enabled.", robotAudioSource);
+            return;
+        }
+
+        robotAudioSource.Stop();
+        robotAudioSource.Play();
     }
 
     private void SetAnimation()

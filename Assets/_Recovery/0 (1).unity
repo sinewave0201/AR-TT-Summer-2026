@@ -614,7 +614,6 @@ MonoBehaviour:
   subtitleText: {fileID: 922462745}
   audioSource: {fileID: 95632277}
   index: 0
-  androidTTS: {fileID: 0}
 --- !u!1 &738116416
 GameObject:
   m_ObjectHideFlags: 0

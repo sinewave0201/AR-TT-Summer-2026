@@ -10,8 +10,8 @@ public class SessionTracker : MonoBehaviour
     [SerializeField] private VaultManager vaultManager;
     private const string BubbleDateFormat = "yyyy-MM-dd HH:mm";
 
-    private const string CompletedText = "You have completed a session today!";
-    private const string NotCompletedText = "You have not complete a session today! Click the robot to start session.";
+    private const string CompletedText = "Daily session completed";
+    private const string NotCompletedText = "Daily session not completed";
 
     public void SetStatus()
     {

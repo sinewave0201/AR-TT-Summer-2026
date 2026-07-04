@@ -2057,7 +2057,6 @@ GameObject:
   - component: {fileID: 551803688}
   - component: {fileID: 551803687}
   - component: {fileID: 551803691}
-  - component: {fileID: 551803693}
   - component: {fileID: 551803694}
   m_Layer: 5
   m_Name: Canvas
@@ -2203,22 +2202,8 @@ MonoBehaviour:
   subtitleText: {fileID: 922462745}
   audioSource: {fileID: 95632277}
   index: 0
-  androidTTS: {fileID: 551803693}
   sessionShowManager: {fileID: 0}
   curText: 
---- !u!114 &551803693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 551803686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4852e2ede3389d048aad90a96ee6cb6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AndroidTTS
-  sessionManager: {fileID: 0}
 --- !u!114 &551803694
 MonoBehaviour:
   m_ObjectHideFlags: 0

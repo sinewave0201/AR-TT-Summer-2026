@@ -1910,7 +1910,6 @@ GameObject:
   m_Component:
   - component: {fileID: 419094654}
   - component: {fileID: 419094653}
-  - component: {fileID: 419094652}
   - component: {fileID: 419094651}
   m_Layer: 0
   m_Name: SessionManager
@@ -1953,9 +1952,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 419094650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4852e2ede3389d048aad90a96ee6cb6a, type: 3}
+  m_Script: {fileID: 0}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AndroidTTS
+  m_EditorClassIdentifier:
   sessionManager: {fileID: 419094653}
 --- !u!114 &419094653
 MonoBehaviour:
@@ -2008,7 +2007,6 @@ MonoBehaviour:
   subtitleText: {fileID: 922462745}
   audioSource: {fileID: 0}
   index: 0
-  androidTTS: {fileID: 419094652}
   sessionShowManager: {fileID: 419094651}
   curText: 
 --- !u!4 &419094654
