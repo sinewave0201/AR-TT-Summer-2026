@@ -4,9 +4,20 @@ using TMPro;
 
 public class BubbleBehaviorManager : MonoBehaviour
 {
+    public enum BubbleBehavior
+    {
+        None = -1,
+        Fly = 0,
+        Clean = 1,
+        Bloom = 2,
+        Burn = 3
+    }
+
     //fly, clean, kick, burn
     public bool[] BubbleBools = {false, false, false, false};
     public bool Activated = false;
+    public BubbleBehavior CurrentBehavior { get; private set; } =
+        BubbleBehavior.None;
     private Action[] BubbleActions;
     private Rigidbody rb;
     private BubbleBloom bubbleBloom;
@@ -88,6 +99,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void BubbleBehaviorEnd()
     {
+        CurrentBehavior = BubbleBehavior.None;
         EndFlyBehavior();
         EndCleanBehavior();
         EndBloomBehavior();
@@ -139,6 +151,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void flyBubble()
     {
+        CurrentBehavior = BubbleBehavior.Fly;
         Debug.Log("flyBubble Activated");
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();
@@ -148,6 +161,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void cleanBubble()
     {
+        CurrentBehavior = BubbleBehavior.Clean;
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();
         bubbleClean.StartClean();
@@ -155,6 +169,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void bloomBubble()
     {
+        CurrentBehavior = BubbleBehavior.Bloom;
         Debug.Log("bloomBubble Activated");
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();
@@ -163,6 +178,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void burnBubble()
     {
+        CurrentBehavior = BubbleBehavior.Burn;
         Debug.Log("burnBubble Activated");
         bubbleBurn.EnableKickInteraction();
         bubbleBurn.EnableBurn();

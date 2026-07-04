@@ -46,7 +46,6 @@ public class BubbleBurn : MonoBehaviour
     private Vector3 originalPosition;
     private Quaternion originalRotation;
     private AudioSource audioSource;
-    private BubbleResetPositionButton resetButtonController;
     private readonly List<LineRenderer> guideDashes = new List<LineRenderer>();
 
     private void Awake()
@@ -58,7 +57,6 @@ public class BubbleBurn : MonoBehaviour
         CaptureOriginalTransform();
         EnsureGuideLine();
         HideGuideLine();
-        SetResetButton(false);
 
         if (bubbleRootToDisable == null)
         {
@@ -126,7 +124,6 @@ public class BubbleBurn : MonoBehaviour
     {
         CaptureOriginalTransform(true);
         kickEnabled = true;
-        SetResetButton(true);
 
         SetKickDamping();
         stoppedTime = 0f;
@@ -140,7 +137,6 @@ public class BubbleBurn : MonoBehaviour
         dragging = false;
         stoppedTime = 0f;
         HideGuideLine();
-        SetResetButton(false);
         RestoreOriginalDamping();
     }
 
@@ -528,19 +524,6 @@ public class BubbleBurn : MonoBehaviour
     {
         rb.linearDamping = originalLinearDamping;
         rb.angularDamping = originalAngularDamping;
-    }
-
-    private void SetResetButton(bool visible)
-    {
-        if (resetButtonController == null)
-        {
-            resetButtonController = FindFirstObjectByType<BubbleResetPositionButton>(FindObjectsInactive.Include);
-        }
-
-        if (resetButtonController != null)
-        {
-            resetButtonController.SetVisible(visible);
-        }
     }
 
     private Transform FindChildContaining(Transform root, string text)

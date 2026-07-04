@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class BubbleBloom : MonoBehaviour
 {
@@ -9,7 +8,6 @@ public class BubbleBloom : MonoBehaviour
     [SerializeField] private GameObject flower;
     [SerializeField] private GameObject wateringCan;
     [SerializeField] private GameObject wateringEffect;
-
     [Header("Animators")]
     [SerializeField] private Animator bubbleAnimator;
     [SerializeField] private Animator flowerAnimator;
@@ -21,13 +19,6 @@ public class BubbleBloom : MonoBehaviour
     private string wateringParameter = "watering";
     private string wateringState = "watering";
     private string wateringIdleState = "idle";
-
-    [Header("Watering gesture & InputSystem")]
-    [SerializeField] private InputActionReference pressAction;
-    [SerializeField] private InputActionReference positionAction;
-    private float WaterCanPrevPointerX;
-    private int WaterCanPrevDirection;
-    private bool WaterCanWasPressed;
 
     [Header("Growth")]
     [SerializeField, Min(0.01f)] private float waterPerSecond = 1f;
@@ -47,8 +38,6 @@ public class BubbleBloom : MonoBehaviour
     private ParticleSystem[] wateringParticles =
         System.Array.Empty<ParticleSystem>();
     private Coroutine startRoutine;
-    private float wateringUntil;
-    private bool trackingGesture;
     private bool wateringVisualInitialized;
     private bool flowerBloomStarted;
 
@@ -81,8 +70,6 @@ public class BubbleBloom : MonoBehaviour
 
     private void Update()
     {
-        DetactWatering();
-
         if (!watering)
         {
             SetFlowerAnimationPlaying(false);
@@ -133,9 +120,7 @@ public class BubbleBloom : MonoBehaviour
         }
 
         waterCanEnabled = false;
-        wateringUntil = 0f;
         waterScale = 0f;
-        trackingGesture = false;
         ApplyWatering(false);
 
         ResetFlowerAnimation();
@@ -166,9 +151,7 @@ public class BubbleBloom : MonoBehaviour
     private IEnumerator StartBloomSequence()
     {
         waterCanEnabled = false;
-        wateringUntil = 0f;
         waterScale = 0f;
-        trackingGesture = false;
         ApplyWatering(false);
 
         pot?.SetActive(true);
@@ -209,75 +192,15 @@ public class BubbleBloom : MonoBehaviour
         );
     }
 
-    #region input system functions to detact watering
-    private void OnEnable()
+    public void SetWatering(bool active)
     {
-        pressAction?.action.Enable();
-        positionAction?.action.Enable();
+        if (active && !waterCanEnabled)
+        {
+            return;
+        }
+
+        ApplyWatering(active);
     }
-
-    private void OnDisable()
-    {
-        pressAction?.action.Disable();
-        positionAction?.action.Disable();
-
-        WaterCanWasPressed = false;
-        WaterCanPrevDirection = 0;
-    }
-
-    private void DetactWatering()
-    {
-        //if bloom is started
-        if (!waterCanEnabled ||
-        pressAction == null ||
-        positionAction == null)
-        {
-            WaterCanWasPressed = false;
-            WaterCanPrevDirection = 0;
-            return;
-        }
-
-        //whether pressed or not
-        bool pressed = pressAction.action.IsPressed();
-        float pointerX = positionAction.action.ReadValue<Vector2>().x;
-
-
-        if (!pressed)
-        {
-            WaterCanWasPressed = false;
-            WaterCanPrevDirection = 0;
-            ApplyWatering(false);
-            return;
-        }
-
-        if (!WaterCanWasPressed)
-        {
-            WaterCanWasPressed = true;
-            WaterCanPrevPointerX = pointerX;
-            WaterCanPrevDirection = 0;
-            return;
-        }
-
-        float deltaX = pointerX - WaterCanPrevPointerX;
-        WaterCanPrevPointerX = pointerX;
-
-        if (Mathf.Abs(deltaX) < 0.2f)
-        {
-            return;
-        }
-
-        int currentDirection = deltaX > 0f ? 1 : -1;
-
-        if (WaterCanPrevDirection != 0 &&
-            currentDirection != WaterCanPrevDirection)
-        {
-            Debug.Log($"Direction changed: {WaterCanPrevDirection} -> {currentDirection}");
-            ApplyWatering(waterCanEnabled);
-        }
-
-        WaterCanPrevDirection = currentDirection;
-    }
-    #endregion
 
     private static IEnumerator WaitForStateToFinish(
         Animator target,
