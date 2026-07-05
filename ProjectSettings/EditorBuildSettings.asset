@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/AiChatBot.unity
-    guid: b32b991b8db3fd14989cc96c4313d44d
+    path: Assets/Scenes/MainScene.unity
+    guid: d31e3f28b8ace0b4b88288ef3cffccaa
+  - enabled: 1
+    path: Assets/Scenes/AIChatBot2.unity
+    guid: 4db204a75b9f49beac74c2cc85cf29a7
   - enabled: 1
     path: Assets/Scenes/WOO.unity
     guid: 74164da68ab6fc3499e0c2f813bebddc

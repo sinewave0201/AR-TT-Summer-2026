@@ -99,6 +99,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void BubbleBehaviorEnd()
     {
+        Activated = false;
         CurrentBehavior = BubbleBehavior.None;
         EndFlyBehavior();
         EndCleanBehavior();
@@ -180,6 +181,12 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         CurrentBehavior = BubbleBehavior.Burn;
         Debug.Log("burnBubble Activated");
+        //disable animator to enable kicking
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+
         bubbleBurn.EnableKickInteraction();
         bubbleBurn.EnableBurn();
     }
