@@ -14,6 +14,7 @@ public class TapToPlaceManager : MonoBehaviour
     [SerializeField] private ARRaycastManager arRaycastManager;
     [SerializeField] private GameObject unActivated;
     [SerializeField] private GameObject mainPrefab;
+    [SerializeField] private GameObject AvatarPrefab;
 
     private readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private PlayerInput playerInput;
@@ -26,6 +27,9 @@ public class TapToPlaceManager : MonoBehaviour
     private Vector3 directionToCamera;
 
     public SessionManager sessionManager;
+
+    [Header("Change Avatar Logic")]
+    public ChangeAvatarScript changeAvatarScript;
 
     private void Awake()
     {
@@ -133,15 +137,43 @@ public class TapToPlaceManager : MonoBehaviour
 
             Quaternion mainRotation = Quaternion.LookRotation(directionToCamera)*Quaternion.Euler(0f, 180f, 0f);
 
-            GameObject spawned = Instantiate(mainPrefab, hitPose.position, mainRotation);
-            BubbleClean spawnedBubbleClean = spawned.GetComponentInChildren<BubbleClean>(true);
-            BubbleBloom spawnedBubbleBloom = spawned.GetComponentInChildren<BubbleBloom>(true);
+            //spawn in avatar and main prefab
+            GameObject spawnedMain = Instantiate(mainPrefab, hitPose.position, mainRotation);
+            Vector3 avatarOffset = mainRotation * new Vector3(1.87f * 0.15f, 0.059f * 0.15f, -2.239f * 0.15f);
+            Vector3 avatarPosition = hitPose.position + avatarOffset;
+            GameObject spawnedAvatar = null;
+
+            if (AvatarPrefab != null)
+            {
+                spawnedAvatar = Instantiate(AvatarPrefab, avatarPosition, mainRotation);
+            }
+            
+            BubbleClean spawnedBubbleClean = spawnedMain.GetComponentInChildren<BubbleClean>(true);
 
             mainSelectManager?.SetBubbleClean(spawnedBubbleClean);
-            PrefabAnimator animRef = spawned.GetComponentInChildren<PrefabAnimator>();
-            sessionManager.bubbleAnimator = animRef.bubbleAnimator;
-            sessionManager.robotAnimator = animRef.robotAnimator;
+            PrefabAnimator animRef = spawnedMain.GetComponentInChildren<PrefabAnimator>();
+            
+            //pass the animator into session Manager
+            if (spawnedAvatar != null)
+            {
+                sessionManager.robotAnimator = spawnedAvatar.GetComponentInChildren<Animator>(true);
+            }
 
+            sessionManager.bubbleAnimator = animRef.bubbleAnimator;
+
+            //pass the current avatar reference to change avatar script
+            if (changeAvatarScript != null && spawnedAvatar != null)
+            {
+                changeAvatarScript.SetCurrentAvatar(
+                    spawnedAvatar,
+                    AvatarPrefab,
+                    avatarPosition,
+                    mainRotation,
+                    sessionManager);
+                changeAvatarScript.prefabPlaced = true;
+            }
+
+            
             mainSelectManager?.NotifyPrefabPlaced();
         }
 

@@ -95,6 +95,12 @@ public class BubbleClean : MonoBehaviour
 
         //play the popping sound
         bubbleSound.Play();
+        if (thoughtBubbleText != null)
+        {
+            thoughtBubbleText.text = string.Empty;
+        }
+        ThoughtBubble.enabled = false;
+
 
         yield return new WaitForSeconds(0.05f);
 
@@ -102,11 +108,7 @@ public class BubbleClean : MonoBehaviour
         ResetCleanMasks();
         coatingRoot.SetActive(true);
         BroomEnabled = true;
-        if (thoughtBubbleText != null)
-        {
-            thoughtBubbleText.text = string.Empty;
-        }
-        ThoughtBubble.enabled = false;
+
     }
 
     public void ResetBubbleClean()
@@ -115,7 +117,6 @@ public class BubbleClean : MonoBehaviour
         ResetBroom();
 
         coatingRoot.SetActive(false);
-        ThoughtBubble.enabled = true;
         ResetCleanMasks();
     }
 

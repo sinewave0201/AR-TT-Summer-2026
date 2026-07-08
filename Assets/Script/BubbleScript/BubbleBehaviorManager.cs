@@ -99,6 +99,7 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void BubbleBehaviorEnd()
     {
+
         Activated = false;
         CurrentBehavior = BubbleBehavior.None;
         EndFlyBehavior();
@@ -120,6 +121,8 @@ public class BubbleBehaviorManager : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         rb.useGravity = false;
         rb.isKinematic = true;
+
+        gameObject.SetActive(false);
     }
 
     private void EndCleanBehavior()
@@ -154,6 +157,13 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         CurrentBehavior = BubbleBehavior.Fly;
         Debug.Log("flyBubble Activated");
+
+        //disable animator to enable flying
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();
         rb.isKinematic = false;
@@ -162,6 +172,12 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void cleanBubble()
     {
+        //disable animator to enable cleaning
+        if (animator != null)
+        {
+            animator.enabled = false;
+        }
+
         CurrentBehavior = BubbleBehavior.Clean;
         bubbleBurn.DisableBurn();
         bubbleBurn.DisableKickInteraction();

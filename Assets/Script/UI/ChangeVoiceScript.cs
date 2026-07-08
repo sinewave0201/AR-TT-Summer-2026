@@ -93,16 +93,19 @@ public class ChangeVoiceScript : MonoBehaviour
                 optionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, voiceOptionHeight);
             }
 
+            //if the prefab does not have a layout element
+            //add that and modify the data
             LayoutElement layoutElement = optionButton.GetComponent<LayoutElement>();
             if (layoutElement == null)
             {
                 layoutElement = optionButton.gameObject.AddComponent<LayoutElement>();
+                layoutElement.minHeight = voiceOptionHeight;
+                layoutElement.preferredHeight = voiceOptionHeight;
+                layoutElement.flexibleHeight = 0f;
+                layoutElement.flexibleWidth = 1f;
             }
 
-            layoutElement.minHeight = voiceOptionHeight;
-            layoutElement.preferredHeight = voiceOptionHeight;
-            layoutElement.flexibleHeight = 0f;
-            layoutElement.flexibleWidth = 1f;
+
 
             TMP_Text optionText = optionButton.GetComponentInChildren<TMP_Text>(true);
             if (optionText != null)
