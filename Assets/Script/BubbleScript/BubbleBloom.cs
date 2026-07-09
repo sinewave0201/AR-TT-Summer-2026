@@ -15,7 +15,7 @@ public class BubbleBloom : MonoBehaviour
     private string bubbleBloomState = "Bloom";
     private string flowerBloomState = "Armature|Bloom";
     private string movingTrigger = "moving";
-    private string movingState = "Moving";
+    private string movingState = "Moving 0";
     private string wateringParameter = "watering";
     private string wateringState = "watering";
     private string wateringIdleState = "idle";
