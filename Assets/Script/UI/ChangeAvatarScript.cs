@@ -14,7 +14,7 @@ public class ChangeAvatarScript : MonoBehaviour
 
     [Header("Avatar Spawn Transform")]
     [SerializeField] private Vector3 avatarSpawnPosition;
-    [SerializeField] private Vector3 avatarSpawnEulerAngles;
+    private Quaternion avatarSpawnRotation = Quaternion.identity;
 
     [Header("Panels")]
     [SerializeField] private GameObject changeUI;
@@ -32,12 +32,16 @@ public class ChangeAvatarScript : MonoBehaviour
     private readonly List<GameObject> generatedOptions = new List<GameObject>();
 
     [Header("Notification")]
-    public bool prefabPlaced = true;
-    public bool sessionStart = false;
+    [System.NonSerialized] public bool prefabPlaced;
+    [System.NonSerialized] public bool sessionStart;
     [SerializeField] private TMP_Text notification;
+    private Coroutine notificationCoroutine;
 
     private void Awake()
     {
+        prefabPlaced = false;
+        sessionStart = false;
+
         if (quitChangeUIButton != null)
         {
             quitChangeUIButton.onClick.AddListener(QuitChangeUI);
@@ -56,10 +60,13 @@ public class ChangeAvatarScript : MonoBehaviour
     public void MarkStartSession(bool tf)
     {
         sessionStart = tf;
+        Debug.Log($"MarkStartSession: prefabPlaced={prefabPlaced}, sessionStart={sessionStart}", this);
     }
 
     public void StartChange()
     {
+        Debug.Log($"StartChange called: prefabPlaced={prefabPlaced}, sessionStart={sessionStart}", this);
+
         if (prefabPlaced && !sessionStart)
         {
             if (generalUI != null)
@@ -82,23 +89,50 @@ public class ChangeAvatarScript : MonoBehaviour
 
         else if (!prefabPlaced)
         {
-            StartCoroutine(HideTextAfterSeconds("Cannot change avatar since avatar is not placed"));
+            Debug.Log("Should call this");
+            ShowNotification("Cannot change avatar since avatar is not placed");
         }
 
         else if (sessionStart)
         {
-            StartCoroutine(HideTextAfterSeconds("Cannot change avatar since you are in a session"));
+            ShowNotification("Cannot change avatar since you are in a session");
         }
 
     }
     //use to show notification
-    
+
+    private void ShowNotification(string msg)
+    {
+        if (notification == null)
+        {
+            Debug.LogWarning(msg, this);
+            return;
+        }
+
+        if (!isActiveAndEnabled)
+        {
+            notification.text = msg;
+            Debug.LogWarning(
+                "ChangeAvatarScript is inactive, so it cannot clear the notification with a coroutine. " +
+                "Put this script on the always-active AvatarChangeManager object and only disable the UI Canvas.",
+                this);
+            return;
+        }
+
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+        }
+
+        notificationCoroutine = StartCoroutine(HideTextAfterSeconds(msg));
+    }
 
     IEnumerator HideTextAfterSeconds(string msg)
     {
         notification.text = msg;
         yield return new WaitForSeconds(3f);
         notification.text = "";
+        notificationCoroutine = null;
     }
 
     public void SetCurrentAvatar(
@@ -111,7 +145,7 @@ public class ChangeAvatarScript : MonoBehaviour
         currentAvatar = avatar;
         currentAvatarPrefab = avatarPrefab;
         avatarSpawnPosition = spawnPosition;
-        avatarSpawnEulerAngles = spawnRotation.eulerAngles;
+        avatarSpawnRotation = spawnRotation;
 
         if (manager != null)
         {
@@ -208,7 +242,7 @@ public class ChangeAvatarScript : MonoBehaviour
         currentAvatar = Instantiate(
             selectedAvatarPrefab,
             avatarSpawnPosition,
-            Quaternion.Euler(avatarSpawnEulerAngles));
+            avatarSpawnRotation);
         currentAvatarPrefab = selectedAvatarPrefab;
 
         if (sessionManager != null)

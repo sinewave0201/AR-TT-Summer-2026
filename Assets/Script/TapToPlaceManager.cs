@@ -135,7 +135,9 @@ public class TapToPlaceManager : MonoBehaviour
             Vector3 directionToCamera = arCamera.position - hitPose.position;
             directionToCamera.y = 0f;
 
-            Quaternion mainRotation = Quaternion.LookRotation(directionToCamera)*Quaternion.Euler(0f, 180f, 0f);
+            Quaternion facingCameraRotation = Quaternion.LookRotation(directionToCamera);
+            Quaternion mainRotation = facingCameraRotation * Quaternion.Euler(0f, 110f, 0f);
+            Quaternion avatarRotation = facingCameraRotation;
 
             //spawn in avatar and main prefab
             GameObject spawnedMain = Instantiate(mainPrefab, hitPose.position, mainRotation);
@@ -145,7 +147,7 @@ public class TapToPlaceManager : MonoBehaviour
 
             if (AvatarPrefab != null)
             {
-                spawnedAvatar = Instantiate(AvatarPrefab, avatarPosition, mainRotation);
+                spawnedAvatar = Instantiate(AvatarPrefab, avatarPosition, avatarRotation);
             }
             
             BubbleClean spawnedBubbleClean = spawnedMain.GetComponentInChildren<BubbleClean>(true);
@@ -168,7 +170,7 @@ public class TapToPlaceManager : MonoBehaviour
                     spawnedAvatar,
                     AvatarPrefab,
                     avatarPosition,
-                    mainRotation,
+                    avatarRotation,
                     sessionManager);
                 changeAvatarScript.prefabPlaced = true;
             }
