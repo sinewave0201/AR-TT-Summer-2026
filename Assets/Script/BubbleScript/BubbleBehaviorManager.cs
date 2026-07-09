@@ -23,6 +23,9 @@ public class BubbleBehaviorManager : MonoBehaviour
     private BubbleBloom bubbleBloom;
     private BubbleBurn bubbleBurn;
     private BubbleClean bubbleClean;
+    private Vector3 originalPosition;
+    private Quaternion originalRotation;
+    private Vector3 originalScale;
     public Animator animator;
     public TMP_Text bubbleText;
 
@@ -38,6 +41,9 @@ public class BubbleBehaviorManager : MonoBehaviour
         bubbleBloom = GetComponent<BubbleBloom>();
         bubbleBurn = GetComponent<BubbleBurn>();
         bubbleClean = GetComponent<BubbleClean>();
+        originalPosition = transform.position;
+        originalRotation = transform.rotation;
+        originalScale = transform.localScale;
 
         if (rb == null)
         {
@@ -91,10 +97,8 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void ResetBubblePosition()
     {
-        if (bubbleBurn != null)
-        {
-            bubbleBurn.ResetBubblePosition();
-        }
+        bubbleBurn?.EndBurn();
+        ResetBubbleTransform();
     }
 
     public void BubbleBehaviorEnd()
@@ -102,10 +106,11 @@ public class BubbleBehaviorManager : MonoBehaviour
 
         Activated = false;
         CurrentBehavior = BubbleBehavior.None;
-        EndFlyBehavior();
         EndCleanBehavior();
         EndBloomBehavior();
         EndBurnBehavior();
+        ResetBubbleTransform();
+        EndFlyBehavior();
 
         Array.Clear(BubbleBools, 0, BubbleBools.Length);
 
@@ -140,6 +145,17 @@ public class BubbleBehaviorManager : MonoBehaviour
         bubbleBurn?.EndBurn();
     }
 
+    private void ResetBubbleTransform()
+    {
+        transform.SetPositionAndRotation(originalPosition, originalRotation);
+        transform.localScale = originalScale;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.useGravity = false;
+        rb.isKinematic = true;
+    }
+
     void Update()
     {
         for (int index = 0; index < BubbleBools.Length; index++)
@@ -148,7 +164,7 @@ public class BubbleBehaviorManager : MonoBehaviour
             {
                 BubbleActions[index]();
                 BubbleBools[index] = false;
-                Debug.Log("Bubble Action performed");
+                Debug.Log($"Bubble Action performed, bubbleActivated = {Activated}", this);
             }
         }
     }

@@ -14,8 +14,10 @@ public class BubbleBehaviorActivated : MonoBehaviour
         ResolveBubbleBehaviorManager();
     }
 
-    void Start()
+    void OnEnable()
     {
+        ResolveBubbleBehaviorManager();
+
         if (bubbleBehaviorManager == null)
         {
             Debug.LogError("BubbleBehaviorActivated needs a BubbleBehaviorManager reference.", this);
@@ -23,6 +25,8 @@ public class BubbleBehaviorActivated : MonoBehaviour
             return;
         }
 
+        bubbleBehaviorManager.gameObject.SetActive(true);
+        bubbleBehaviorManager.enabled = true;
         bubbleBehaviorManager.Activated = true;
         Debug.Log("Bubble Activated");
     }

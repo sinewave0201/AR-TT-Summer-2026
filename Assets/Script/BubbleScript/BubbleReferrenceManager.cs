@@ -9,7 +9,7 @@ public class BubbleReferrenceManager : MonoBehaviour
 
     void Awake()
     {
-        bubbleBehaviorManager = FindFirstObjectByType<BubbleBehaviorManager>();
+        ResolveBubbleBehaviorManager();
     }
 
     // Update is called once per frame
@@ -18,8 +18,15 @@ public class BubbleReferrenceManager : MonoBehaviour
         if (bubbleBehaviorManager == null)
         {
             Debug.Log("I cant find any behavior Manager!!");
-            bubbleBehaviorManager = FindFirstObjectByType<BubbleBehaviorManager>();
+            ResolveBubbleBehaviorManager();
         }
+
+        if (bubbleBehaviorManager == null)
+        {
+            Debug.LogError("BubbleReferrenceManager could not find a BubbleBehaviorManager.", this);
+            return;
+        }
+
         bubbleBehaviorManager.BubbleBehaviorSelect(index);
     }
 
@@ -27,9 +34,24 @@ public class BubbleReferrenceManager : MonoBehaviour
     {
         if (bubbleBehaviorManager == null)
         {
-            bubbleBehaviorManager = FindFirstObjectByType<BubbleBehaviorManager>();
+            ResolveBubbleBehaviorManager();
         }
+
+        if (bubbleBehaviorManager == null)
+        {
+            Debug.LogError("BubbleReferrenceManager could not find a BubbleBehaviorManager.", this);
+            return;
+        }
+
         bubbleBehaviorManager.FinishInput(tMP_InputField.text);
+    }
+
+    private void ResolveBubbleBehaviorManager()
+    {
+        bubbleBehaviorManager =
+            FindFirstObjectByType<BubbleBehaviorManager>(
+                FindObjectsInactive.Include
+            );
     }
 
 }

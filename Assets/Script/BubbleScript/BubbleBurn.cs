@@ -155,6 +155,8 @@ public class BubbleBurn : MonoBehaviour
     {
         DisableBurn();
         DisableKickInteraction();
+        RestoreBubbleVisuals();
+        burned = false;
     }
 
     public void ResetBurnState()
@@ -172,7 +174,7 @@ public class BubbleBurn : MonoBehaviour
         gameObject.SetActive(true);
         if (bubbleRootToDisable != null)
         {
-            bubbleRootToDisable.SetActive(true);
+            RestoreBubbleVisuals();
         }
 
         transform.SetPositionAndRotation(originalPosition, originalRotation);
@@ -206,7 +208,10 @@ public class BubbleBurn : MonoBehaviour
 
         burned = true;
         PlayHealEffect();
-        bubbleRootToDisable.SetActive(false);
+        if (bubbleRootToDisable != null)
+        {
+            bubbleRootToDisable.SetActive(false);
+        }
 
         AudioSource fireplaceAudio = other.GetComponent<AudioSource>();
         if (fireplaceAudio != null)
@@ -237,6 +242,23 @@ public class BubbleBurn : MonoBehaviour
         foreach (ParticleSystem particle in particles)
         {
             particle.Play();
+        }
+    }
+
+    private void RestoreBubbleVisuals()
+    {
+        if (bubbleRootToDisable == null)
+        {
+            return;
+        }
+
+        bubbleRootToDisable.SetActive(true);
+
+        Renderer[] renderers =
+            bubbleRootToDisable.GetComponentsInChildren<Renderer>(true);
+        foreach (Renderer bubbleRenderer in renderers)
+        {
+            bubbleRenderer.enabled = true;
         }
     }
 
