@@ -29,6 +29,7 @@ public class ChangeAvatarScript : MonoBehaviour
     [SerializeField] private Button avatarOptionButtonPrefab;
     [SerializeField, Min(1f)] private float avatarOptionHeight = 50f;
 
+    [Header("Selected Object Logic")]
     private readonly List<GameObject> generatedOptions = new List<GameObject>();
     private readonly Dictionary<int, TMP_Text> optionTexts = new Dictionary<int, TMP_Text>();
     private readonly Dictionary<int, Color> optionTextDefaultColors = new Dictionary<int, Color>();
