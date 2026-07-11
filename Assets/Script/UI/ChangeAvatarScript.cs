@@ -30,6 +30,9 @@ public class ChangeAvatarScript : MonoBehaviour
     [SerializeField, Min(1f)] private float avatarOptionHeight = 50f;
 
     private readonly List<GameObject> generatedOptions = new List<GameObject>();
+    private readonly Dictionary<int, TMP_Text> optionTexts = new Dictionary<int, TMP_Text>();
+    private readonly Dictionary<int, Color> optionTextDefaultColors = new Dictionary<int, Color>();
+    private static readonly Color SelectedTextColor = new Color32(0xD0, 0x2B, 0xFD, 0xFF);
 
     [Header("Notification")]
     [System.NonSerialized] public bool prefabPlaced;
@@ -200,6 +203,8 @@ public class ChangeAvatarScript : MonoBehaviour
             if (optionText != null)
             {
                 optionText.text = avatarPrefab.name;
+                optionTexts[selectedIndex] = optionText;
+                optionTextDefaultColors[selectedIndex] = optionText.color;
             }
             else
             {
@@ -211,6 +216,8 @@ public class ChangeAvatarScript : MonoBehaviour
             optionButton.onClick.AddListener(() => SelectAvatar(selectedIndex));
             generatedOptions.Add(optionButton.gameObject);
         }
+
+        UpdateSelectedOptionTextColor(0);
 
         if (scrollViewContent is RectTransform contentRect)
         {
@@ -229,6 +236,8 @@ public class ChangeAvatarScript : MonoBehaviour
         }
 
         GameObject selectedAvatarPrefab = avatarPrefabs[avatarIndex];
+        UpdateSelectedOptionTextColor(avatarIndex);
+
         if (selectedAvatarPrefab == currentAvatarPrefab)
         {
             return;
@@ -275,5 +284,22 @@ public class ChangeAvatarScript : MonoBehaviour
         }
 
         generatedOptions.Clear();
+        optionTexts.Clear();
+        optionTextDefaultColors.Clear();
+    }
+
+    private void UpdateSelectedOptionTextColor(int selectedIndex)
+    {
+        foreach (KeyValuePair<int, TMP_Text> option in optionTexts)
+        {
+            if (option.Value == null)
+            {
+                continue;
+            }
+
+            option.Value.color = option.Key == selectedIndex
+                ? SelectedTextColor
+                : optionTextDefaultColors[option.Key];
+        }
     }
 }
