@@ -12390,6 +12390,7 @@ MonoBehaviour:
   - {fileID: 9207717927891851821, guid: df9f20bc37ecbf341bfe4356a9861227, type: 3}
   - {fileID: 4005909862482245054, guid: 4e3ffe2c3accace4eab2c15a8184ae29, type: 3}
   - {fileID: 7800281491218555014, guid: 736e2f24ec031d846bc6ce64e51d84cc, type: 3}
+  - {fileID: 2651561762740968953, guid: 3562fcfbd30463e46b8692dd995fcfd7, type: 3}
   sessionManager: {fileID: 419094653}
   avatarSpawnPosition: {x: 0, y: 0, z: 0}
   changeUI: {fileID: 1992975567}
