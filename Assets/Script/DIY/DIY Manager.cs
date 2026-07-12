@@ -411,14 +411,23 @@ public class DIYManager : MonoBehaviour
 
         List<Material> outputMaterials = new List<Material>();
         List<Texture2D> outputTextures = new List<Texture2D>();
-        Dictionary<Material, Texture2D> copiedPaintTextures =
-            new Dictionary<Material, Texture2D>();
+        Dictionary<RenderTexture, Texture2D> copiedPaintTextures =
+            new Dictionary<RenderTexture, Texture2D>();
+
+        GameObject liveModel = changeBaseModel.CurrentModel;
 
         foreach (Renderer outputRenderer in
             outputModel.GetComponentsInChildren<Renderer>(true))
         {
             Material[] sourceMaterials = outputRenderer.sharedMaterials;
             Material[] materialCopies = new Material[sourceMaterials.Length];
+            Renderer liveRenderer = FindMatchingRenderer(
+                liveModel,
+                outputModel,
+                outputRenderer);
+            Material[] liveMaterials = liveRenderer != null
+                ? liveRenderer.sharedMaterials
+                : null;
 
             for (int i = 0; i < sourceMaterials.Length; i++)
             {
@@ -432,19 +441,22 @@ public class DIYManager : MonoBehaviour
                 materialCopies[i] = materialCopy;
                 outputMaterials.Add(materialCopy);
 
-                if (!paintTexturesByMaterial.TryGetValue(
-                    sourceMaterial,
-                    out RenderTexture cachedPaint))
+                if (liveMaterials == null ||
+                    i >= liveMaterials.Length ||
+                    liveMaterials[i] == null ||
+                    !liveMaterials[i].HasProperty(PaintTextureProperty) ||
+                    liveMaterials[i].GetTexture(PaintTextureProperty)
+                        is not RenderTexture cachedPaint)
                 {
                     continue;
                 }
 
                 if (!copiedPaintTextures.TryGetValue(
-                    sourceMaterial,
+                    cachedPaint,
                     out Texture2D savedPaint))
                 {
                     savedPaint = CopyPaintTexture(cachedPaint);
-                    copiedPaintTextures[sourceMaterial] = savedPaint;
+                    copiedPaintTextures[cachedPaint] = savedPaint;
                     outputTextures.Add(savedPaint);
                 }
 
@@ -463,6 +475,71 @@ public class DIYManager : MonoBehaviour
             outputModel,
             outputMaterials,
             outputTextures);
+    }
+
+    private static Renderer FindMatchingRenderer(
+        GameObject liveModel,
+        GameObject outputModel,
+        Renderer outputRenderer)
+    {
+        if (liveModel == null || outputModel == null || outputRenderer == null)
+        {
+            return null;
+        }
+
+        string relativePath = GetRelativePath(
+            outputModel.transform,
+            outputRenderer.transform);
+        Transform liveTransform = string.IsNullOrEmpty(relativePath)
+            ? liveModel.transform
+            : liveModel.transform.Find(relativePath);
+
+        return liveTransform != null
+            ? liveTransform.GetComponent(outputRenderer.GetType()) as Renderer
+            : null;
+    }
+
+    private static string GetRelativePath(Transform root, Transform target)
+    {
+        if (root == target)
+        {
+            return string.Empty;
+        }
+
+        List<string> names = new List<string>();
+        Transform current = target;
+
+        while (current != null && current != root)
+        {
+            names.Add(current.name);
+            current = current.parent;
+        }
+
+        if (current != root)
+        {
+            return string.Empty;
+        }
+
+        names.Reverse();
+        return string.Join("/", names);
+    }
+
+    // Keep saving and scene navigation in one callback. Separate Button
+    // listeners are not safe because Unity starts executing the scene unload
+    // as soon as the navigation listener is invoked.
+    public void SaveAndReturnToWoo()
+    {
+        SaveChangeToDIYMod();
+
+        if (DIYModelTransfer.Current == null)
+        {
+            Debug.LogError(
+                "The DIY model could not be saved, so the scene was not changed.",
+                this);
+            return;
+        }
+
+        SimulationEnvironmentGuard.LoadScenePreservingSimulation(2);
     }
 
     private static Texture2D CopyPaintTexture(RenderTexture source)
