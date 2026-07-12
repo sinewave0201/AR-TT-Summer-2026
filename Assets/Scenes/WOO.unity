@@ -11843,6 +11843,18 @@ MonoBehaviour:
   - {fileID: 7800281491218555014, guid: 736e2f24ec031d846bc6ce64e51d84cc, type: 3}
   - {fileID: 2651561762740968953, guid: 3562fcfbd30463e46b8692dd995fcfd7, type: 3}
   - {fileID: 4605567844312760192, guid: a3d17e809d384661a6f4e2d3b07c9f51, type: 3}
+  avatarPosition:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0.5, z: 0}
+  avatarRotation:
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 1, z: 0, w: -0.00000004371139}
   sessionManager: {fileID: 419094653}
   avatarSpawnPosition: {x: 0, y: 0, z: 0}
   changeUI: {fileID: 1992975567}

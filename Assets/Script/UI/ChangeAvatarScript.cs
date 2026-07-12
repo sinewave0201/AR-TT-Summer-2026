@@ -10,6 +10,8 @@ public class ChangeAvatarScript : MonoBehaviour
     [SerializeField] private GameObject currentAvatar;
     [SerializeField] private GameObject currentAvatarPrefab;
     [SerializeField] private List<GameObject> avatarPrefabs = new List<GameObject>();
+    [SerializeField] private List<Vector3> avatarPosition = new List<Vector3>();
+    [SerializeField] private List<Quaternion> avatarRotation = new List<Quaternion>();
     [SerializeField] private SessionManager sessionManager;
 
     [Header("Avatar Spawn Transform")]
@@ -260,10 +262,17 @@ public class ChangeAvatarScript : MonoBehaviour
             Destroy(currentAvatar);
         }
 
+        Vector3 positionOffset = avatarIndex < avatarPosition.Count
+            ? avatarPosition[avatarIndex]
+            : Vector3.zero;
+        Quaternion rotationOffset = avatarIndex < avatarRotation.Count
+            ? avatarRotation[avatarIndex]
+            : Quaternion.identity;
+
         currentAvatar = Instantiate(
             selectedAvatarPrefab,
-            avatarSpawnPosition,
-            avatarSpawnRotation);
+            avatarSpawnPosition + positionOffset,
+            avatarSpawnRotation * rotationOffset);
         currentAvatar.SetActive(true);
         currentAvatarPrefab = selectedAvatarPrefab;
 
