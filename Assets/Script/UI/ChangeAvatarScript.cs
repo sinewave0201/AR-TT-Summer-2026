@@ -52,6 +52,17 @@ public class ChangeAvatarScript : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // The final avatar slot is reserved for the DIY model. Every time
+        // WOO loads, replace its default with the latest transferred model.
+        if (DIYModelTransfer.Current != null && avatarPrefabs.Count > 0)
+        {
+            avatarPrefabs[avatarPrefabs.Count - 1] =
+                DIYModelTransfer.Current.Model;
+        }
+    }
+
     private void OnDestroy()
     {
         if (quitChangeUIButton != null)
@@ -253,6 +264,7 @@ public class ChangeAvatarScript : MonoBehaviour
             selectedAvatarPrefab,
             avatarSpawnPosition,
             avatarSpawnRotation);
+        currentAvatar.SetActive(true);
         currentAvatarPrefab = selectedAvatarPrefab;
 
         if (sessionManager != null)

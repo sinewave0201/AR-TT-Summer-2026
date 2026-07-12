@@ -5,14 +5,20 @@ using UnityEngine.UI;
 
 public class ChangeBaseModelScript : MonoBehaviour
 {
+    public GameObject CurrentModelPrefab => currentModelPrefab;
+
     [Header("Models")]
     public GameObject CurrentModel;
-    [SerializeField] private GameObject CurrentModelPrefab;
+    [SerializeField] private GameObject currentModelPrefab;
     [SerializeField] private List<GameObject> BaseModelPrefabs = new List<GameObject>();
 
     [Header("Model Spawn Transform")]
     [SerializeField] private Vector3 ModelSpawnPosition;
     [SerializeField] private Vector3 ModelSpawnRotation;
+
+    [Header("Model Preview")]
+    [SerializeField] private ModelPreviewScript modelPreview;
+    [SerializeField] private DIYManager diyManager;
 
     [Header("Panels")]
     [SerializeField] private GameObject changeUI;
@@ -55,9 +61,11 @@ public class ChangeBaseModelScript : MonoBehaviour
         Vector3 spawnRotation)
     {
         CurrentModel = model;
-        CurrentModelPrefab = modelPrefab;
+        currentModelPrefab = modelPrefab;
         ModelSpawnPosition = spawnPosition;
         ModelSpawnRotation = spawnRotation;
+        modelPreview?.SetPrefab(CurrentModel);
+        diyManager?.RegisterModel(CurrentModel);
     }
 
     public void StartChange()
@@ -136,7 +144,7 @@ public class ChangeBaseModelScript : MonoBehaviour
                     optionButton);
             }
 
-            if (modelPrefab == CurrentModelPrefab)
+            if (modelPrefab == currentModelPrefab)
             {
                 selectedOptionIndex = selectedIndex;
             }
@@ -180,7 +188,7 @@ public class ChangeBaseModelScript : MonoBehaviour
         GameObject selectedModelPrefab = BaseModelPrefabs[modelIndex];
         UpdateSelectedOptionTextColor(modelIndex);
 
-        if (selectedModelPrefab == CurrentModelPrefab)
+        if (selectedModelPrefab == currentModelPrefab)
         {
             return;
         }
@@ -194,7 +202,9 @@ public class ChangeBaseModelScript : MonoBehaviour
             selectedModelPrefab,
             ModelSpawnPosition,
             Quaternion.Euler(ModelSpawnRotation));
-        CurrentModelPrefab = selectedModelPrefab;
+        currentModelPrefab = selectedModelPrefab;
+        modelPreview?.SetPrefab(CurrentModel);
+        diyManager?.RegisterModel(CurrentModel);
     }
 
     public void QuitChangeUI()

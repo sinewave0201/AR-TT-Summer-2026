@@ -120,7 +120,8 @@ public class FlexibleColorPicker : MonoBehaviour {
     [Serializable]
     public class AdvancedSettings {
 
-        public bool mainStatic = true;
+        // The main picker must be dynamic for its gradient to follow hue.
+        public bool mainStatic = false;
 
         public PSettings r;
         public PSettings g;
