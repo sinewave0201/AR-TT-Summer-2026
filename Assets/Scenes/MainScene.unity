@@ -173,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
   SceneIndex: 1
+  diySceneIndex: 0
 --- !u!114 &211168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +623,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &203550096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2153645231865131437, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+  m_PrefabInstance: {fileID: 4653185996019797817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &708923881
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,6 +688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
   SceneIndex: 2
+  diySceneIndex: 0
 --- !u!114 &708923884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1016,6 +1029,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735211415}
   m_CullTransparentMesh: 1
+--- !u!114 &863604388 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1940416322081762641, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+  m_PrefabInstance: {fileID: 4653185996019797817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &937578937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1334,6 +1358,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1209067611}
   m_CullTransparentMesh: 1
+--- !u!114 &1235934860 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7739234024373402587, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+  m_PrefabInstance: {fileID: 4653185996019797817}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1444862632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1346,7 +1381,7 @@ GameObject:
   - component: {fileID: 1444862633}
   m_Layer: 0
   m_Name: AudioSource
-  m_TagString: Untagged
+  m_TagString: musicPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2303,9 +2338,45 @@ PrefabInstance:
     m_TransformParent: {fileID: 170476055}
     m_Modifications:
     - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: nextButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
       propertyPath: audioSource
       value: 
-      objectReference: {fileID: 1444862633}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: previousButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: currentSongText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: musicFiles.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 520f0cd5e29e4134d8fb6e42abced132, type: 3}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 911133a1eb57a354a9ed8630c62be8eb, type: 3}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 6295e0c6beca02e4baca9567056ebff7, type: 3}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 19c35363a92f3f645b8e9faffbc05d7e, type: 3}
+    - target: {fileID: 2987480587467786759, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 54fcd535c0e28a34daa2f3224801cdcd, type: 3}
     - target: {fileID: 4220551584762178422, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
       propertyPath: m_Name
       value: AudioPlayerUIPrefab
@@ -2390,6 +2461,42 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: nextButton
+      value: 
+      objectReference: {fileID: 203550096}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: previousButton
+      value: 
+      objectReference: {fileID: 1235934860}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: currentSongText
+      value: 
+      objectReference: {fileID: 863604388}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: musicFiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 520f0cd5e29e4134d8fb6e42abced132, type: 3}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 911133a1eb57a354a9ed8630c62be8eb, type: 3}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 6295e0c6beca02e4baca9567056ebff7, type: 3}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 19c35363a92f3f645b8e9faffbc05d7e, type: 3}
+    - target: {fileID: 8858699115030358397, guid: f53a3d28cde793c4bb43b00b75378187, type: 3}
+      propertyPath: 'musicFiles.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 54fcd535c0e28a34daa2f3224801cdcd, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

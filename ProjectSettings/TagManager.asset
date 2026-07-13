@@ -11,6 +11,7 @@ TagManager:
   - Broom
   - wateringCan
   - pot
+  - musicPlayer
   layers:
   - Default
   - TransparentFX

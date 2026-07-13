@@ -20,19 +20,33 @@ public class MusicPlayer : MonoBehaviour
     private void Awake()
     {
         if (previousButton != null)
+        {
             previousButton.onClick.AddListener(PlayPreviousSong);
+        }
+            
 
         if (nextButton != null)
+        {
             nextButton.onClick.AddListener(PlayNextSong);
+        }
+
+        if (audioSource == null)
+        {
+            GameObject musicObject = GameObject.FindGameObjectWithTag("musicPlayer");
+            if (musicObject != null)
+            {
+                audioSource = musicObject.GetComponent<AudioSource>();
+            }
+        }
     }
 
     private void Start()
     {
-        if (musicFiles.Count > 0 && audioSource != null)
-            PlaySong(currentSongIndex);
-        else
-            UpdateSongName();
+        //use the current song to update
+        UpdateSongName();
+        songHasStarted = audioSource.isPlaying;
     }
+
 
     private void Update()
     {
@@ -89,6 +103,8 @@ public class MusicPlayer : MonoBehaviour
 
         AudioClip clip = audioSource != null ? audioSource.clip : null;
         currentSongText.text = clip != null ? clip.name : string.Empty;
+
+        Debug.Log("Song Name Updated");
     }
 
     private void OnDestroy()
