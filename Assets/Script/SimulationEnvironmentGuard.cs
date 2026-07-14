@@ -15,6 +15,11 @@ public sealed class SimulationEnvironmentGuard : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void CreateGuard()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Android uses ARCore and regular SceneManager loading. Do not create
+        // the persistent XR Simulation guard in an Android player build.
+        return;
+#else
         if (FindFirstObjectByType<SimulationEnvironmentGuard>() != null)
         {
             return;
@@ -23,6 +28,7 @@ public sealed class SimulationEnvironmentGuard : MonoBehaviour
         GameObject guardObject = new GameObject(nameof(SimulationEnvironmentGuard));
         DontDestroyOnLoad(guardObject);
         guardObject.AddComponent<SimulationEnvironmentGuard>();
+#endif
     }
 
     private void OnEnable()

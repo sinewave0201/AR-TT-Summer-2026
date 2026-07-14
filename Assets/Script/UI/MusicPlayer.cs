@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MusicPlayer : MonoBehaviour
 {
+    private static AudioSource persistentAudioSource;
+
     [Header("Music")]
     [SerializeField] private List<AudioClip> musicFiles = new List<AudioClip>();
     [SerializeField] private AudioSource audioSource;
@@ -19,6 +21,8 @@ public class MusicPlayer : MonoBehaviour
 
     private void Awake()
     {
+        BindPersistentAudioSource();
+
         if (previousButton != null)
         {
             previousButton.onClick.AddListener(PlayPreviousSong);
@@ -30,19 +34,26 @@ public class MusicPlayer : MonoBehaviour
             nextButton.onClick.AddListener(PlayNextSong);
         }
 
-        if (audioSource == null)
-        {
-            GameObject musicObject = GameObject.FindGameObjectWithTag("musicPlayer");
-            if (musicObject != null)
-            {
-                audioSource = musicObject.GetComponent<AudioSource>();
-            }
-        }
     }
 
     private void Start()
     {
-        //use the current song to update
+        if (audioSource == null)
+        {
+            Debug.LogError(
+                "No GameObject tagged musicPlayer with an AudioSource was found.",
+                this
+            );
+            UpdateSongName();
+            return;
+        }
+
+        int clipIndex = musicFiles.IndexOf(audioSource.clip);
+        if (clipIndex >= 0)
+        {
+            currentSongIndex = clipIndex;
+        }
+
         UpdateSongName();
         songHasStarted = audioSource.isPlaying;
     }
@@ -94,6 +105,54 @@ public class MusicPlayer : MonoBehaviour
     private bool CanPlayMusic()
     {
         return audioSource != null && musicFiles.Count > 0;
+    }
+
+    private void BindPersistentAudioSource()
+    {
+        if (persistentAudioSource == null)
+        {
+            GameObject musicObject = GameObject.FindGameObjectWithTag("musicPlayer");
+            if (musicObject == null)
+            {
+                audioSource = null;
+                return;
+            }
+
+            persistentAudioSource = musicObject.GetComponent<AudioSource>();
+            if (persistentAudioSource == null)
+            {
+                audioSource = null;
+                Debug.LogError(
+                    "The GameObject tagged musicPlayer has no AudioSource.",
+                    musicObject
+                );
+                return;
+            }
+
+            // This is the standalone BGM object shown at the scene root.
+            DontDestroyOnLoad(persistentAudioSource.gameObject);
+        }
+
+        audioSource = persistentAudioSource;
+        StopDuplicateSceneBgmSources();
+    }
+
+    private static void StopDuplicateSceneBgmSources()
+    {
+        GameObject[] musicObjects = GameObject.FindGameObjectsWithTag("musicPlayer");
+
+        foreach (GameObject musicObject in musicObjects)
+        {
+            AudioSource source = musicObject.GetComponent<AudioSource>();
+            if (source == null || source == persistentAudioSource)
+            {
+                continue;
+            }
+
+            source.playOnAwake = false;
+            source.Stop();
+            source.enabled = false;
+        }
     }
 
     private void UpdateSongName()
