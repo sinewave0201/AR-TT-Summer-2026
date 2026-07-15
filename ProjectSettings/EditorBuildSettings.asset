@@ -6,17 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
-    guid: d31e3f28b8ace0b4b88288ef3cffccaa
-  - enabled: 1
-    path: Assets/Scenes/AIChatBot2.unity
-    guid: 4db204a75b9f49beac74c2cc85cf29a7
-  - enabled: 1
-    path: Assets/Scenes/WOO.unity
-    guid: 74164da68ab6fc3499e0c2f813bebddc
-  - enabled: 1
-    path: Assets/Scenes/DIY Scene.unity
-    guid: d1efbfad0c5198340a887d0a3408540a
+    path: Assets/Scenes/ARMarker.unity
+    guid: c435760c28f71464096859e25b43af04
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 0465d33c6aee55f44b0237db8b0e0259, type: 2}
