@@ -165,7 +165,9 @@ public class MultipleImageTracker : MonoBehaviour, IPrefabInitiationSource
         Debug.Log(
             $"Tracked image: {markerName}, " +
             $"ID: {trackedImage.trackableId}, " +
-            $"State: {trackedImage.trackingState}",
+            $"ImageState: {trackedImage.trackingState}, " +
+            $"ARSession: {ARSession.state}, " +
+            $"NotTrackingReason: {ARSession.notTrackingReason}",
             this);
 
         if (!spawnedContent.TryGetValue(markerName, out MarkerContent content))
