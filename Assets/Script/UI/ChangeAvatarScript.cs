@@ -14,6 +14,10 @@ public class ChangeAvatarScript : MonoBehaviour
     [SerializeField] private List<Quaternion> avatarRotation = new List<Quaternion>();
     [SerializeField] private SessionManager sessionManager;
 
+    [Header("Prefab Initiation Source")]
+    [SerializeField] private TapToPlaceManager tapToPlaceManager;
+    [SerializeField] private MultipleImageTracker multipleImageTracker;
+
     [Header("Avatar Spawn Transform")]
     [SerializeField] private Vector3 avatarSpawnPosition;
     private Quaternion avatarSpawnRotation = Quaternion.identity;
@@ -82,9 +86,10 @@ public class ChangeAvatarScript : MonoBehaviour
 
     public void StartChange()
     {
-        Debug.Log($"StartChange called: prefabPlaced={prefabPlaced}, sessionStart={sessionStart}", this);
+        bool prefabInitiated = IsPrefabInitiated();
+        Debug.Log($"StartChange called: prefabInitiated={prefabInitiated}, sessionStart={sessionStart}", this);
 
-        if (prefabPlaced && !sessionStart)
+        if (prefabInitiated && !sessionStart)
         {
             if (generalUI != null)
             {
@@ -104,7 +109,7 @@ public class ChangeAvatarScript : MonoBehaviour
             GenerateAvatarOptions();
         }
 
-        else if (!prefabPlaced)
+        else if (!prefabInitiated)
         {
             Debug.Log("Should call this");
             ShowNotification("Cannot change avatar since avatar is not placed");
@@ -115,6 +120,21 @@ public class ChangeAvatarScript : MonoBehaviour
             ShowNotification("Cannot change avatar since you are in a session");
         }
 
+    }
+
+    private bool IsPrefabInitiated()
+    {
+        if (tapToPlaceManager != null)
+        {
+            return tapToPlaceManager.IsPrefabInitiated;
+        }
+
+        if (multipleImageTracker != null)
+        {
+            return multipleImageTracker.IsPrefabInitiated;
+        }
+
+        return prefabPlaced;
     }
     //use to show notification
 

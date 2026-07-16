@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class TapToPlaceManager : MonoBehaviour
+public class TapToPlaceManager : MonoBehaviour, IPrefabInitiationSource
 {
     private const string PressActionPath = "TouchControls/Press";
     private const string PositionActionPath = "TouchControls/Position";
@@ -23,6 +23,8 @@ public class TapToPlaceManager : MonoBehaviour
     private MainSelectManager mainSelectManager;
     private bool handledCurrentPress;
     private bool firstHit = false;
+    private bool prefabInitiated;
+    public bool IsPrefabInitiated => prefabInitiated;
     [SerializeField] private Transform arCamera;
     private Vector3 directionToCamera;
 
@@ -177,6 +179,7 @@ public class TapToPlaceManager : MonoBehaviour
 
             
             mainSelectManager?.NotifyPrefabPlaced();
+            prefabInitiated = true;
         }
 
     }

@@ -972,7 +972,7 @@ GameObject:
   - component: {fileID: 132936757}
   - component: {fileID: 132936758}
   m_Layer: 0
-  m_Name: Tap/Select/Scene Manager
+  m_Name: Multiple/Select/Scene Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1032,16 +1032,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 132936751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c56d2be87244a4b8e2d12ef32500c2, type: 3}
+  m_Script: {fileID: 11500000, guid: a22790632d60eea4b856274fc1f1b5d6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TapToPlaceManager
-  debugText: {fileID: 1399477751}
-  arRaycastManager: {fileID: 2512387470422636671}
+  m_EditorClassIdentifier: Assembly-CSharp::MultipleImageTracker
+  trackedImageManager: {fileID: 2512387470422636670}
+  markerPrefabs:
+  - markerName: robot
+    prefab: {fileID: 0}
+    prefabLocalPosition: {x: 0, y: 0, z: 0}
+    prefabLocalEulerAngles: {x: 0, y: 180, z: 0}
+    size: {x: 0.15, y: 0.15, z: 0.15}
+  - markerName: vault
+    prefab: {fileID: 9107291634221900550, guid: 3597904a622d7ba46b28b10e187cc455, type: 3}
+    prefabLocalPosition: {x: 0, y: 0, z: 0}
+    prefabLocalEulerAngles: {x: 0, y: 0, z: 0}
+    size: {x: 2, y: 2, z: 2}
+  - markerName: setting&Bubble
+    prefab: {fileID: 4605567844312760192, guid: a3d17e809d384661a6f4e2d3b07c9f51, type: 3}
+    prefabLocalPosition: {x: 0, y: 0, z: 0}
+    prefabLocalEulerAngles: {x: 0, y: 0, z: 0}
+    size: {x: 0.5, y: 0.5, z: 0.5}
+  initiationMarkerName: robot
   unActivated: {fileID: 375618478}
-  mainPrefab: {fileID: 7279856284479749044, guid: 294ddf013c6a7aa4f92f95385c29ed7f, type: 3}
-  AvatarPrefab: {fileID: 9207717927891851821, guid: df9f20bc37ecbf341bfe4356a9861227, type: 3}
-  arCamera: {fileID: 2512387468973847774}
   sessionManager: {fileID: 419094653}
+  mainSelectManager: {fileID: 132936757}
   changeAvatarScript: {fileID: 1992975568}
 --- !u!114 &132936757
 MonoBehaviour:
@@ -4037,8 +4051,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Move the camera solwly to detect a horizontal surfaces & \nClick a surface
-    to Generate your personal sleep robot!"
+  m_text: Scan the robot image marker to display your personal sleep robot.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
   m_sharedMaterial: {fileID: 4039788393265361702, guid: 7298a10ee152f664ab1be085adb0d299, type: 2}
@@ -4073,7 +4086,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -4537,10 +4550,6 @@ MonoBehaviour:
   - name: choose
     objects:
     - {fileID: 1352802005}
-  - name: bubbleBehavior
-    objects:
-    - {fileID: 632368620}
-    - {fileID: 1114206116}
   defaultObjects:
   - {fileID: 922462743}
   sessionManager: {fileID: 419094653}
@@ -4578,9 +4587,6 @@ MonoBehaviour:
     robotAnimation: 4
     bubbleAnimation: 1
   - text: Watch what happend to the bubble..
-    robotAnimation: 0
-    bubbleAnimation: 0
-  - text: $bubbleBehavior$
     robotAnimation: 0
     bubbleAnimation: 0
   subtitleText: {fileID: 922462745}
@@ -5568,19 +5574,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 723799123}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 132936758}
-        m_TargetAssemblyTypeName: GameSceneManager, Assembly-CSharp
-        m_MethodName: EnterDIYScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &723799123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6970,6 +6964,135 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5172547685020055679, guid: a5b8107598eba4e47b11a1cd5603bf57, type: 3}
   m_PrefabInstance: {fileID: 7072283956495017405}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1049808009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1049808011}
+  - component: {fileID: 1049808010}
+  m_Layer: 0
+  m_Name: tempaudiosource
+  m_TagString: musicPlayer
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1049808010
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049808009}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 520f0cd5e29e4134d8fb6e42abced132, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1049808011
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049808009}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 976.8144, y: 442.6358, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1068495293
 GameObject:
   m_ObjectHideFlags: 0
@@ -8532,17 +8655,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64859e4afa563934ab64a0abb1ca7a60, type: 3}
---- !u!114 &1399477751 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8772014013501678472, guid: 64859e4afa563934ab64a0abb1ca7a60, type: 3}
-  m_PrefabInstance: {fileID: 1399477750}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1412216040
 GameObject:
   m_ObjectHideFlags: 0
@@ -10086,135 +10198,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1621834254
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1621834256}
-  - component: {fileID: 1621834255}
-  m_Layer: 0
-  m_Name: tempaudiosource
-  m_TagString: musicPlayer
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!82 &1621834255
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1621834254}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 520f0cd5e29e4134d8fb6e42abced132, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!4 &1621834256
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1621834254}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 976.8144, y: 442.6358, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1626165771
 GameObject:
   m_ObjectHideFlags: 0
@@ -10781,7 +10764,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1992975568}
-        m_TargetAssemblyTypeName: ChangeAvatarScript, Assembly-CSharp
+        m_TargetAssemblyTypeName: ChangeAvatarScriptARMarker, Assembly-CSharp
         m_MethodName: MarkStartSession
         m_Mode: 6
         m_Arguments:
@@ -11961,9 +11944,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1146734029}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25c1a1f3b3793ab4faf9af6761ac67ce, type: 3}
+  m_Script: {fileID: 11500000, guid: a91f8c1f124d44aaa15bb1c748472b31, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChangeAvatarScript
+  m_EditorClassIdentifier: Assembly-CSharp::ChangeAvatarScriptARMarker
   currentAvatar: {fileID: 0}
   currentAvatarPrefab: {fileID: 0}
   avatarPrefabs:
@@ -11971,7 +11954,6 @@ MonoBehaviour:
   - {fileID: 4005909862482245054, guid: 4e3ffe2c3accace4eab2c15a8184ae29, type: 3}
   - {fileID: 7800281491218555014, guid: 736e2f24ec031d846bc6ce64e51d84cc, type: 3}
   - {fileID: 2651561762740968953, guid: 3562fcfbd30463e46b8692dd995fcfd7, type: 3}
-  - {fileID: 4605567844312760192, guid: a3d17e809d384661a6f4e2d3b07c9f51, type: 3}
   avatarPosition:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0.001, z: 0}
@@ -11982,12 +11964,15 @@ MonoBehaviour:
   - {x: 0, y: 0.008726535, z: 0, w: 0.9999619}
   - {x: 0, y: 0.008726535, z: 0, w: 0.9999619}
   - {x: 0, y: 0.008726535, z: 0, w: 0.9999619}
-  - {x: 0, y: 0, z: 0, w: 0}
+  - {x: 0, y: 0, z: 0, w: 1}
   - {x: 0, y: 0.008726535, z: 0, w: 0.9999619}
   sessionManager: {fileID: 419094653}
-  tapToPlaceManager: {fileID: 132936756}
-  multipleImageTracker: {fileID: 0}
-  avatarSpawnPosition: {x: 0, y: 0, z: 0}
+  tapToPlaceManager: {fileID: 0}
+  multipleImageTracker: {fileID: 132936756}
+  avatarSpawnParent: {fileID: 0}
+  avatarSpawnLocalPosition: {x: 0, y: 0, z: 0}
+  avatarSpawnLocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  avatarSpawnScale: {x: 1, y: 1, z: 1}
   changeUI: {fileID: 1992975567}
   generalUI: {fileID: 1293926442}
   changeUITitle: {fileID: 1688330373}
@@ -12224,7 +12209,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1992975568}
-        m_TargetAssemblyTypeName: ChangeAvatarScript, Assembly-CSharp
+        m_TargetAssemblyTypeName: ChangeAvatarScriptARMarker, Assembly-CSharp
         m_MethodName: StartChange
         m_Mode: 1
         m_Arguments:
@@ -12828,14 +12813,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2512387470422636669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARPlaneManager
+  m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARTrackedImageManager
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_PlanePrefab: {fileID: 4156571005125722920, guid: b1fb65de49531c346ada3db0a448d349, type: 3}
-  m_DetectionMode: -1
+  m_SerializedLibrary: {fileID: 11400000, guid: e9bfce5ea60e3894483fae40eb674a2f, type: 2}
+  m_MaxNumberOfMovingImages: 3
+  m_TrackedImagePrefab: {fileID: 0}
 --- !u!114 &2512387470422636671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13039,7 +13025,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6295e0c6beca02e4baca9567056ebff7, type: 3}
   - {fileID: 8300000, guid: 19c35363a92f3f645b8e9faffbc05d7e, type: 3}
   - {fileID: 8300000, guid: 54fcd535c0e28a34daa2f3224801cdcd, type: 3}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1049808010}
   previousButton: {fileID: 1108554897821406198}
   nextButton: {fileID: 8783814177304500608}
   currentSongText: {fileID: 9144724812214764924}
@@ -13275,7 +13261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 461488202893286370, guid: a5b8107598eba4e47b11a1cd5603bf57, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: ChangeAvatarScript, Assembly-CSharp
+      value: ChangeAvatarScriptARMarker, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 461488202893286370, guid: a5b8107598eba4e47b11a1cd5603bf57, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_BoolArgument
@@ -13641,4 +13627,4 @@ SceneRoots:
   - {fileID: 325144140}
   - {fileID: 1605133508}
   - {fileID: 551803690}
-  - {fileID: 1621834256}
+  - {fileID: 1049808011}

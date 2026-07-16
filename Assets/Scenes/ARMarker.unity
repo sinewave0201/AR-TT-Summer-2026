@@ -527,8 +527,14 @@ MonoBehaviour:
   markerPrefabs:
   - markerName: robot
     prefab: {fileID: 7279856284479749044, guid: 078f6b95d2ed29745a7133e795b52131, type: 3}
+    prefabLocalPosition: {x: 0, y: 0, z: 0}
+    prefabLocalEulerAngles: {x: 0, y: 0, z: 0}
+    size: {x: 0.005, y: 0.005, z: 0.005}
   - markerName: vault
     prefab: {fileID: 9107291634221900550, guid: 3597904a622d7ba46b28b10e187cc455, type: 3}
+    prefabLocalPosition: {x: 0, y: 0, z: 0}
+    prefabLocalEulerAngles: {x: 0, y: 0, z: 0}
+    size: {x: 0.4, y: 0.4, z: 0.4}
 --- !u!4 &2512387470860572925
 Transform:
   m_ObjectHideFlags: 0
