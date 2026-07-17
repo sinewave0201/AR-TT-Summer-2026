@@ -4559,34 +4559,38 @@ MonoBehaviour:
   robotAnimator: {fileID: 0}
   bubbleAnimator: {fileID: 0}
   lines:
-  - text: I'm glad that youre here. Whats been on your mind lately?
+  - text: I'm glad that youre here!
     robotAnimation: 1
     bubbleAnimation: 0
     robotSound: 0
-  - text: Tell me everything about your thoughts!
+  - text: What are you feeling today?
     robotAnimation: 3
     bubbleAnimation: 0
-    robotSound: 0
+    robotSound: 4
+  - text: Very well! Now, tell me every thing on your mind!
+    robotAnimation: 2
+    bubbleAnimation: 0
+    robotSound: 1
   - text: $input$
     robotAnimation: 0
     bubbleAnimation: 0
     robotSound: 0
-  - text: I understand. Now, tell me what emotion does the thought brings you.
-    robotAnimation: 2
+  - text: I hear you. Your thought has turn into a thought bubble..
+    robotAnimation: 4
+    bubbleAnimation: 1
+    robotSound: 2
+  - text: It seems like it has no emotion yet. How do you feel about that thought?
+    robotAnimation: 0
     bubbleAnimation: 0
-    robotSound: 0
+    robotSound: 4
   - text: $choose$
     robotAnimation: 0
     bubbleAnimation: 0
     robotSound: 0
-  - text: Now, here is the bubble that your thought transform into..
-    robotAnimation: 4
-    bubbleAnimation: 1
-    robotSound: 0
-  - text: Watch what happend to the bubble..
-    robotAnimation: 0
+  - text: I see. Now watch your bubble evolve...
+    robotAnimation: 3
     bubbleAnimation: 0
-    robotSound: 0
+    robotSound: 1
   - text: $bubbleBehavior$
     robotAnimation: 0
     bubbleAnimation: 0
@@ -4595,6 +4599,7 @@ MonoBehaviour:
   subtitleMaxCharactersPerLine: 90
   forceSubtitleLineBreaks: 1
   robotAudioSource: {fileID: 95632277}
+  changeVoiceScript: {fileID: 0}
   index: 0
   sessionShowManager: {fileID: 419094651}
   curText: 
@@ -4696,6 +4701,7 @@ MonoBehaviour:
   scrollViewContent: {fileID: 1831608243}
   voiceOptionButtonPrefab: {fileID: 6185247465622463024, guid: 6b842121a88d0074fbd15bc26bef7d0d, type: 3}
   voiceOptionHeight: 50
+  currListofClip: []
 --- !u!1 &527192068
 GameObject:
   m_ObjectHideFlags: 0
