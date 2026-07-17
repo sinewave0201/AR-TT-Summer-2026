@@ -4562,27 +4562,35 @@ MonoBehaviour:
   - text: I'm glad that youre here. Whats been on your mind lately?
     robotAnimation: 1
     bubbleAnimation: 0
+    robotSound: 0
   - text: Tell me everything about your thoughts!
     robotAnimation: 3
     bubbleAnimation: 0
+    robotSound: 0
   - text: $input$
     robotAnimation: 0
     bubbleAnimation: 0
+    robotSound: 0
   - text: I understand. Now, tell me what emotion does the thought brings you.
     robotAnimation: 2
     bubbleAnimation: 0
+    robotSound: 0
   - text: $choose$
     robotAnimation: 0
     bubbleAnimation: 0
+    robotSound: 0
   - text: Now, here is the bubble that your thought transform into..
     robotAnimation: 4
     bubbleAnimation: 1
+    robotSound: 0
   - text: Watch what happend to the bubble..
     robotAnimation: 0
     bubbleAnimation: 0
+    robotSound: 0
   - text: $bubbleBehavior$
     robotAnimation: 0
     bubbleAnimation: 0
+    robotSound: 0
   subtitleText: {fileID: 922462745}
   subtitleMaxCharactersPerLine: 90
   forceSubtitleLineBreaks: 1
@@ -4659,12 +4667,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChangeVoiceScript
   audioSource: {fileID: 95632277}
-  audioClips:
-  - {fileID: 8300000, guid: be465051eb0874e4983e8cc1330713a5, type: 3}
-  - {fileID: 8300000, guid: d62e1e96213284a4d8ca32288aa6dab8, type: 3}
-  - {fileID: 8300000, guid: 6c675f0874faf7848b6ee76a0c36e065, type: 3}
-  - {fileID: 8300000, guid: 544521b874e8ea2409b3b2fe434db3e6, type: 3}
-  - {fileID: 8300000, guid: 8e0a32f7d2889774796e82da8de73323, type: 3}
+  audioClipCollec:
+  - collecName: Bubbly
+    clipList:
+    - {fileID: 8300000, guid: 403e02c6a466e7347aba14501d19a19f, type: 3}
+    - {fileID: 8300000, guid: e2cc4e4717eaf7248a02c49f227011a5, type: 3}
+    - {fileID: 8300000, guid: 4e9e1ac9d7ca0d94ba16f32b40bfed0b, type: 3}
+    - {fileID: 8300000, guid: 6e7f97aee83354a469d412cf8ea1ed0c, type: 3}
+    - {fileID: 8300000, guid: 21e5869c9f16d214bb86ae6892308125, type: 3}
+  - collecName: Sleepy
+    clipList:
+    - {fileID: 8300000, guid: c3695db60498e5141bc2c10ddbf4f043, type: 3}
+    - {fileID: 8300000, guid: 7633f16c36eef8148af3cf70d29be099, type: 3}
+    - {fileID: 8300000, guid: 0683c088ba7c7be4db294c8cc9207c1a, type: 3}
+    - {fileID: 8300000, guid: 366ae45fe9505274ab09df97803f7771, type: 3}
+    - {fileID: 8300000, guid: c198815364bfe5c43beb75c444b07bf0, type: 3}
+  - collecName: Soft
+    clipList:
+    - {fileID: 8300000, guid: 9e817aff9d37d694aa8a3abe2ad17786, type: 3}
+    - {fileID: 8300000, guid: 65758d9a24e150848b0d13aa8f1a4bd0, type: 3}
+    - {fileID: 8300000, guid: 99303e7313aa14b4fa98f281dbed57bf, type: 3}
+    - {fileID: 8300000, guid: 66b02f3853d7e5a489d20c785f62e533, type: 3}
+    - {fileID: 8300000, guid: 26038348a3d7bb84d8fd607802cfe3f1, type: 3}
   changeUI: {fileID: 439487252}
   generalUI: {fileID: 1293926442}
   changeUITitle: {fileID: 667182362}
@@ -11986,7 +12010,6 @@ MonoBehaviour:
   - {x: 0, y: 0.008726535, z: 0, w: 0.9999619}
   sessionManager: {fileID: 419094653}
   tapToPlaceManager: {fileID: 132936756}
-  multipleImageTracker: {fileID: 0}
   avatarSpawnPosition: {x: 0, y: 0, z: 0}
   changeUI: {fileID: 1992975567}
   generalUI: {fileID: 1293926442}

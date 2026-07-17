@@ -54,6 +54,8 @@ public class SessionManager : MonoBehaviour
 
     [Header("Robot Voice")]
     [SerializeField] private AudioSource robotAudioSource;
+    public ChangeVoiceScript changeVoiceScript;
+    
 
     public int index = 0;
     public SessionShowManager sessionShowManager;
@@ -125,7 +127,7 @@ public class SessionManager : MonoBehaviour
             else
             {            
                 subtitleText.text = FormatSubtitleText(curText);
-                PlayRobotVoice();
+                PlayRobotVoice(lines[index]);
                 SetAnimation();
                 index++;
 
@@ -145,7 +147,7 @@ public class SessionManager : MonoBehaviour
         yield break;
     }
 
-    private void PlayRobotVoice()
+    private void PlayRobotVoice(DialogueLine curLine)
     {
         if (robotAudioSource == null || robotAudioSource.clip == null)
         {
@@ -158,8 +160,14 @@ public class SessionManager : MonoBehaviour
             return;
         }
 
+        //use the enum to index into current audio clip list
+        RobotSound curSound = curLine.robotSound;
+        int clipIndex = (int)curSound;
+
         robotAudioSource.Stop();
+        robotAudioSource.clip = changeVoiceScript.currListofClip[clipIndex];
         robotAudioSource.Play();
+        
     }
 
     private void SetAnimation()

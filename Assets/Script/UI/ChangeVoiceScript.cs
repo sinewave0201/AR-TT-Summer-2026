@@ -31,8 +31,9 @@ public class ChangeVoiceScript : MonoBehaviour
 
 
     //logic to store the current list and clip
+    [Header("Current Collection and clip")]
     private audioCollec currAudCollec;
-    private List<AudioClip> currListofClip;
+    public List<AudioClip> currListofClip;
 
     //logic for changing the color for clicked button
     private readonly List<GameObject> generatedOptions = new List<GameObject>();
