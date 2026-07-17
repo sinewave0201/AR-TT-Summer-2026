@@ -5,9 +5,16 @@ using UnityEngine.UI;
 
 public class ChangeVoiceScript : MonoBehaviour
 {
+    [System.Serializable]
+    public struct audioCollec
+    {
+        public string collecName;
+        public List<AudioClip> clipList;
+    }
+    
     [Header("Voice")]
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private List<AudioClip> audioClips = new List<AudioClip>();
+    [SerializeField] private List<audioCollec> audioClipCollec = new List<audioCollec>();
 
     [Header("Panels")]
     [SerializeField] private GameObject changeUI;
@@ -21,6 +28,11 @@ public class ChangeVoiceScript : MonoBehaviour
     [Tooltip("A Button prefab containing a TMP_Text child.")]
     [SerializeField] private Button voiceOptionButtonPrefab;
     [SerializeField, Min(1f)] private float voiceOptionHeight = 50f;
+
+
+    //logic to store the current list and clip
+    private audioCollec currAudCollec;
+    private List<AudioClip> currListofClip;
 
     //logic for changing the color for clicked button
     private readonly List<GameObject> generatedOptions = new List<GameObject>();
@@ -76,9 +88,11 @@ public class ChangeVoiceScript : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < audioClips.Count; i++)
+        for (int i = 0; i < audioClipCollec.Count; i++)
         {
-            AudioClip clip = audioClips[i];
+            currAudCollec = audioClipCollec[i];
+            currListofClip = currAudCollec.clipList;
+            AudioClip clip = currListofClip[0];//default preview using first clip
             if (clip == null)
             {
                 continue;
@@ -86,7 +100,7 @@ public class ChangeVoiceScript : MonoBehaviour
 
             int selectedIndex = i;
             Button optionButton = Instantiate(voiceOptionButtonPrefab, scrollViewContent);
-            optionButton.name = $"Voice Option - {clip.name}";
+            optionButton.name = $"Voice Option - {currAudCollec.collecName}";
 
             RectTransform optionRect = optionButton.transform as RectTransform;
             if (optionRect != null)
@@ -114,7 +128,7 @@ public class ChangeVoiceScript : MonoBehaviour
             TMP_Text optionText = optionButton.GetComponentInChildren<TMP_Text>(true);
             if (optionText != null)
             {
-                optionText.text = clip.name;
+                optionText.text = currAudCollec.collecName;
                 optionTexts[selectedIndex] = optionText;
                 optionTextDefaultColors[selectedIndex] = optionText.color;
             }
@@ -139,9 +153,9 @@ public class ChangeVoiceScript : MonoBehaviour
         }
     }
 
-    public void SelectVoice(int clipIndex)
+    public void SelectVoice(int optionIndex)
     {
-        Debug.Log("Select voice");
+        //logic to avoid null ref
         if (audioSource == null)
         {
             Debug.LogError("ChangeVoiceScript needs an AudioSource reference.", this);
@@ -156,16 +170,17 @@ public class ChangeVoiceScript : MonoBehaviour
             return;
         }
 
-        if (clipIndex < 0 || clipIndex >= audioClips.Count || audioClips[clipIndex] == null)
+        if (optionIndex < 0 || optionIndex >= audioClipCollec.Count)
         {
-            Debug.LogWarning($"Cannot select voice at invalid clip index {clipIndex}.", this);
+            Debug.LogWarning($"Cannot select voice at invalid clip index {optionIndex}.", this);
             return;
         }
 
-        UpdateSelectedOptionTextColor(clipIndex);
+        UpdateSelectedOptionTextColor(optionIndex);
 
+        //logic to play the previews
         audioSource.Stop();
-        audioSource.clip = audioClips[clipIndex];
+        audioSource.clip = currListofClip[0];
         audioSource.Play();
 
         if (!audioSource.isPlaying)
@@ -174,6 +189,8 @@ public class ChangeVoiceScript : MonoBehaviour
                 $"AudioSource did not start playing '{audioSource.clip.name}'. Check the clip's load state and AudioListener.",
                 audioSource);
         }
+
+        //logic to update the set of clips
     }
 
     public void QuitChangeUI()

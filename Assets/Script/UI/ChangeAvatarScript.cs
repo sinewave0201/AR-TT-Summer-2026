@@ -16,7 +16,6 @@ public class ChangeAvatarScript : MonoBehaviour
 
     [Header("Prefab Initiation Source")]
     [SerializeField] private TapToPlaceManager tapToPlaceManager;
-    [SerializeField] private MultipleImageTracker multipleImageTracker;
 
     [Header("Avatar Spawn Transform")]
     [SerializeField] private Vector3 avatarSpawnPosition;
@@ -127,11 +126,6 @@ public class ChangeAvatarScript : MonoBehaviour
         if (tapToPlaceManager != null)
         {
             return tapToPlaceManager.IsPrefabInitiated;
-        }
-
-        if (multipleImageTracker != null)
-        {
-            return multipleImageTracker.IsPrefabInitiated;
         }
 
         return prefabPlaced;

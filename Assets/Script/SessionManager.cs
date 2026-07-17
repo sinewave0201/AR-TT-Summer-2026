@@ -22,12 +22,22 @@ public class SessionManager : MonoBehaviour
         GetBubble
     }
 
+    public enum RobotSound
+    {
+        Greeting,
+        Happy,
+        Neutral,
+        Sad,
+        Talking
+    }
+
     [System.Serializable]
     public struct DialogueLine
     {
         public string text;
         public RobotAnimation robotAnimation;
         public BubbleAnimation bubbleAnimation;
+        public RobotSound robotSound;
     }
 
     [Header("animation")]
