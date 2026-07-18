@@ -25,9 +25,9 @@ public class BubbleBehaviorActivated : MonoBehaviour
             return;
         }
 
-        bubbleBehaviorManager.gameObject.SetActive(true);
+        // bubbleBehaviorManager.gameObject.SetActive(true);
         bubbleBehaviorManager.enabled = true;
-        bubbleBehaviorManager.Activated = true;
+        bubbleBehaviorManager.BubbleBehaviorActivate();
         Debug.Log("Bubble Activated");
     }
 

@@ -4,6 +4,8 @@ using TMPro;
 
 public class BubbleBehaviorManager : MonoBehaviour
 {
+    private static readonly int EndParameter = Animator.StringToHash("End");
+
     public enum BubbleBehavior
     {
         None = -1,
@@ -15,9 +17,13 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     //fly, clean, kick, burn
     public bool[] BubbleBools = {false, false, false, false};
-    public bool Activated = false;
     public BubbleBehavior CurrentBehavior { get; private set; } =
         BubbleBehavior.None;
+
+    [Header("bubble activation")]
+    public bool Activated = false;
+
+    //private stuff
     private Action[] BubbleActions;
     private Rigidbody rb;
     private BubbleBloom bubbleBloom;
@@ -26,9 +32,15 @@ public class BubbleBehaviorManager : MonoBehaviour
     private Vector3 originalPosition;
     private Quaternion originalRotation;
     private Vector3 originalScale;
+
+
+    [Header("Bubble animator and Bubble Text")]
     public Animator animator;
     public TMP_Text bubbleText;
 
+    [Header("Colliders")]
+    [SerializeField]private MeshCollider meshCollider;
+    [SerializeField]private SphereCollider sphereCollider;
     public void FinishInput(string content)
     {
         bubbleText.text = content;
@@ -103,7 +115,6 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     public void BubbleBehaviorEnd()
     {
-
         Activated = false;
         CurrentBehavior = BubbleBehavior.None;
         EndCleanBehavior();
@@ -114,20 +125,37 @@ public class BubbleBehaviorManager : MonoBehaviour
 
         Array.Clear(BubbleBools, 0, BubbleBools.Length);
 
+        // The Animator owns MeshRenderer visibility. End returns every
+        // behavior animation to the invisible Default state.
         if (animator != null)
         {
             animator.enabled = true;
+            animator.SetBool(EndParameter, true);
         }
+
+        //set the collider back
+        meshCollider.enabled = true;
+        sphereCollider.enabled = false;
+
+        Debug.Log("Bubble behavior ended; Animator End set to true.", this);
     }
 
+    public void BubbleBehaviorActivate()
+    {
+        if (animator != null)
+        {
+            animator.enabled = true;
+            animator.SetBool(EndParameter, false);
+        }
+
+        Activated = true;
+    }
     private void EndFlyBehavior()
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.useGravity = false;
         rb.isKinematic = true;
-
-        gameObject.SetActive(false);
     }
 
     private void EndCleanBehavior()
@@ -162,6 +190,10 @@ public class BubbleBehaviorManager : MonoBehaviour
         {
             if (BubbleBools[index] == true && Activated)
             {
+                //set the collider to be sphere collider
+                meshCollider.enabled = false;
+                sphereCollider.enabled = true;
+
                 BubbleActions[index]();
                 BubbleBools[index] = false;
                 Debug.Log($"Bubble Action performed, bubbleActivated = {Activated}", this);
@@ -174,7 +206,6 @@ public class BubbleBehaviorManager : MonoBehaviour
         CurrentBehavior = BubbleBehavior.Fly;
         Debug.Log("flyBubble Activated");
 
-        //disable animator to enable flying
         if (animator != null)
         {
             animator.enabled = false;
@@ -188,7 +219,6 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void cleanBubble()
     {
-        //disable animator to enable cleaning
         if (animator != null)
         {
             animator.enabled = false;
@@ -202,6 +232,11 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void bloomBubble()
     {
+        if (animator != null)
+        {
+            animator.enabled = true;
+        }
+
         CurrentBehavior = BubbleBehavior.Bloom;
         Debug.Log("bloomBubble Activated");
         bubbleBurn.DisableBurn();
@@ -213,7 +248,7 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         CurrentBehavior = BubbleBehavior.Burn;
         Debug.Log("burnBubble Activated");
-        //disable animator to enable kicking
+
         if (animator != null)
         {
             animator.enabled = false;

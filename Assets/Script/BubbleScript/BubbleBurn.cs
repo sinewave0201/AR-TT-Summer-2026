@@ -9,7 +9,6 @@ public class BubbleBurn : MonoBehaviour
     [Header("Burn")]
     [SerializeField] private string fireplaceTag = "Fireplace";
     [SerializeField] private GameObject healEffect;
-    [SerializeField] private GameObject bubbleRootToDisable;
 
     [Header("Kick")]
     [SerializeField] private float forceMultiplier = 12f;
@@ -57,11 +56,6 @@ public class BubbleBurn : MonoBehaviour
         CaptureOriginalTransform();
         EnsureGuideLine();
         HideGuideLine();
-
-        if (bubbleRootToDisable == null)
-        {
-            bubbleRootToDisable = gameObject;
-        }
 
         if (healEffect == null)
         {
@@ -155,7 +149,6 @@ public class BubbleBurn : MonoBehaviour
     {
         DisableBurn();
         DisableKickInteraction();
-        RestoreBubbleVisuals();
         burned = false;
     }
 
@@ -172,10 +165,6 @@ public class BubbleBurn : MonoBehaviour
         }
 
         gameObject.SetActive(true);
-        if (bubbleRootToDisable != null)
-        {
-            RestoreBubbleVisuals();
-        }
 
         transform.SetPositionAndRotation(originalPosition, originalRotation);
         rb.linearVelocity = Vector3.zero;
@@ -208,10 +197,6 @@ public class BubbleBurn : MonoBehaviour
 
         burned = true;
         PlayHealEffect();
-        if (bubbleRootToDisable != null)
-        {
-            bubbleRootToDisable.SetActive(false);
-        }
 
         AudioSource fireplaceAudio = other.GetComponent<AudioSource>();
         if (fireplaceAudio != null)
@@ -242,23 +227,6 @@ public class BubbleBurn : MonoBehaviour
         foreach (ParticleSystem particle in particles)
         {
             particle.Play();
-        }
-    }
-
-    private void RestoreBubbleVisuals()
-    {
-        if (bubbleRootToDisable == null)
-        {
-            return;
-        }
-
-        bubbleRootToDisable.SetActive(true);
-
-        Renderer[] renderers =
-            bubbleRootToDisable.GetComponentsInChildren<Renderer>(true);
-        foreach (Renderer bubbleRenderer in renderers)
-        {
-            bubbleRenderer.enabled = true;
         }
     }
 

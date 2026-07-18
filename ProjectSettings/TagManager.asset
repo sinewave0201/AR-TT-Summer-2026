@@ -46,6 +46,9 @@ TagManager:
   - XR Simulation
   - 
   m_SortingLayers:
+  - name: AudioPlayer
+    uniqueID: 756546333
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

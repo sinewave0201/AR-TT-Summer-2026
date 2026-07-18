@@ -17,7 +17,7 @@ public class ChangeVoiceScript : MonoBehaviour
     [SerializeField] private List<audioCollec> audioClipCollec = new List<audioCollec>();
 
     [Header("Panels")]
-    [SerializeField] private GameObject changeUI;
+    [SerializeField] private List<GameObject> changeUI;
     [SerializeField] private GameObject generalUI;
     [SerializeField] private TMP_Text changeUITitle;
     [SerializeField] private Button quitChangeUIButton;
@@ -47,6 +47,8 @@ public class ChangeVoiceScript : MonoBehaviour
         {
             quitChangeUIButton.onClick.AddListener(QuitChangeUI);
         }
+        currAudCollec = audioClipCollec[0];
+        currListofClip = currAudCollec.clipList;
     }
 
     private void OnDestroy()
@@ -66,7 +68,9 @@ public class ChangeVoiceScript : MonoBehaviour
 
         if (changeUI != null)
         {
-            changeUI.SetActive(true);
+            for (int i = 0; i < changeUI.Count; i ++){
+                changeUI[i].SetActive(true);
+            }
         }
 
         if (changeUITitle != null)
@@ -204,7 +208,9 @@ public class ChangeVoiceScript : MonoBehaviour
     {
         if (changeUI != null)
         {
-            changeUI.SetActive(false);
+            for (int i = 0; i < changeUI.Count; i ++){
+                changeUI[i].SetActive(false);
+            }
         }
 
         if (generalUI != null)

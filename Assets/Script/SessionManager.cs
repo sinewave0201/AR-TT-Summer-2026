@@ -81,6 +81,13 @@ public class SessionManager : MonoBehaviour
     public void BeginSession()
     {
         index = 0;
+
+        if (bubbleAnimator != null)
+        {
+            bubbleAnimator.enabled = true;
+            bubbleAnimator.SetBool("End", false);
+        }
+
         endSessionPanel.SetActive(false);
         sessionShowManager.Finish();
         showTextCoroutine = StartCoroutine(showText());
