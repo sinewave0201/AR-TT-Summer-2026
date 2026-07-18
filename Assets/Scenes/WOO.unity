@@ -4599,7 +4599,7 @@ MonoBehaviour:
   subtitleMaxCharactersPerLine: 90
   forceSubtitleLineBreaks: 1
   robotAudioSource: {fileID: 95632277}
-  changeVoiceScript: {fileID: 0}
+  changeVoiceScript: {fileID: 439487254}
   index: 0
   sessionShowManager: {fileID: 419094651}
   curText: 
@@ -10145,7 +10145,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 520f0cd5e29e4134d8fb6e42abced132, type: 3}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -13068,7 +13068,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6295e0c6beca02e4baca9567056ebff7, type: 3}
   - {fileID: 8300000, guid: 19c35363a92f3f645b8e9faffbc05d7e, type: 3}
   - {fileID: 8300000, guid: 54fcd535c0e28a34daa2f3224801cdcd, type: 3}
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 1621834255}
   previousButton: {fileID: 1108554897821406198}
   nextButton: {fileID: 8783814177304500608}
   currentSongText: {fileID: 9144724812214764924}

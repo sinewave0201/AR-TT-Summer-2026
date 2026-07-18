@@ -91,9 +91,9 @@ public class ChangeVoiceScript : MonoBehaviour
 
         for (int i = 0; i < audioClipCollec.Count; i++)
         {
-            currAudCollec = audioClipCollec[i];
-            currListofClip = currAudCollec.clipList;
-            AudioClip clip = currListofClip[0];//default preview using first clip
+            audioCollec audCollec = audioClipCollec[i];
+            List<AudioClip> listofClip = audCollec.clipList;
+            AudioClip clip = listofClip[0];//default preview using first clip
             if (clip == null)
             {
                 continue;
@@ -101,7 +101,7 @@ public class ChangeVoiceScript : MonoBehaviour
 
             int selectedIndex = i;
             Button optionButton = Instantiate(voiceOptionButtonPrefab, scrollViewContent);
-            optionButton.name = $"Voice Option - {currAudCollec.collecName}";
+            optionButton.name = $"Voice Option - {audCollec.collecName}";
 
             RectTransform optionRect = optionButton.transform as RectTransform;
             if (optionRect != null)
@@ -129,7 +129,7 @@ public class ChangeVoiceScript : MonoBehaviour
             TMP_Text optionText = optionButton.GetComponentInChildren<TMP_Text>(true);
             if (optionText != null)
             {
-                optionText.text = currAudCollec.collecName;
+                optionText.text = audCollec.collecName;
                 optionTexts[selectedIndex] = optionText;
                 optionTextDefaultColors[selectedIndex] = optionText.color;
             }
@@ -178,6 +178,12 @@ public class ChangeVoiceScript : MonoBehaviour
         }
 
         UpdateSelectedOptionTextColor(optionIndex);
+
+        //update the current audiocollec and list of clips
+        currAudCollec = audioClipCollec[optionIndex];
+        currListofClip = currAudCollec.clipList;
+        Debug.Log($"curList of clip change to {currAudCollec.collecName}");
+
 
         //logic to play the previews
         audioSource.Stop();
