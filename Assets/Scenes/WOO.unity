@@ -3262,6 +3262,7 @@ MonoBehaviour:
   PostSessionUI: {fileID: 1605133504}
   SessionUI: {fileID: 551803686}
   DIYUI: {fileID: 1476846953}
+  modelPreviewScript: {fileID: 1329407132}
 --- !u!1 &247066326
 GameObject:
   m_ObjectHideFlags: 0
@@ -5225,6 +5226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelPreviewScript
   prefab: {fileID: 0}
+  prefabAnimator: {fileID: 0}
   sizeSlider: {fileID: 0}
   rotationSlider: {fileID: 0}
 --- !u!114 &305120917
@@ -10718,6 +10720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelPreviewScript
   prefab: {fileID: 0}
+  prefabAnimator: {fileID: 0}
   sizeSlider: {fileID: 0}
   rotationSlider: {fileID: 0}
 --- !u!114 &881866090
@@ -15779,6 +15782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelPreviewScript
   prefab: {fileID: 0}
+  prefabAnimator: {fileID: 0}
   sizeSlider: {fileID: 2035208345}
   rotationSlider: {fileID: 1343399258}
 --- !u!4 &1329407133
@@ -16041,6 +16045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelPreviewScript
   prefab: {fileID: 0}
+  prefabAnimator: {fileID: 0}
   sizeSlider: {fileID: 0}
   rotationSlider: {fileID: 0}
 --- !u!1 &1345026863
@@ -22893,6 +22898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ModelPreviewScript
   prefab: {fileID: 0}
+  prefabAnimator: {fileID: 0}
   sizeSlider: {fileID: 0}
   rotationSlider: {fileID: 0}
 --- !u!1 &2040875694
