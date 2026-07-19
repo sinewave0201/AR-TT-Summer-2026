@@ -6,7 +6,8 @@ public class DIYActivate : MonoBehaviour
     public GameObject PostSessionUI;
     public GameObject SessionUI;
     public GameObject DIYUI;
-
+    [Header("ModelPreviews")]
+    [SerializeField] private ModelPreviewScript modelPreviewScript;
     void OnEnable()
     {
         PostSessionUI.SetActive(false);
@@ -26,5 +27,6 @@ public class DIYActivate : MonoBehaviour
         PostSessionUI.SetActive(true);
         DIYUI.SetActive(false);
         gameObject.SetActive(false);
+        modelPreviewScript.EndModelPreview();
     }
 }

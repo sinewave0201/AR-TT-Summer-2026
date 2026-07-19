@@ -2215,6 +2215,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3685080284654900699, guid: 3c90313281705464e92c65a7b46cbd1c, type: 3}
+      propertyPath: m_TagString
+      value: Bubble
+      objectReference: {fileID: 0}
     - target: {fileID: 5065691160507796833, guid: 3c90313281705464e92c65a7b46cbd1c, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -2325,7 +2329,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BubbleBurn
   fireplaceTag: Fireplace
   healEffect: {fileID: 3866390000985568432}
-  bubbleMeshRenderer: {fileID: 0}
   forceMultiplier: 4
   maxDragDistance: 2
   interactionCamera: {fileID: 0}

@@ -41,6 +41,11 @@ public class BubbleBehaviorManager : MonoBehaviour
     [Header("Colliders")]
     [SerializeField]private MeshCollider meshCollider;
     [SerializeField]private SphereCollider sphereCollider;
+
+    [Header("Update Animator Logic")]
+    [SerializeField] private int layerIndex = 0;
+
+    private AnimationClip previousClip;
     public void FinishInput(string content)
     {
         bubbleText.text = content;
@@ -199,6 +204,8 @@ public class BubbleBehaviorManager : MonoBehaviour
                 Debug.Log($"Bubble Action performed, bubbleActivated = {Activated}", this);
             }
         }
+
+        UpdateAnimationClipChange();
     }
 
     void flyBubble()
@@ -232,10 +239,10 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void bloomBubble()
     {
-        if (animator != null)
-        {
-            animator.enabled = true;
-        }
+        // if (animator != null)
+        // {
+        //     animator.enabled = true;
+        // }
 
         CurrentBehavior = BubbleBehavior.Bloom;
         Debug.Log("bloomBubble Activated");
@@ -246,13 +253,14 @@ public class BubbleBehaviorManager : MonoBehaviour
 
     void burnBubble()
     {
-        CurrentBehavior = BubbleBehavior.Burn;
-        Debug.Log("burnBubble Activated");
-
         if (animator != null)
         {
             animator.enabled = false;
         }
+        CurrentBehavior = BubbleBehavior.Burn;
+        Debug.Log("burnBubble Activated");
+
+
 
         bubbleBurn.EnableKickInteraction();
         bubbleBurn.EnableBurn();
@@ -262,4 +270,66 @@ public class BubbleBehaviorManager : MonoBehaviour
     {
         Debug.Log("Collided with: " + collision.gameObject.name);
     }
+
+    #region Update Animator Logic
+    private void UpdateAnimationClipChange()
+    {
+        if (animator == null || !animator.enabled)
+        {
+            return;
+        }
+        
+        AnimationClip currentClip = GetActiveClip();
+        if (currentClip == null || currentClip == previousClip)
+        {
+            return;
+        }
+
+        Debug.Log(
+            $"Bubble Animator changed clip: " +
+            $"{previousClip?.name ?? "None"} -> {currentClip.name}",
+            animator
+        );
+
+        previousClip = currentClip;
+    }
+
+    private AnimationClip GetActiveClip()
+    {
+        // During a transition, report the incoming clip immediately.
+        if (animator.IsInTransition(layerIndex))
+        {
+            AnimatorClipInfo[] nextClips =
+                animator.GetNextAnimatorClipInfo(layerIndex);
+
+            if (nextClips.Length > 0)
+            {
+                return GetHighestWeightClip(nextClips);
+            }
+        }
+
+        AnimatorClipInfo[] currentClips =
+            animator.GetCurrentAnimatorClipInfo(layerIndex);
+
+        return currentClips.Length > 0
+            ? GetHighestWeightClip(currentClips)
+            : null;
+    }
+
+    private static AnimationClip GetHighestWeightClip(
+        AnimatorClipInfo[] clips)
+    {
+        AnimatorClipInfo result = clips[0];
+
+        for (int index = 1; index < clips.Length; index++)
+        {
+            if (clips[index].weight > result.weight)
+            {
+                result = clips[index];
+            }
+        }
+
+        return result.clip;
+    }
+    #endregion
 }

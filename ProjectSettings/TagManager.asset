@@ -13,6 +13,7 @@ TagManager:
   - pot
   - musicPlayer
   - emotions
+  - Bubble
   layers:
   - Default
   - TransparentFX

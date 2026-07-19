@@ -4,7 +4,8 @@ using UnityEngine.UI;
 public class ModelPreviewScript : MonoBehaviour
 {
     [Header("Model")]
-    public GameObject prefab;
+    [SerializeField] private GameObject prefab;
+    [SerializeField] private Animator prefabAnimator;
 
     [Header("Controls")]
     [SerializeField] private Slider sizeSlider;
@@ -18,6 +19,12 @@ public class ModelPreviewScript : MonoBehaviour
 
     private void Awake()
     {
+        //find the bubble prefab
+        prefab = GameObject.FindGameObjectWithTag("Bubble");
+        //close the animator temporarily
+        prefabAnimator = prefab.GetComponent<Animator>();
+        prefabAnimator.enabled = false;
+
         InitializePrefabValues();
 
         if (sizeSlider != null)
@@ -33,6 +40,11 @@ public class ModelPreviewScript : MonoBehaviour
         }
     }
 
+    public void EndModelPreview()
+    {
+        prefabAnimator.enabled = true;
+    }
+    
     private void OnDestroy()
     {
         if (sizeSlider != null)
@@ -67,6 +79,7 @@ public class ModelPreviewScript : MonoBehaviour
     {
         if (prefab == null)
         {
+            Debug.Log("Bubble is null, cannot be Found");
             return;
         }
 

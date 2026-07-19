@@ -99,6 +99,9 @@ public class BubbleClean : MonoBehaviour
         {
             thoughtBubbleText.text = string.Empty;
         }
+
+        //it makes sense cause the collider may get in the way...set the enabled to false
+        //so there is no collider
         ThoughtBubble.enabled = false;
 
 
@@ -118,6 +121,11 @@ public class BubbleClean : MonoBehaviour
 
         coatingRoot.SetActive(false);
         ResetCleanMasks();
+
+        if (ThoughtBubble != null)
+        {
+            ThoughtBubble.enabled = true;
+        }
     }
 
     public void ResetBroom()
