@@ -20,12 +20,18 @@ public class MainSelectManager : MonoBehaviour
     private bool suppressSelectionUntilRelease;
     [SerializeField] private ARRaycastManager arRaycastManager;
 
+    [Header("Raycast Settings")]
+    [SerializeField] private LayerMask ignoreLayers;
+    [SerializeField] private LayerMask emotionLayers;
+
     [Header("references")]
 
     public GameObject sessionManager;
     public GameObject vaultManager;
     public GameObject calendarManager;
+    [Header("Audio")]
     private AudioSource audioSource;
+    [SerializeField]private AudioSource emotionAudioSource;
     public bool OpenUI = true;
 
     [Header ("BubbleClean")]
@@ -146,16 +152,29 @@ public class MainSelectManager : MonoBehaviour
         Debug.Log("touched!!");
         Ray ray = Camera.main.ScreenPointToRay(screenPos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit emotionHit, Mathf.Infinity, emotionLayers.value) &&
+            emotionHit.collider.CompareTag("emotions"))
+        {
+            handledCurrentPress = true;
+            PlaySelectionAudio(emotionHit.collider);
+            HandleEmotion(emotionHit.collider);
+            return;
+        }
+
+        int raycastMask = ~ignoreLayers.value;
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, raycastMask))
         {
             //only handle when ray was success
             handledCurrentPress = true;
 
-            audioSource = hit.collider.GetComponent<AudioSource>();
-            if (audioSource != null)
+            PlaySelectionAudio(hit.collider);
+            
+            //used to choose
+            if (hit.collider.CompareTag("emotions"))
             {
-                audioSource.loop = false;
-                audioSource.Play();
+                HandleEmotion(hit.collider);
+                return;
             }
 
             if (hit.collider.CompareTag("Vault") && !OpenUI)
@@ -200,7 +219,35 @@ public class MainSelectManager : MonoBehaviour
                     broomDragDistanceFromCamera = Vector3.Distance(Camera.main.transform.position, draggedBroom.position);
                 }
             }
+
+
         }
+    }
+
+    private void PlaySelectionAudio(Collider selectedCollider)
+    {
+        audioSource = selectedCollider.GetComponent<AudioSource>();
+        if (audioSource != null)
+        {
+            audioSource.loop = false;
+            audioSource.Play();
+            Debug.Log("raycasting success and play sound");
+        }
+    }
+
+    private void HandleEmotion(Collider emotionCollider)
+    {
+        Debug.Log("touch emotions!!");
+
+        if (emotionAudioSource != null)
+        {
+            emotionAudioSource.Play();
+        }
+
+        EmotionAction action = emotionCollider.GetComponent<EmotionAction>();
+        action?.InvokeBeforeDestroy();
+
+        Destroy(emotionCollider.gameObject);
     }
 
     public void SetBubbleClean(BubbleClean spawnedBubbleClean)
@@ -273,7 +320,7 @@ public class MainSelectManager : MonoBehaviour
             return;
         }
 
-        int cleanableMask = 1 << cleanableLayer;
+        int cleanableMask = (1 << cleanableLayer) & ~ignoreLayers.value;
         RaycastHit[] surfaceHits = Physics.RaycastAll(
             ray,
             Mathf.Infinity,

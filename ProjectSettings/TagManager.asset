@@ -12,6 +12,7 @@ TagManager:
   - wateringCan
   - pot
   - musicPlayer
+  - emotions
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - UI
   - Cleanable
   - Paintable
-  - 
+  - AlwaysOnTop
   - 
   - 
   - 
