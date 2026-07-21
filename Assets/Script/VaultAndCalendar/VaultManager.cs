@@ -15,6 +15,7 @@ public class VaultManager : MonoBehaviour
     {
         public String bubbleCreatedDate;
         public String bubbleContent;
+        public List<String>bubbleEmotion;//storable emotion option
     }
     
     [Header("bubble Storage")]
@@ -35,9 +36,27 @@ public class VaultManager : MonoBehaviour
         public List<BubbleVault> vault = new List<BubbleVault>();
     }
 
+    [Header("Current Bubble Vault")]
+    private BubbleVault curBubbleVault;
+
     void Awake()
     {
         LoadVault();
+    }
+
+    //call whenever a session starts to initialize the current bubble vault
+    public void InitializeCurBV()
+    {
+        curBubbleVault = new BubbleVault
+        {
+            bubbleEmotion = new List<string>()
+        };
+    }
+
+    public void AddEmoToCurVault(String emo)
+    {
+        curBubbleVault.bubbleEmotion.Add(emo);
+        Debug.Log($"Emotion added{String.Join(", ", curBubbleVault.bubbleEmotion)}");
     }
 
     public void AddToBubbleVault()
@@ -48,11 +67,10 @@ public class VaultManager : MonoBehaviour
             return;
         }
 
-        vault.Add(new BubbleVault
-        {
-            bubbleCreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
-            bubbleContent = inputField.text
-        });
+        curBubbleVault.bubbleCreatedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+        curBubbleVault.bubbleContent = inputField.text;
+
+        vault.Add(curBubbleVault);
 
         SaveVault();
         RenderList();
@@ -107,7 +125,7 @@ public class VaultManager : MonoBehaviour
                 continue;
             }
 
-            itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent);
+            itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent, bubble.bubbleEmotion);
         }
 
         if (rebuildLayoutCoroutine != null)

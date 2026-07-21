@@ -100,7 +100,7 @@ public class CalendarViewVault : MonoBehaviour
                 continue;
             }
 
-            itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent);
+            itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent, bubble.bubbleEmotion);
         }
     }
 

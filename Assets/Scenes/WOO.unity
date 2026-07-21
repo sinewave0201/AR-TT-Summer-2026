@@ -1186,6 +1186,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Sad
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &115635482
 GameObject:
   m_ObjectHideFlags: 0
@@ -2250,6 +2262,18 @@ MonoBehaviour:
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Nostalgia
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &157076350
@@ -7103,6 +7127,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Regret
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &408760730
 GameObject:
   m_ObjectHideFlags: 0
@@ -7878,6 +7914,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 4e9e1ac9d7ca0d94ba16f32b40bfed0b, type: 3}
     - {fileID: 8300000, guid: 6e7f97aee83354a469d412cf8ea1ed0c, type: 3}
     - {fileID: 8300000, guid: 21e5869c9f16d214bb86ae6892308125, type: 3}
+    - {fileID: 8300000, guid: 999280031c08dc541987d807cb954f28, type: 3}
+    - {fileID: 8300000, guid: d9e82cba9abb7bb49b89182f3618003a, type: 3}
+    - {fileID: 8300000, guid: 471e691e07ed1c843aaee9295a25c3ae, type: 3}
+    - {fileID: 8300000, guid: 296095d0464126c4cb2ae2a10c5be4d3, type: 3}
   - collecName: Sleepy
     clipList:
     - {fileID: 8300000, guid: c3695db60498e5141bc2c10ddbf4f043, type: 3}
@@ -7885,6 +7925,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 0683c088ba7c7be4db294c8cc9207c1a, type: 3}
     - {fileID: 8300000, guid: 366ae45fe9505274ab09df97803f7771, type: 3}
     - {fileID: 8300000, guid: c198815364bfe5c43beb75c444b07bf0, type: 3}
+    - {fileID: 8300000, guid: 899153eaa329df645adbbc20a927f954, type: 3}
+    - {fileID: 8300000, guid: 7eee964627d46f641822214654d47be2, type: 3}
+    - {fileID: 8300000, guid: 5cf3ebcca166c184a8ae7aa1ae7939f9, type: 3}
+    - {fileID: 8300000, guid: 4a18033a0f5fc234c84400e75c218494, type: 3}
   - collecName: Soft
     clipList:
     - {fileID: 8300000, guid: 9e817aff9d37d694aa8a3abe2ad17786, type: 3}
@@ -7892,6 +7936,10 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 99303e7313aa14b4fa98f281dbed57bf, type: 3}
     - {fileID: 8300000, guid: 66b02f3853d7e5a489d20c785f62e533, type: 3}
     - {fileID: 8300000, guid: 26038348a3d7bb84d8fd607802cfe3f1, type: 3}
+    - {fileID: 8300000, guid: d6c407069c62196488e74d7f24228401, type: 3}
+    - {fileID: 8300000, guid: 445afeb87042a444cb327a38c62b85ce, type: 3}
+    - {fileID: 8300000, guid: 58db111f7772b014b924f848864bbdeb, type: 3}
+    - {fileID: 8300000, guid: 13117a9ae33723e418a9c737948a897c, type: 3}
   changeUI:
   - {fileID: 667182360}
   - {fileID: 714620534}
@@ -8762,6 +8810,18 @@ MonoBehaviour:
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Hope
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &626175576
@@ -9693,6 +9753,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Wonder
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &714620534
 GameObject:
   m_ObjectHideFlags: 0
@@ -9843,7 +9915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &723799121
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10667,6 +10739,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Lonely
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &881866087
@@ -11900,6 +11984,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Delight
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &957430251
 GameObject:
   m_ObjectHideFlags: 0
@@ -12194,6 +12290,18 @@ MonoBehaviour:
           m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: Angry
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &970185455
@@ -14639,7 +14747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1259488526
 Transform:
   m_ObjectHideFlags: 0
@@ -15615,6 +15723,18 @@ MonoBehaviour:
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Confuse
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1322610531
@@ -20615,6 +20735,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Guilt
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1829566067
 GameObject:
   m_ObjectHideFlags: 0
@@ -21541,6 +21673,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: Curious
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1917922183
 GameObject:
   m_ObjectHideFlags: 0
@@ -21598,7 +21742,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: curiouse
+  m_text: curious
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
   m_sharedMaterial: {fileID: -7884054891821857159, guid: 2f37a09b9e10c7a4db43f1ba21f62d96, type: 2}
@@ -21632,7 +21776,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -21984,6 +22128,18 @@ MonoBehaviour:
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: Uncertain
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1943145169
@@ -22463,6 +22619,18 @@ MonoBehaviour:
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: Love
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1992975567 stripped
@@ -23442,6 +23610,18 @@ MonoBehaviour:
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 326372188}
+        m_TargetAssemblyTypeName: VaultManager, Assembly-CSharp
+        m_MethodName: AddEmoToCurVault
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: Anxious
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2109702880

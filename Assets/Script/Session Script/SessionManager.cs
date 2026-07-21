@@ -28,7 +28,11 @@ public class SessionManager : MonoBehaviour
         Happy,
         Neutral,
         Sad,
-        Talking
+        Talking,
+        Comforting,
+        Concerned,
+        Curious,
+        Relieved
     }
 
     [System.Serializable]
