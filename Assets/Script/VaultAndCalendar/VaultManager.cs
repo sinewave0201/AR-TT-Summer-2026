@@ -23,7 +23,6 @@ public class VaultManager : MonoBehaviour
     public TMP_InputField inputField;
 
     [Header("UI Rendering")]
-    public Transform content;
     public GameObject itemPrefab;
     private Coroutine rebuildLayoutCoroutine;
 
@@ -73,7 +72,6 @@ public class VaultManager : MonoBehaviour
         vault.Add(curBubbleVault);
 
         SaveVault();
-        RenderList();
         VaultChanged?.Invoke();
     }
 
@@ -86,82 +84,15 @@ public class VaultManager : MonoBehaviour
         });
 
         SaveVault();
-        RenderList();
+
         VaultChanged?.Invoke();
     }
 
     void OnEnable()
     {
-        RenderList();
+
     }
 
-    void RenderList()
-    {
-        if (content == null)
-        {
-            Debug.LogError("VaultManager needs a content reference.", this);
-            return;
-        }
-
-        if (itemPrefab == null)
-        {
-            Debug.LogError("VaultManager needs an itemPrefab reference.", this);
-            return;
-        }
-
-        foreach (Transform child in content)
-        {
-            child.gameObject.SetActive(false);
-            Destroy(child.gameObject);
-        }
-
-        foreach (BubbleVault bubble in vault)
-        {
-            GameObject obj = Instantiate(itemPrefab, content);
-            ItemUI itemUI = obj.GetComponent<ItemUI>();
-            if (itemUI == null)
-            {
-                Debug.LogError("Vault itemPrefab needs an ItemUI component.", obj);
-                continue;
-            }
-
-            itemUI.SetData(bubble.bubbleCreatedDate, bubble.bubbleContent, bubble.bubbleEmotion);
-        }
-
-        if (rebuildLayoutCoroutine != null)
-        {
-            StopCoroutine(rebuildLayoutCoroutine);
-        }
-
-        rebuildLayoutCoroutine = StartCoroutine(RebuildLayoutNextFrame());
-    }
-
-    private IEnumerator RebuildLayoutNextFrame()
-    {
-        yield return null;
-        Canvas.ForceUpdateCanvases();
-
-        foreach (Transform child in content)
-        {
-            if (!child.gameObject.activeSelf)
-            {
-                continue;
-            }
-
-            if (child.TryGetComponent(out ItemUI itemUI))
-            {
-                itemUI.RefreshLayout();
-            }
-        }
-
-        if (content is RectTransform contentRect)
-        {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
-        }
-
-        Canvas.ForceUpdateCanvases();
-        rebuildLayoutCoroutine = null;
-    }
 
     private void SaveVault()
     {

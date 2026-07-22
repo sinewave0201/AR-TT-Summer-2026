@@ -24,11 +24,11 @@ public class MainSelectManager : MonoBehaviour
     [SerializeField] private LayerMask ignoreLayers;
     [SerializeField] private LayerMask emotionLayers;
 
-    [Header("references")]
+    [Header("UI & other references")]
 
     public GameObject sessionManager;
-    public GameObject vaultManager;
     public GameObject calendarManager;
+
     [Header("Audio")]
     private AudioSource audioSource;
     [SerializeField]private AudioSource emotionAudioSource;
@@ -177,13 +177,6 @@ public class MainSelectManager : MonoBehaviour
                 return;
             }
 
-            if (hit.collider.CompareTag("Vault") && !OpenUI)
-            {
-                Debug.Log("touch vault!!");
-                OpenUI = true;
-                vaultManager.SetActive(true);
-            }
-
             if (hit.collider.CompareTag("RobotSession") && !OpenUI)
             {
                 Debug.Log("touch robot!!");
@@ -282,11 +275,6 @@ public class MainSelectManager : MonoBehaviour
         OpenUI = true;
     }
 
-    public void CloseVault()
-    {
-        vaultManager.SetActive(false);
-        OpenUI = false;
-    }
 
     public void CloseSession()
     {
