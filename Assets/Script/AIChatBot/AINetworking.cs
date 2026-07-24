@@ -258,14 +258,7 @@ public class AINetworking : MonoBehaviour
 
         Debug.Log($"Handling AI response. action={action}, message={responseText}");
 
-        if (string.IsNullOrEmpty(action))
-        {
-            Debug.LogError("AI response did not contain message or reply text.");
-            ShowRequestFailedMessage();
-            return;
-        }
-
-        else if (action == "null" || action == "rating")//only during null and rating can use this temp
+        if (action == null || action == "rating")//only during null and rating can use this temp
         {
             AddResponseTextToSession(responseText, responseEmo);
             sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
