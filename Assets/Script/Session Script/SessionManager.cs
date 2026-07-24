@@ -118,8 +118,11 @@ public class SessionManager : MonoBehaviour
             curText = lines[index].text;
             if (string.IsNullOrEmpty(curText))
             {
-                Debug.LogWarning($"Skipping empty dialogue line at index {index}.");
+                PlayRobotVoice(lines[index]);
+                SetAnimation();
                 index++;
+
+                yield return new WaitForSeconds(2f);
                 continue;
             }
 

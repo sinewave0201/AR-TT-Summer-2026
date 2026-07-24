@@ -17,7 +17,7 @@ public class AINetworking : MonoBehaviour
     {
         public string prompt;//text to show, could be 0 during braindump
         public string emotions;//sad, neutral, happy
-        public string dominantEmo;//a dominent emotion from the three
+        public string dominant;//a dominent emotion from the three
         public string action;//what to do next
         // action values:
         // "greeting" → play greeting
@@ -115,6 +115,7 @@ public class AINetworking : MonoBehaviour
             {
                 isWaitingForAI = false;
                 SetLoading(false);
+                Debug.Log("Failed MSG 1");
                 ShowRequestFailedMessage();
                 yield break;
             }
@@ -165,6 +166,7 @@ public class AINetworking : MonoBehaviour
         {
             Debug.LogError($"AI request failed after all retries. totalElapsed={elapsed:F1}s");
             request?.Dispose();
+            Debug.Log("Failed MSG 2");
             ShowRequestFailedMessage();
             yield break;
         }
@@ -248,17 +250,18 @@ public class AINetworking : MonoBehaviour
         if (response == null)
         {
             Debug.LogError("AI response could not be parsed.");
+            Debug.Log("Failed MSG 3");
             ShowRequestFailedMessage();
             return;
         }
 
         string action = response.action;
         string responseText = response.prompt;
-        string responseEmo = response.dominantEmo;
+        string responseEmo = response.dominant;
 
         Debug.Log($"Handling AI response. action={action}, message={responseText}");
 
-        if (action == null || action == "rating")//only during null and rating can use this temp
+        if (action == "" ||action == null || action == "rating")//only during null and rating can use this temp
         {
             AddResponseTextToSession(responseText, responseEmo);
             sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
@@ -302,8 +305,6 @@ public class AINetworking : MonoBehaviour
 
         else if (action == "choose_strategy")//replace the default choose strategy with unity one
         {
-            AddResponseTextToSession(responseText, responseEmo);
-
             if (useWooInteractionFlow)
             {
                 AddWooInteractionToSession();
@@ -321,6 +322,9 @@ public class AINetworking : MonoBehaviour
                 sessionManager.AddLinesToSession("$bubbleBehavior$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
             }
 
+            //you have to reply it else it will be bitchy
+            StartCoroutine(SendChatRequest("flower"));
+
             sessionManager.ContinueDialogue();
 
             if (!useWooInteractionFlow)
@@ -334,7 +338,7 @@ public class AINetworking : MonoBehaviour
 
         else
         {
-            Debug.LogWarning($"Unhandled AI action: {action}");
+            Debug.Log("Failed MSG 4");
             ShowRequestFailedMessage();
         }
     }
@@ -443,23 +447,34 @@ public class AINetworking : MonoBehaviour
 
     private void AddResponseTextToSession(string responseText, string responseEmo)
     {
-        string normalizedText = NormalizeLineEndings(responseText);
-        string[] lines = normalizedText.Split(new[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
-
-
         SessionManager.RobotAnimation robotAnimation = GetAnim(responseEmo);
         SessionManager.RobotSound robotSound = GetSound(responseEmo);
 
-        foreach (string line in lines)
+        //have only emoptions
+        if (responseText == "")
         {
-            string trimmedLine = line.Trim();
-            if (string.IsNullOrEmpty(trimmedLine))
-            {
-                continue;
-            }
-
-            sessionManager.AddLinesToSession(trimmedLine, robotAnimation, SessionManager.BubbleAnimation.Default, robotSound);
+            //if it is empty, pass in the animations only
+            Debug.Log("empty prompt passed in");
+            sessionManager.AddLinesToSession("", robotAnimation, SessionManager.BubbleAnimation.Default, robotSound);
         }
+        
+        else
+        {
+            string normalizedText = NormalizeLineEndings(responseText);
+            string[] lines = normalizedText.Split(new[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                if (string.IsNullOrEmpty(trimmedLine))
+                {
+                    continue;
+                }
+
+                sessionManager.AddLinesToSession(trimmedLine, robotAnimation, SessionManager.BubbleAnimation.Default, robotSound);
+            }    
+        }
+
     }
 
     private void SaveRiverThoughtToVault(ChatResponse response)
@@ -487,7 +502,7 @@ public class AINetworking : MonoBehaviour
     {
         if (emotion == "sad")
         {
-            return SessionManager.RobotAnimation.Idle;
+            return SessionManager.RobotAnimation.Nod;
         }
 
         else if (emotion == "neutral")
