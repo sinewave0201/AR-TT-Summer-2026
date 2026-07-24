@@ -15,9 +15,20 @@ public class AINetworking : MonoBehaviour
     [System.Serializable]
     public class ChatResponse
     {
-        public string reply;
-        public string action;
-        public string[] thoughts;
+        public string prompt;//text to show, could be 0 during braindump
+        public string emotions;//sad, neutral, happy
+        public string dominantEmo;//a dominent emotion from the three
+        public string action;//what to do next
+        // action values:
+        // "greeting" → play greeting
+        // null → just show prompt + react
+        // "choose_strategy" → show choices; extra: strategies, due
+        // to submit a choice send value as message: "vault" / "letter" / "flower", "1"-"5", "again" / "finish"
+        // "rating" → ask 1-5; extra: strategy, stored
+        // "again_or_end" → offer another round; extra: options
+        // "end" → session over, disable input
+        // "archive" → show archive; extra: items
+        public string step;//current step
     }
 
     private string sessionId;
@@ -45,11 +56,20 @@ public class AINetworking : MonoBehaviour
     [SerializeField] private float retryDelaySeconds = 1.5f;
     [SerializeField] private string requestFailedMessage = "Sorry, I could not reach the AI service. Please check your internet connection and try again.";
 
+    [Header("WOO Interaction")]
+    [SerializeField] private bool useWooInteractionFlow;
+
     private bool isWaitingForAI;
     private bool isNewSession = true;
+    private bool isWaitingForWooInteraction;
+    private int initialDialogueLineCount;
 
     void Start()
     {
+        initialDialogueLineCount = sessionManager != null
+            ? sessionManager.lines.Count
+            : 0;
+
         if (PlayerPrefs.HasKey("device_session_id"))
         {
             sessionId = PlayerPrefs.GetString("device_session_id");
@@ -217,8 +237,8 @@ public class AINetworking : MonoBehaviour
             return;
         }
 
-        sessionManager.AddLinesToSession(requestFailedMessage, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
-        sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
+        sessionManager.AddLinesToSession(requestFailedMessage, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
         sessionManager.ContinueDialogue();
     }
 
@@ -233,28 +253,53 @@ public class AINetworking : MonoBehaviour
         }
 
         string action = response.action;
-        string responseText = response.reply;
+        string responseText = response.prompt;
+        string responseEmo = response.dominantEmo;
 
         Debug.Log($"Handling AI response. action={action}, message={responseText}");
 
-        if (string.IsNullOrEmpty(action) || action == "null")
+        if (string.IsNullOrEmpty(action))
         {
-            if (string.IsNullOrEmpty(responseText))
-            {
-                Debug.LogError("AI response did not contain message or reply text.");
-                ShowRequestFailedMessage();
-                return;
-            }
+            Debug.LogError("AI response did not contain message or reply text.");
+            ShowRequestFailedMessage();
+            return;
+        }
 
-            AddResponseTextToSession(responseText);
-            sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
+        else if (action == "null" || action == "rating")//only during null and rating can use this temp
+        {
+            AddResponseTextToSession(responseText, responseEmo);
+            sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
             sessionManager.ContinueDialogue();
         }
 
-        else if (action == "end")
+        else if (action == "greeting")//play greeting
         {
+            AddResponseTextToSession(responseText, "greeting"); 
+            sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+            sessionManager.ContinueDialogue();
+        }
+
+        
+        else if (action == "again_or_end")
+        {
+            AddResponseTextToSession(responseText, responseEmo); 
+            sessionManager.AddLinesToSession("input ONLY again and finish to choose!", SessionManager.RobotAnimation.Agreeing, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+            sessionManager.AddLinesToSession("$input$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+            sessionManager.ContinueDialogue();
+        }
+
+        else if (action == "archive")//what is this? do nothing for now
+        {
+            sessionManager.ContinueDialogue();
+        }
+
+
+        else if (action == "end")//end the session
+        {
+            isWaitingForWooInteraction = false;
+
             //add the last sentence
-            AddResponseTextToSession(responseText);
+            AddResponseTextToSession(responseText, responseEmo);
 
             sessionManager.dialogueDisplayEnd = false;
             sessionManager.ContinueDialogue();
@@ -262,23 +307,36 @@ public class AINetworking : MonoBehaviour
             StartCoroutine(WaitForFinalDialogue());
         }
 
-        else if (action == "river")
+        else if (action == "choose_strategy")//replace the default choose strategy with unity one
         {
-            AddResponseTextToSession(responseText);
-            sessionManager.AddLinesToSession("Now, tell me what emotion does this thought brings you.", 
-                SessionManager.RobotAnimation.Wave, SessionManager.BubbleAnimation.Appear);
-            sessionManager.AddLinesToSession("$choose$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
-            sessionManager.AddLinesToSession("Thats how you feel. I see..", 
-                SessionManager.RobotAnimation.Nod, SessionManager.BubbleAnimation.Default);
-            sessionManager.AddLinesToSession("Watch what happend to the bubble..", 
-                SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
-            sessionManager.AddLinesToSession("$bubbleBehavior$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
+            AddResponseTextToSession(responseText, responseEmo);
+
+            if (useWooInteractionFlow)
+            {
+                AddWooInteractionToSession();
+                isWaitingForWooInteraction = true;
+            }
+            else
+            {
+                sessionManager.AddLinesToSession("Now, tell me what emotion does this thought bring you.",
+                    SessionManager.RobotAnimation.Wave, SessionManager.BubbleAnimation.Appear, SessionManager.RobotSound.Neutral);
+                sessionManager.AddLinesToSession("$choose$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+                sessionManager.AddLinesToSession("That's how you feel. I see.",
+                    SessionManager.RobotAnimation.Nod, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+                sessionManager.AddLinesToSession("Watch what happens to the bubble.",
+                    SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+                sessionManager.AddLinesToSession("$bubbleBehavior$", SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default, SessionManager.RobotSound.Neutral);
+            }
+
             sessionManager.ContinueDialogue();
 
-            SaveRiverThoughtToVault(response);
+            if (!useWooInteractionFlow)
+            {
+                SaveRiverThoughtToVault(response);
 
-            //you will have to send something to the AI bot to continue from river
-            StartCoroutine(SendChatRequest("reply"));
+                // AIChatBot2 has no DIY stage, so it continues automatically.
+                StartCoroutine(SendChatRequest("reply"));
+            }
         }
 
         else
@@ -288,6 +346,56 @@ public class AINetworking : MonoBehaviour
         }
     }
 
+    private void AddWooInteractionToSession()
+    {
+        sessionManager.AddLinesToSession(
+            "I hear you. Your thought has turned into a thought bubble.",
+            SessionManager.RobotAnimation.GetBubble,
+            SessionManager.BubbleAnimation.Appear,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "It doesn't have any colors yet. Why not give it your own color?",
+            SessionManager.RobotAnimation.Idle,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "$DIY$",
+            SessionManager.RobotAnimation.Idle,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "Looks great. One last step: how does this thought make you feel?",
+            SessionManager.RobotAnimation.Agreeing,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "$choose$",
+            SessionManager.RobotAnimation.Idle,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "Watch how your bubble evolves.",
+            SessionManager.RobotAnimation.Agreeing,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+        sessionManager.AddLinesToSession(
+            "$bubbleBehavior$",
+            SessionManager.RobotAnimation.Idle,
+            SessionManager.BubbleAnimation.Default,
+            SessionManager.RobotSound.Neutral);
+    }
+
+    public void CompleteWooInteraction()
+    {
+        if (!useWooInteractionFlow || !isWaitingForWooInteraction)
+        {
+            return;
+        }
+
+        isWaitingForWooInteraction = false;
+        StartCoroutine(SendChatRequest("reply"));
+    }
+
 
     private IEnumerator WaitForFinalDialogue()
     {
@@ -295,6 +403,12 @@ public class AINetworking : MonoBehaviour
         yield return new WaitUntil(() => sessionManager.dialogueDisplayEnd);
 
         sessionManager.sessionShowManager.Finish();
+        RemoveDynamicDialogueLines();
+
+        // Reset before EndSession deactivates the object running this coroutine.
+        isNewSession = true;
+        isWaitingForWooInteraction = false;
+
         sessionManager.EndSession();
         mainSelectManager?.CloseSession();
 
@@ -304,9 +418,19 @@ public class AINetworking : MonoBehaviour
         }
 
         sessionTracker?.SetStatus();
+    }
 
-        //reset isNewSession
-        isNewSession = true;
+    private void RemoveDynamicDialogueLines()
+    {
+        if (sessionManager == null ||
+            sessionManager.lines.Count <= initialDialogueLineCount)
+        {
+            return;
+        }
+
+        sessionManager.lines.RemoveRange(
+            initialDialogueLineCount,
+            sessionManager.lines.Count - initialDialogueLineCount);
     }
     #endregion
     
@@ -324,10 +448,14 @@ public class AINetworking : MonoBehaviour
             .Replace("\\n", "\n");
     }
 
-    private void AddResponseTextToSession(string responseText)
+    private void AddResponseTextToSession(string responseText, string responseEmo)
     {
         string normalizedText = NormalizeLineEndings(responseText);
         string[] lines = normalizedText.Split(new[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+
+        SessionManager.RobotAnimation robotAnimation = GetAnim(responseEmo);
+        SessionManager.RobotSound robotSound = GetSound(responseEmo);
 
         foreach (string line in lines)
         {
@@ -337,7 +465,7 @@ public class AINetworking : MonoBehaviour
                 continue;
             }
 
-            sessionManager.AddLinesToSession(trimmedLine, SessionManager.RobotAnimation.Idle, SessionManager.BubbleAnimation.Default);
+            sessionManager.AddLinesToSession(trimmedLine, robotAnimation, SessionManager.BubbleAnimation.Default, robotSound);
         }
     }
 
@@ -349,15 +477,11 @@ public class AINetworking : MonoBehaviour
             return;
         }
 
-        string bubbleContent = response.reply;
-        if (string.IsNullOrWhiteSpace(bubbleContent))
-        {
-            bubbleContent = BuildThoughtsText(response.thoughts);
-        }
+        string bubbleContent = response.prompt;
 
         if (string.IsNullOrWhiteSpace(bubbleContent))
         {
-            Debug.LogWarning("River response did not include reply or thoughts. Nothing was saved to vault.");
+            Debug.LogWarning("River response did not include a prompt. Nothing was saved to vault.");
             return;
         }
 
@@ -365,13 +489,54 @@ public class AINetworking : MonoBehaviour
         Debug.Log($"River thought saved to vault: {bubbleContent}");
     }
 
-    private string BuildThoughtsText(string[] thoughts)
+    //function used to get robot animation
+    private SessionManager.RobotAnimation GetAnim(string emotion)
     {
-        if (thoughts == null || thoughts.Length == 0)
+        if (emotion == "sad")
         {
-            return null;
+            return SessionManager.RobotAnimation.Idle;
         }
 
-        return string.Join("\n", thoughts);
+        else if (emotion == "neutral")
+        {
+            return SessionManager.RobotAnimation.Nod;
+        }
+
+        else if (emotion == "happy")
+        {
+            return SessionManager.RobotAnimation.Agreeing;
+        }
+
+        else if (emotion == "greeting")
+        {
+            return SessionManager.RobotAnimation.Wave;
+        }
+
+        return SessionManager.RobotAnimation.Idle;
+    }
+
+    private SessionManager.RobotSound GetSound(string emotion)
+    {
+        if (emotion == "sad")
+        {
+            return SessionManager.RobotSound.Sad;
+        }
+
+        else if (emotion == "neutral")
+        {
+            return SessionManager.RobotSound.Neutral;
+        }
+
+        else if (emotion == "happy")
+        {
+            return SessionManager.RobotSound.Happy;
+        }
+
+        else if (emotion == "greeting")
+        {
+            return SessionManager.RobotSound.Greeting;
+        }
+
+        return SessionManager.RobotSound.Talking;
     }
 }

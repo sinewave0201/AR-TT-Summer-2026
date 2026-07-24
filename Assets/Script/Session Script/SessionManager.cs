@@ -331,9 +331,20 @@ public class SessionManager : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void AddLinesToSession(string line, RobotAnimation rA, BubbleAnimation ba)
+    public void AddLinesToSession(
+        string line,
+        RobotAnimation rA,
+        BubbleAnimation ba,
+        RobotSound robotSound)
     {
-        DialogueLine newLine = new DialogueLine{text = line, robotAnimation = rA, bubbleAnimation = ba};
+        DialogueLine newLine = new DialogueLine
+        {
+            text = line,
+            robotAnimation = rA,
+            bubbleAnimation = ba,
+            robotSound = robotSound
+        };
+
         lines.Add(newLine);
     }
 }
