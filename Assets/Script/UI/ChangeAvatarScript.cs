@@ -10,12 +10,10 @@ public class ChangeAvatarScript : MonoBehaviour
     [SerializeField] private GameObject currentAvatar;
     [SerializeField] private GameObject currentAvatarPrefab;
     [SerializeField] private List<GameObject> avatarPrefabs = new List<GameObject>();
-    [SerializeField] private List<Vector3> avatarPosition = new List<Vector3>();
-    [SerializeField] private List<Quaternion> avatarRotation = new List<Quaternion>();
     [SerializeField] private SessionManager sessionManager;
 
     [Header("Prefab Initiation Source")]
-    [SerializeField] private TapToPlaceManager tapToPlaceManager;
+    [SerializeField] private MonoBehaviour tapToPlaceManager;
 
     [Header("Avatar Spawn Transform")]
     [SerializeField] private Vector3 avatarSpawnPosition;
@@ -123,9 +121,9 @@ public class ChangeAvatarScript : MonoBehaviour
 
     private bool IsPrefabInitiated()
     {
-        if (tapToPlaceManager != null)
+        if (tapToPlaceManager is IPrefabInitiationSource initiationSource)
         {
-            return tapToPlaceManager.IsPrefabInitiated;
+            return initiationSource.IsPrefabInitiated;
         }
 
         return prefabPlaced;
@@ -276,17 +274,10 @@ public class ChangeAvatarScript : MonoBehaviour
             Destroy(currentAvatar);
         }
 
-        Vector3 positionOffset = avatarIndex < avatarPosition.Count
-            ? avatarPosition[avatarIndex]
-            : Vector3.zero;
-        Quaternion rotationOffset = avatarIndex < avatarRotation.Count
-            ? avatarRotation[avatarIndex]
-            : Quaternion.identity;
-
         currentAvatar = Instantiate(
             selectedAvatarPrefab,
-            avatarSpawnPosition + positionOffset,
-            avatarSpawnRotation * rotationOffset);
+            avatarSpawnPosition,
+            avatarSpawnRotation);
         currentAvatar.SetActive(true);
         currentAvatarPrefab = selectedAvatarPrefab;
 

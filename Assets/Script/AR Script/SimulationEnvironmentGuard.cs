@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -63,24 +64,107 @@ public sealed class SimulationEnvironmentGuard : MonoBehaviour
         }
 
         instance.sceneTransition = instance.StartCoroutine(
-            instance.ReplaceActiveScene(buildIndex));
+            instance.ReplaceGameplayScenes(buildIndex));
     }
 
-    private IEnumerator ReplaceActiveScene(int buildIndex)
+    private IEnumerator ReplaceGameplayScenes(int buildIndex)
     {
-        Scene previousScene = SceneManager.GetActiveScene();
+        if (buildIndex < 0 || buildIndex >= SceneManager.sceneCountInBuildSettings)
+        {
+            Debug.LogError(
+                $"Cannot switch to build index {buildIndex}. " +
+                $"Valid scene indices are 0 through {SceneManager.sceneCountInBuildSettings - 1}.");
+            sceneTransition = null;
+            yield break;
+        }
+
+        List<Scene> scenesToUnload = new List<Scene>();
+        string destinationPath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+        bool hasSceneToKeep = false;
+
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene loadedScene = SceneManager.GetSceneAt(i);
+            bool isDestination =
+                loadedScene.buildIndex == buildIndex ||
+                loadedScene.path == destinationPath;
+
+            if (!loadedScene.isLoaded)
+            {
+                continue;
+            }
+
+            // A scene opened directly in the Editor can report buildIndex -1,
+            // but still has an asset path. XR Simulation's runtime scene has
+            // neither a build index nor an asset path.
+            bool isGameplayScene =
+                loadedScene.buildIndex >= 0 ||
+                !string.IsNullOrEmpty(loadedScene.path);
+
+            if (isGameplayScene && !isDestination)
+            {
+                scenesToUnload.Add(loadedScene);
+            }
+            else
+            {
+                hasSceneToKeep = true;
+            }
+        }
+
+        // Unity refuses to unload the last loaded scene. MainScene has no
+        // ARSession, so the XR Simulation environment may not exist yet and
+        // MainScene can be the only loaded scene. In that case, Single mode is
+        // the only safe way to replace it without leaving it behind.
+        if (!hasSceneToKeep && scenesToUnload.Count > 0)
+        {
+            AsyncOperation replace =
+                SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single);
+
+            if (replace == null)
+            {
+                Debug.LogError(
+                    $"Could not start replacing the current scene with build index {buildIndex}.");
+                sceneTransition = null;
+                yield break;
+            }
+
+            yield return replace;
+
+            Scene replacementScene = SceneManager.GetSceneByBuildIndex(buildIndex);
+            if (!replacementScene.IsValid() || !replacementScene.isLoaded)
+            {
+                Debug.LogError(
+                    $"Scene at build index {buildIndex} did not finish loading in Single mode.");
+            }
+
+            sceneTransition = null;
+            yield break;
+        }
 
         // Each gameplay scene owns an AR Session, XR Origin, and input action
-        // manager. Fully remove the old rig before creating the next one so the
-        // two scenes cannot fight over XR subsystems or disable shared actions.
-        // The additive Simulation Environment scene remains loaded throughout.
-        if (previousScene.IsValid() && previousScene.isLoaded)
+        // manager. Remove every old gameplay scene, rather than trusting the
+        // active scene, because XR Simulation and additive loading can change
+        // which scene Unity reports as active.
+        foreach (Scene sceneToUnload in scenesToUnload)
         {
-            AsyncOperation unload = SceneManager.UnloadSceneAsync(previousScene);
+            AsyncOperation unload = SceneManager.UnloadSceneAsync(sceneToUnload);
             if (unload != null)
             {
                 yield return unload;
             }
+            else
+            {
+                Debug.LogWarning(
+                    $"Could not start unloading gameplay scene '{sceneToUnload.name}'.");
+            }
+        }
+
+        Scene destinationScene = SceneManager.GetSceneByBuildIndex(buildIndex);
+        if (destinationScene.IsValid() && destinationScene.isLoaded)
+        {
+            SceneManager.SetActiveScene(destinationScene);
+            sceneTransition = null;
+            yield break;
         }
 
         AsyncOperation load = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
@@ -94,7 +178,7 @@ public sealed class SimulationEnvironmentGuard : MonoBehaviour
 
         yield return load;
 
-        Scene destinationScene = SceneManager.GetSceneByBuildIndex(buildIndex);
+        destinationScene = SceneManager.GetSceneByBuildIndex(buildIndex);
         if (!destinationScene.IsValid() || !destinationScene.isLoaded)
         {
             Debug.LogError($"Scene at build index {buildIndex} did not finish loading.");
@@ -119,8 +203,8 @@ public sealed class SimulationEnvironmentGuard : MonoBehaviour
 
     private IEnumerator VerifyEnvironmentAfterUnload()
     {
-        // Single-scene loading finishes removing additive scenes after the
-        // gameplay sceneLoaded event. Give Unity two frames to complete it.
+        // Give XR Simulation two frames to finish any environment changes
+        // triggered by the gameplay scene load.
         yield return null;
         yield return null;
 

@@ -1014,6 +1014,9 @@ GameObject:
   - component: {fileID: 6409576475012241332}
   - component: {fileID: 2114282679275688263}
   - component: {fileID: 756236184304715314}
+  - component: {fileID: -3586469114083222978}
+  - component: {fileID: 3348175310092142601}
+  - component: {fileID: 3348175310092142602}
   m_Layer: 0
   m_Name: robot
   m_TagString: RobotSession
@@ -1181,3 +1184,91 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-3586469114083222978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9207717927891851821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1520119584
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &3348175310092142601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9207717927891851821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c6288a4c5424439ae84db68f55d5e10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationManager
+  robotAnimator: {fileID: 6409576475012241332}
+--- !u!114 &3348175310092142602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9207717927891851821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7399b5d653554abf95ec79066e6f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
+  robotAudioSource: {fileID: 756236184304715314}
+  currentVoiceRole: 0
+  voiceCollections:
+  - role: 0
+    clips:
+    - {fileID: 8300000, guid: 403e02c6a466e7347aba14501d19a19f, type: 3}
+    - {fileID: 8300000, guid: e2cc4e4717eaf7248a02c49f227011a5, type: 3}
+    - {fileID: 8300000, guid: 4e9e1ac9d7ca0d94ba16f32b40bfed0b, type: 3}
+    - {fileID: 8300000, guid: 6e7f97aee83354a469d412cf8ea1ed0c, type: 3}
+    - {fileID: 8300000, guid: 21e5869c9f16d214bb86ae6892308125, type: 3}
+    - {fileID: 8300000, guid: 999280031c08dc541987d807cb954f28, type: 3}
+    - {fileID: 8300000, guid: d9e82cba9abb7bb49b89182f3618003a, type: 3}
+    - {fileID: 8300000, guid: 471e691e07ed1c843aaee9295a25c3ae, type: 3}
+    - {fileID: 8300000, guid: 296095d0464126c4cb2ae2a10c5be4d3, type: 3}
+  - role: 1
+    clips:
+    - {fileID: 8300000, guid: c3695db60498e5141bc2c10ddbf4f043, type: 3}
+    - {fileID: 8300000, guid: 7633f16c36eef8148af3cf70d29be099, type: 3}
+    - {fileID: 8300000, guid: 0683c088ba7c7be4db294c8cc9207c1a, type: 3}
+    - {fileID: 8300000, guid: 366ae45fe9505274ab09df97803f7771, type: 3}
+    - {fileID: 8300000, guid: c198815364bfe5c43beb75c444b07bf0, type: 3}
+    - {fileID: 8300000, guid: 899153eaa329df645adbbc20a927f954, type: 3}
+    - {fileID: 8300000, guid: 7eee964627d46f641822214654d47be2, type: 3}
+    - {fileID: 8300000, guid: 5cf3ebcca166c184a8ae7aa1ae7939f9, type: 3}
+    - {fileID: 8300000, guid: 4a18033a0f5fc234c84400e75c218494, type: 3}
+  - role: 2
+    clips:
+    - {fileID: 8300000, guid: 9e817aff9d37d694aa8a3abe2ad17786, type: 3}
+    - {fileID: 8300000, guid: 65758d9a24e150848b0d13aa8f1a4bd0, type: 3}
+    - {fileID: 8300000, guid: 99303e7313aa14b4fa98f281dbed57bf, type: 3}
+    - {fileID: 8300000, guid: 66b02f3853d7e5a489d20c785f62e533, type: 3}
+    - {fileID: 8300000, guid: 26038348a3d7bb84d8fd607802cfe3f1, type: 3}
+    - {fileID: 8300000, guid: d6c407069c62196488e74d7f24228401, type: 3}
+    - {fileID: 8300000, guid: 445afeb87042a444cb327a38c62b85ce, type: 3}
+    - {fileID: 8300000, guid: 58db111f7772b014b924f848864bbdeb, type: 3}
+    - {fileID: 8300000, guid: 13117a9ae33723e418a9c737948a897c, type: 3}

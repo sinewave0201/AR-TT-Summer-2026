@@ -3,24 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
-    private const int WooSceneBuildIndex = 2;
-
     public int SceneIndex;
-    public int diySceneIndex;
 
     public void SwitchScene()
     {
         LoadSceneForCurrentPlatform(SceneIndex);
-    }
-
-    public void EnterDIYScene()
-    {
-        LoadSceneForCurrentPlatform(diySceneIndex);
-    }
-
-    public void ReturnFromDIY()
-    {
-        LoadSceneForCurrentPlatform(WooSceneBuildIndex);
     }
 
     private static void LoadSceneForCurrentPlatform(int buildIndex)

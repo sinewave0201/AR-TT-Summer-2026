@@ -8,7 +8,6 @@ public class ItemUI : MonoBehaviour
     [Header("ItemUIs")]
     [SerializeField] private TMP_Text timeTxt;
     [SerializeField] private TMP_Text contentTxt;
-    [SerializeField] private TMP_Text emotionHeaderTxt;
     [SerializeField] private TMP_Text emotionTxt;
 
     [SerializeField] private float verticalPadding = 20f;
@@ -20,26 +19,12 @@ public class ItemUI : MonoBehaviour
         timeTxt.text = time;
         contentTxt.text = content;
         
-        emotionTxt.text = emotions == null || emotions.Count == 0
-            ? "None"
-            : string.Join(", ", emotions);
-        RefreshLayout();
+        emotionTxt.text = emotions.Count == 0? "None": string.Join(", ", emotions);
     }
 
     public void RefreshLayout()
     {
-        RectTransform timeRect = timeTxt.rectTransform;
         RectTransform contentRect = contentTxt.rectTransform;
-        RectTransform emotionHeaderRect = emotionHeaderTxt.rectTransform;
-        RectTransform emotionRect = emotionTxt.rectTransform;
-
-        float timeWidth = Mathf.Max(1f, timeRect.rect.width);
-        float timeHeight = timeTxt.GetPreferredValues(
-            timeTxt.text,
-            timeWidth,
-            0f
-        ).y;
-
         float contentWidth = Mathf.Max(1f, contentRect.rect.width);
         float contentHeight = contentTxt.GetPreferredValues(
             contentTxt.text,
@@ -47,38 +32,21 @@ public class ItemUI : MonoBehaviour
             0f
         ).y;
 
-        float emotionHeaderWidth = Mathf.Max(1f, emotionHeaderRect.rect.width);
-        float emotionHeaderHeight = emotionHeaderTxt.GetPreferredValues(
-            emotionHeaderTxt.text,
-            emotionHeaderWidth,
+        contentRect.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            contentHeight
+        );
+
+        float timeWidth = Mathf.Max(1f, timeTxt.rectTransform.rect.width);
+        float timeHeight = timeTxt.GetPreferredValues(
+            timeTxt.text,
+            timeWidth,
             0f
         ).y;
-
-        float emotionWidth = Mathf.Max(1f, emotionRect.rect.width);
-        float emotionHeight = emotionTxt.GetPreferredValues(
-            emotionTxt.text,
-            emotionWidth,
-            0f
-        ).y;
-
-        float emotionRowHeight = Mathf.Max(emotionHeaderHeight, emotionHeight);
-        float topPadding = verticalPadding * 0.5f;
-        float contentTop = topPadding + timeHeight + spacing;
-        float emotionTop = contentTop + contentHeight + spacing;
-
-        timeRect.anchoredPosition = new Vector2(timeRect.anchoredPosition.x, -topPadding);
-        contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, -contentTop);
-        emotionHeaderRect.anchoredPosition = new Vector2(emotionHeaderRect.anchoredPosition.x, -emotionTop);
-        emotionRect.anchoredPosition = new Vector2(emotionRect.anchoredPosition.x, -emotionTop);
-
-        timeRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, timeHeight);
-        contentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentHeight);
-        emotionHeaderRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, emotionRowHeight);
-        emotionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, emotionRowHeight);
 
         float preferredHeight = Mathf.Max(
             minHeight,
-            emotionTop + emotionRowHeight + topPadding);
+            verticalPadding + timeHeight + spacing + contentHeight);
 
         RectTransform rootRect = (RectTransform)transform;
         rootRect.SetSizeWithCurrentAnchors(

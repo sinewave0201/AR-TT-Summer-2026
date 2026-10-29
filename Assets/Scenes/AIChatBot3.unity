@@ -1518,7 +1518,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneManager
   SceneIndex: 1
-  diySceneIndex: 3
 --- !u!1 &140696081
 GameObject:
   m_ObjectHideFlags: 0
@@ -19819,7 +19818,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1621834255
 AudioSource:
   m_ObjectHideFlags: 0

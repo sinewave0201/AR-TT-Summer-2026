@@ -24,6 +24,7 @@
   <Project Path="Unity.XR.ARKit.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.csproj" />
   <Project Path="Unity.XR.ARSubsystems.csproj" />
+  <Project Path="Unity.Netcode.Runtime.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
@@ -57,6 +58,7 @@
   <Project Path="WebXR.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.csproj" />
+  <Project Path="Unity.Networking.Transport.csproj" />
   <Project Path="Unity.Mobile.AndroidLogcat.Editor.csproj" />
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="Unity.XR.ARFoundation.VisualScripting.csproj" />
@@ -65,13 +67,16 @@
   <Project Path="Unity.Performance.Profile-Analyzer.Editor.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="glTFast.Newtonsoft.csproj" />
+  <Project Path="Unity.Netcode.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.csproj" />
   <Project Path="Unity.XR.ARCore.Editor.csproj" />
   <Project Path="Unity.Postprocessing.Runtime.csproj" />
   <Project Path="Unity.InternalAPIEngineBridge.007.csproj" />
+  <Project Path="Unity.Networking.Editor.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.ARStarterAssets.csproj" />
   <Project Path="Unity.XR.CoreUtils.Editor.csproj" />
+  <Project Path="Unity.Netcode.Editor.CodeGen.csproj" />
   <Project Path="Unity.InternalAPIEditorBridge.007.csproj" />
   <Project Path="Unity.Multiplayer.Center.Common.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Analytics.Editor.csproj" />
@@ -104,6 +109,7 @@
   <Project Path="WebXR.Editor.csproj" />
   <Project Path="Unity.XR.TestTooling.Editor.Tests.csproj" />
   <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
+  <Project Path="Unity.Netcode.PackageChecker.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Shaders.csproj" />
   <Project Path="Unity.RenderPipelines.Core.Runtime.Shared.csproj" />
   <Project Path="Unity.InternalAPIEngineBridge.004.csproj" />
