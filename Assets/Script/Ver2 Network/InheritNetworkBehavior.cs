@@ -1,17 +1,23 @@
 using Unity.Netcode;
+using System;
 using UnityEngine;
 
 public class InheritNetworkBehavior : NetworkBehaviour
 {
     private AnimationManager animationManager;
     private SoundManager soundManager;
+    private TraceManager traceManager;
+
+    public static event Action<string> TraceHistoryReceived;
 
     public void Initialize(
         AnimationManager hostAnimationManager,
-        SoundManager hostSoundManager)
+        SoundManager hostSoundManager,
+        TraceManager hostTraceManager)
     {
         animationManager = hostAnimationManager;
         soundManager = hostSoundManager;
+        traceManager = hostTraceManager;
     }
 
     public void RequestAnimation(AnimationManager.RobotAnimation animation)
@@ -27,6 +33,21 @@ public class InheritNetworkBehavior : NetworkBehaviour
     public void RequestSound(SoundManager.RobotSound sound)
     {
         RequestSoundRpc(sound);
+    }
+
+    public void RequestNewTrace(string traceId)
+    {
+        RequestNewTraceRpc(traceId);
+    }
+
+    public void RequestCompleteTrace(string traceId, string content)
+    {
+        RequestCompleteTraceRpc(traceId, content);
+    }
+
+    public void RequestTraceHistory()
+    {
+        RequestTraceHistoryRpc();
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -63,5 +84,38 @@ public class InheritNetworkBehavior : NetworkBehaviour
         }
 
         soundManager.Play(sound);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestNewTraceRpc(string traceId)
+    {
+        if (traceManager == null || !traceManager.BeginTrace(traceId))
+        {
+            Debug.LogWarning("Host could not begin the requested trace.", this);
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestCompleteTraceRpc(string traceId, string content)
+    {
+        if (traceManager == null || !traceManager.CompleteTrace(traceId, content))
+        {
+            Debug.LogWarning("Host could not complete the requested trace.", this);
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestTraceHistoryRpc()
+    {
+        string json = traceManager != null
+            ? traceManager.ExportHistoryJson()
+            : "{\"traces\":[]}";
+        ReceiveTraceHistoryRpc(json);
+    }
+
+    [Rpc(SendTo.NotServer)]
+    private void ReceiveTraceHistoryRpc(string json)
+    {
+        TraceHistoryReceived?.Invoke(json);
     }
 }

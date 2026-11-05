@@ -161,12 +161,15 @@ public class TapToPlaceManagerWOO : MonoBehaviour, IPrefabInitiationSource
             spawnedAvatar.GetComponentInChildren<AnimationManager>(true);
         SoundManager soundManager =
             spawnedAvatar.GetComponentInChildren<SoundManager>(true);
-        StartHostAndSpawnControlBridge(animationManager, soundManager);
+        TraceManager traceManager =
+            spawnedAvatar.GetComponentInChildren<TraceManager>(true);
+        StartHostAndSpawnControlBridge(animationManager, soundManager, traceManager);
     }
 
     private void StartHostAndSpawnControlBridge(
         AnimationManager animationManager,
-        SoundManager soundManager)
+        SoundManager soundManager,
+        TraceManager traceManager)
     {
         NetworkManager networkManager = NetworkManager.Singleton;
         if (networkManager == null)
@@ -225,7 +228,7 @@ public class TapToPlaceManagerWOO : MonoBehaviour, IPrefabInitiationSource
                 return;
             }
 
-            bridge.Initialize(animationManager, soundManager);
+            bridge.Initialize(animationManager, soundManager, traceManager);
             spawnedControlBridge.Spawn(destroyWithScene: false);
         }
 

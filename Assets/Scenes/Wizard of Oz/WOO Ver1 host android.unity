@@ -952,7 +952,7 @@ MonoBehaviour:
   arRaycastManager: {fileID: 2512387470422636671}
   unActivated: {fileID: 0}
   mainPrefab: {fileID: 7279856284479749044, guid: 294ddf013c6a7aa4f92f95385c29ed7f, type: 3}
-  AvatarPrefab: {fileID: 9207717927891851821, guid: df9f20bc37ecbf341bfe4356a9861227, type: 3}
+  AvatarPrefab: {fileID: 6584813728585447631, guid: 48588e81bd2baca4d9663b7dbf1a9845, type: 3}
   arCamera: {fileID: 2512387468973847774}
   robotControlBridgePrefab: {fileID: 8862605960309176440, guid: 4c56fada6b7cadc45af9cd6539bbac6c, type: 3}
 --- !u!1 &151895842
@@ -7865,7 +7865,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2512387468973847775}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 816b289ef451e094f9ae174fb4cf8db0, type: 3}
   m_Name: 

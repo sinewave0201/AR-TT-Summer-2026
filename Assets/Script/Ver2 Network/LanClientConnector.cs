@@ -15,6 +15,7 @@ public class LanClientConnector : MonoBehaviour
     [SerializeField] private TMP_Text connectionStatusText;
 
     private NetworkManager networkManager;
+    private string currentStatus = "Disconnected";
 
     private void Awake()
     {
@@ -101,6 +102,28 @@ public class LanClientConnector : MonoBehaviour
         }
     }
 
+    public void BindUI(
+        TMP_InputField newHostIpInput,
+        Button newConnectButton,
+        TMP_Text newConnectionStatusText)
+    {
+        if (connectButton != null)
+        {
+            connectButton.onClick.RemoveListener(StartClient);
+        }
+
+        hostIpInput = newHostIpInput;
+        connectButton = newConnectButton;
+        connectionStatusText = newConnectionStatusText;
+
+        if (connectButton != null)
+        {
+            connectButton.onClick.AddListener(StartClient);
+        }
+
+        SetStatus(currentStatus);
+    }
+
     private void HandleClientConnected(ulong clientId)
     {
         if (networkManager != null && clientId == networkManager.LocalClientId)
@@ -121,6 +144,7 @@ public class LanClientConnector : MonoBehaviour
 
     private void SetStatus(string status)
     {
+        currentStatus = status;
         if (connectionStatusText != null)
         {
             connectionStatusText.text = status;

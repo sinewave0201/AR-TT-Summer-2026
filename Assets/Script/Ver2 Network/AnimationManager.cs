@@ -12,6 +12,7 @@ public class AnimationManager : MonoBehaviour
     }
 
     [SerializeField] private Animator robotAnimator;
+    private TraceManager traceManager;
 
     private void Awake()
     {
@@ -19,6 +20,8 @@ public class AnimationManager : MonoBehaviour
         {
             robotAnimator = GetComponentInChildren<Animator>(true);
         }
+
+        traceManager = GetComponentInParent<TraceManager>();
     }
 
     public void Play(RobotAnimation animation)
@@ -27,6 +30,11 @@ public class AnimationManager : MonoBehaviour
         {
             Debug.LogWarning("AnimationManager cannot find the Robot Animator.", this);
             return;
+        }
+
+        if (animation == RobotAnimation.GetBubble)
+        {
+            traceManager?.ShowBubbleForGetAnimation();
         }
 
         if (animation == RobotAnimation.Idle)
