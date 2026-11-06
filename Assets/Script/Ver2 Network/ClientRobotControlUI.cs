@@ -34,6 +34,8 @@ public class ClientRobotControlUI : MonoBehaviour
     private readonly Dictionary<SoundManager.VoiceRole, TMP_Text> roleTexts =
         new Dictionary<SoundManager.VoiceRole, TMP_Text>();
     private readonly HashSet<string> displayedTraceIds = new HashSet<string>();
+    private readonly Dictionary<string, GameObject> traceRows =
+        new Dictionary<string, GameObject>();
 
     private InheritNetworkBehavior bridge;
     private SoundManager.VoiceRole selectedRole = SoundManager.VoiceRole.Bubbly;
@@ -57,6 +59,7 @@ public class ClientRobotControlUI : MonoBehaviour
         UpdateSelectedRoleVisual();
 
         InheritNetworkBehavior.TraceHistoryReceived += DisplayHistory;
+        InheritNetworkBehavior.TraceDeleted += RemoveTraceRow;
         StartCoroutine(RequestHistoryWhenConnected());
     }
 
@@ -337,6 +340,7 @@ public class ClientRobotControlUI : MonoBehaviour
         }
 
         GameObject row = CreateTraceRow(createdAt);
+        traceRows[traceId] = row;
         TMP_InputField input = CreateInputField(row.transform, "What is this trace?");
         Button create = CreateControlButton(row.transform, "CREATE", null);
         GetOrAddLayout(create.gameObject).preferredWidth = 92f;
@@ -356,7 +360,7 @@ public class ClientRobotControlUI : MonoBehaviour
             {
                 label.text = "GROWING";
             }
-            StartCoroutine(UnlockNewTraceAfterGrowth(label));
+            StartCoroutine(UnlockNewTraceAfterGrowth(traceId, row.transform, label));
         });
     }
 
@@ -409,12 +413,19 @@ public class ClientRobotControlUI : MonoBehaviour
         return input;
     }
 
-    private IEnumerator UnlockNewTraceAfterGrowth(TMP_Text buttonLabel)
+    private IEnumerator UnlockNewTraceAfterGrowth(
+        string traceId,
+        Transform row,
+        TMP_Text buttonLabel)
     {
         yield return new WaitForSeconds(6.5f);
         if (buttonLabel != null)
         {
             buttonLabel.text = "CREATED";
+        }
+        if (row != null)
+        {
+            CreateDeleteTraceButton(row, traceId);
         }
         if (newTraceButton != null)
         {
@@ -447,12 +458,42 @@ public class ClientRobotControlUI : MonoBehaviour
             }
 
             GameObject row = CreateTraceRow(item.createdAt);
+            traceRows[item.id] = row;
             TMP_Text content = CreateLabel(row.transform, item.content, 15f, FontStyles.Normal, 50f);
             content.alignment = TextAlignmentOptions.MidlineLeft;
             content.gameObject.GetComponent<LayoutElement>().flexibleWidth = 1f;
             TMP_Text status = CreateLabel(row.transform, "CREATED", 13f, FontStyles.Bold, 50f);
             status.color = new Color32(137, 224, 164, 255);
             status.gameObject.GetComponent<LayoutElement>().preferredWidth = 92f;
+            CreateDeleteTraceButton(row.transform, item.id);
+        }
+    }
+
+    private void CreateDeleteTraceButton(Transform row, string traceId)
+    {
+        Button delete = CreateControlButton(row, "DELETE", () =>
+        {
+            InheritNetworkBehavior currentBridge = GetBridge();
+            if (currentBridge != null)
+            {
+                currentBridge.RequestDeleteTrace(traceId);
+            }
+        });
+        GetOrAddLayout(delete.gameObject).preferredWidth = 82f;
+    }
+
+    private void RemoveTraceRow(string traceId)
+    {
+        displayedTraceIds.Remove(traceId);
+        if (!traceRows.TryGetValue(traceId, out GameObject row))
+        {
+            return;
+        }
+
+        traceRows.Remove(traceId);
+        if (row != null)
+        {
+            Destroy(row);
         }
     }
 
@@ -618,5 +659,6 @@ public class ClientRobotControlUI : MonoBehaviour
     private void OnDestroy()
     {
         InheritNetworkBehavior.TraceHistoryReceived -= DisplayHistory;
+        InheritNetworkBehavior.TraceDeleted -= RemoveTraceRow;
     }
 }

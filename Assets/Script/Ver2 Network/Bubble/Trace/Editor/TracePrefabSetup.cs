@@ -5,10 +5,10 @@ using UnityEngine;
 [InitializeOnLoad]
 internal static class TracePrefabSetup
 {
+    // Reuse the existing asset path/guid so scene and build references remain stable.
     internal const string OutputPath = "Assets/Prefab/Network/TraceRobot.prefab";
     private const string OldSettingsPath = "Assets/Prefab/TTsettingPrefab.prefab";
-    private const string CurrentRobotPath = "Assets/Prefab/Robot Prefab/robot.prefab";
-    private const string SessionKey = "ARTT.TracePrefabSetup.v1";
+    private const string SessionKey = "ARTT.TracePrefabSetup.v3";
 
     static TracePrefabSetup()
     {
@@ -17,68 +17,77 @@ internal static class TracePrefabSetup
 
     private static void RunOnce()
     {
-        if (EditorApplication.isPlayingOrWillChangePlaymode ||
-            SessionState.GetBool(SessionKey, false) ||
-            AssetDatabase.LoadAssetAtPath<GameObject>(OutputPath) != null)
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+        {
+            EditorApplication.playModeStateChanged -= HandlePlayModeChanged;
+            EditorApplication.playModeStateChanged += HandlePlayModeChanged;
+            return;
+        }
+
+        if (SessionState.GetBool(SessionKey, false))
         {
             return;
         }
 
         SessionState.SetBool(SessionKey, true);
-        BuildTraceRobotPrefab();
+        BuildTraceSettingPrefab();
     }
 
-    [MenuItem("Tools/Thought Trader/Rebuild Trace Robot Prefab")]
-    public static void BuildTraceRobotPrefab()
+    private static void HandlePlayModeChanged(PlayModeStateChange state)
+    {
+        if (state != PlayModeStateChange.EnteredEditMode)
+        {
+            return;
+        }
+
+        EditorApplication.playModeStateChanged -= HandlePlayModeChanged;
+        EditorApplication.delayCall += RunOnce;
+    }
+
+    [MenuItem("Tools/Thought Trader/Rebuild Trace Setting Prefab")]
+    public static void BuildTraceSettingPrefab()
     {
         GameObject oldRoot = PrefabUtility.LoadPrefabContents(OldSettingsPath);
         try
         {
             BubbleBloom oldBloom = oldRoot.GetComponentInChildren<BubbleBloom>(true);
-            GameObject currentRobot =
-                AssetDatabase.LoadAssetAtPath<GameObject>(CurrentRobotPath);
-            if (oldBloom == null || currentRobot == null)
+            if (oldBloom == null)
             {
-                Debug.LogError("Trace prefab setup could not find the old bloom or current robot.");
+                Debug.LogError("Trace setting setup could not find BubbleBloom.");
                 return;
             }
 
             SerializedObject bloomData = new SerializedObject(oldBloom);
+            GameObject bubbleSource = oldBloom.gameObject;
             GameObject potSource = GetObject(bloomData, "pot");
             GameObject flowerSource = GetObject(bloomData, "flower");
-            GameObject bubbleSource = oldBloom.gameObject;
-            if (potSource == null || flowerSource == null || bubbleSource == null)
+            Vector3 grownFlowerPosition =
+                bloomData.FindProperty("grownFlowerLocalPosition").vector3Value;
+            if (potSource == null || flowerSource == null)
             {
                 Debug.LogError("TTsettingPrefab is missing BubbleBloom's pot/flower references.");
                 return;
             }
 
+            // Keep the old Setting scale. The placement manager supplies the old
+            // Setting/Robot position and rotation relationship at runtime.
             GameObject root = new GameObject("TraceRobot");
             try
             {
-                GameObject robot = (GameObject)PrefabUtility.InstantiatePrefab(currentRobot);
-                robot.name = "robot";
-                robot.transform.SetParent(root.transform, false);
-                robot.transform.localPosition = Vector3.zero;
-                robot.transform.localRotation = Quaternion.identity;
-                RemoveNestedNetworkObject(robot);
+                root.transform.localScale = oldRoot.transform.localScale;
 
                 GameObject templates = new GameObject("Trace Templates");
                 templates.transform.SetParent(root.transform, false);
 
                 GameObject bubble = DuplicateTemplate(
-                    bubbleSource,
-                    templates.transform,
-                    "Bubble Template");
-                RemoveInteractiveBubbleScripts(bubble);
+                    bubbleSource, templates.transform, "Bubble Template");
+                RemoveLegacyInterfaces(bubble);
                 GameObject pot = DuplicateTemplate(
-                    potSource,
-                    templates.transform,
-                    "Pot Template");
+                    potSource, templates.transform, "Pot Template");
+                RemoveLegacyInterfaces(pot);
                 GameObject flower = DuplicateTemplate(
-                    flowerSource,
-                    templates.transform,
-                    "Flower Template");
+                    flowerSource, templates.transform, "Flower Template");
+                RemoveLegacyInterfaces(flower);
                 templates.SetActive(false);
 
                 TraceManager traceManager = root.AddComponent<TraceManager>();
@@ -86,14 +95,16 @@ internal static class TracePrefabSetup
                 traceData.FindProperty("bubbleTemplate").objectReferenceValue = bubble;
                 traceData.FindProperty("potTemplate").objectReferenceValue = pot;
                 traceData.FindProperty("flowerTemplate").objectReferenceValue = flower;
-                traceData.FindProperty("animationManager").objectReferenceValue =
-                    robot.GetComponentInChildren<AnimationManager>(true);
+                traceData.FindProperty("visualOrigin").vector3Value = Vector3.zero;
+                traceData.FindProperty("visualScale").vector3Value = Vector3.one;
+                traceData.FindProperty("grownFlowerLocalPosition").vector3Value =
+                    grownFlowerPosition;
                 traceData.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(root, OutputPath);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
-                Debug.Log($"Trace robot prefab rebuilt at {OutputPath}.");
+                Debug.Log($"Trace setting prefab rebuilt at {OutputPath}.");
             }
             finally
             {
@@ -117,41 +128,26 @@ internal static class TracePrefabSetup
         Transform parent,
         string name)
     {
-        Vector3 position = source.transform.localPosition;
-        Quaternion rotation = source.transform.localRotation;
-        Vector3 scale = source.transform.localScale;
         GameObject copy = Object.Instantiate(source);
         copy.name = name;
         copy.transform.SetParent(parent, false);
-        copy.transform.localPosition = position;
-        copy.transform.localRotation = rotation;
-        copy.transform.localScale = scale;
+        copy.transform.localPosition = source.transform.localPosition;
+        copy.transform.localRotation = source.transform.localRotation;
+        copy.transform.localScale = source.transform.localScale;
         copy.SetActive(false);
         return copy;
     }
 
-    private static void RemoveNestedNetworkObject(GameObject robot)
+    private static void RemoveLegacyInterfaces(GameObject target)
     {
-        foreach (Component component in robot.GetComponents<Component>())
+        foreach (MonoBehaviour behaviour in target.GetComponentsInChildren<MonoBehaviour>(true))
         {
-            if (component != null && component.GetType().Name == "NetworkObject")
+            // Remove old project interfaces while keeping rendering components such
+            // as TextMeshProUGUI, which is also a MonoBehaviour.
+            if (behaviour != null &&
+                behaviour.GetType().Assembly == typeof(BubbleBloom).Assembly)
             {
-                Object.DestroyImmediate(component);
-            }
-        }
-    }
-
-    private static void RemoveInteractiveBubbleScripts(GameObject bubble)
-    {
-        Component[] components = bubble.GetComponents<Component>();
-        foreach (Component component in components)
-        {
-            if (component is BubbleBehaviorManager ||
-                component is BubbleBloom ||
-                component is BubbleBurn ||
-                component is BubbleClean)
-            {
-                Object.DestroyImmediate(component);
+                Object.DestroyImmediate(behaviour);
             }
         }
     }

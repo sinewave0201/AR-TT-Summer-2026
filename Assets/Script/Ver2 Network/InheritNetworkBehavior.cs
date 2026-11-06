@@ -9,6 +9,7 @@ public class InheritNetworkBehavior : NetworkBehaviour
     private TraceManager traceManager;
 
     public static event Action<string> TraceHistoryReceived;
+    public static event Action<string> TraceDeleted;
 
     public void Initialize(
         AnimationManager hostAnimationManager,
@@ -48,6 +49,11 @@ public class InheritNetworkBehavior : NetworkBehaviour
     public void RequestTraceHistory()
     {
         RequestTraceHistoryRpc();
+    }
+
+    public void RequestDeleteTrace(string traceId)
+    {
+        RequestDeleteTraceRpc(traceId);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -113,9 +119,27 @@ public class InheritNetworkBehavior : NetworkBehaviour
         ReceiveTraceHistoryRpc(json);
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestDeleteTraceRpc(string traceId)
+    {
+        if (traceManager == null || !traceManager.DeleteTrace(traceId))
+        {
+            Debug.LogWarning("Host could not delete the requested trace.", this);
+            return;
+        }
+
+        ReceiveTraceDeletedRpc(traceId);
+    }
+
     [Rpc(SendTo.NotServer)]
     private void ReceiveTraceHistoryRpc(string json)
     {
         TraceHistoryReceived?.Invoke(json);
+    }
+
+    [Rpc(SendTo.NotServer)]
+    private void ReceiveTraceDeletedRpc(string traceId)
+    {
+        TraceDeleted?.Invoke(traceId);
     }
 }

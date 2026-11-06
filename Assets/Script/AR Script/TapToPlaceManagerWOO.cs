@@ -131,14 +131,14 @@ public class TapToPlaceManagerWOO : MonoBehaviour, IPrefabInitiationSource
             unActivated.SetActive(false);
         }
 
-        if (AvatarPrefab == null)
+        if (mainPrefab == null || AvatarPrefab == null)
         {
-            SetDebugText("missing AvatarPrefab");
+            SetDebugText("missing Setting or Avatar prefab");
             firstHit = false;
             return;
         }
 
-        Quaternion avatarRotation = hitPose.rotation;
+        Quaternion facingCameraRotation = hitPose.rotation;
         if (arCamera != null)
         {
             Vector3 directionToCamera = arCamera.position - hitPose.position;
@@ -146,13 +146,24 @@ public class TapToPlaceManagerWOO : MonoBehaviour, IPrefabInitiationSource
 
             if (directionToCamera.sqrMagnitude > 0.0001f)
             {
-                avatarRotation = Quaternion.LookRotation(directionToCamera);
+                facingCameraRotation = Quaternion.LookRotation(directionToCamera);
             }
         }
 
+        // This is the original TapToPlace Setting/Robot alignment.
+        Quaternion mainRotation =
+            facingCameraRotation * Quaternion.Euler(0f, 110f, 0f);
+        Quaternion avatarRotation = facingCameraRotation;
+        GameObject spawnedSetting = Instantiate(
+            mainPrefab,
+            hitPose.position,
+            mainRotation);
+        Vector3 avatarOffset =
+            mainRotation * new Vector3(1.87f * 0.15f, 0.059f * 0.15f, -2.239f * 0.15f);
+        Vector3 avatarPosition = hitPose.position + avatarOffset;
         GameObject spawnedAvatar = Instantiate(
             AvatarPrefab,
-            hitPose.position,
+            avatarPosition,
             avatarRotation);
 
         mainSelectManager?.NotifyPrefabPlaced();
@@ -162,7 +173,8 @@ public class TapToPlaceManagerWOO : MonoBehaviour, IPrefabInitiationSource
         SoundManager soundManager =
             spawnedAvatar.GetComponentInChildren<SoundManager>(true);
         TraceManager traceManager =
-            spawnedAvatar.GetComponentInChildren<TraceManager>(true);
+            spawnedSetting.GetComponentInChildren<TraceManager>(true);
+        traceManager?.Initialize(animationManager);
         StartHostAndSpawnControlBridge(animationManager, soundManager, traceManager);
     }
 

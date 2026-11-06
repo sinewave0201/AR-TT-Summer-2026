@@ -19,6 +19,7 @@ public class TraceManager : MonoBehaviour
     [Serializable]
     private class TraceSaveData
     {
+        public int version = CurrentSaveVersion;
         public List<TraceRecord> traces = new List<TraceRecord>();
     }
 
@@ -37,6 +38,8 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private GameObject bubbleTemplate;
     [SerializeField] private GameObject potTemplate;
     [SerializeField] private GameObject flowerTemplate;
+    [SerializeField] private Vector3 visualOrigin;
+    [SerializeField] private Vector3 visualScale = Vector3.one;
 
     [Header("Animation")]
     [SerializeField] private AnimationManager animationManager;
@@ -45,21 +48,26 @@ public class TraceManager : MonoBehaviour
         new Vector3(0.734f, 0.135f, -2.382f);
 
     [Header("Completed trace placement")]
-    [SerializeField, Min(0f)] private float minimumRadius = 1.5f;
-    [SerializeField, Min(0.1f)] private float maximumRadius = 3.5f;
-    [SerializeField, Min(0f)] private float minimumPotSpacing = 0.65f;
+    [SerializeField, Min(0f)] private float minimumRadius = 0.225f;
+    [SerializeField, Min(0.1f)] private float maximumRadius = 0.525f;
+    [SerializeField, Min(0f)] private float minimumPotSpacing = 0.0975f;
 
     private const string SaveFileName = "trace_vault.json";
     private const string LegacySaveFileName = "bubble_vault.json";
+    private const int CurrentSaveVersion = 2;
+    private const float LegacyVisualScale = 0.15f;
     private const string BubbleAppearTrigger = "Appear";
     private const string BubbleBloomState = "Bloom";
     private const string FlowerBloomState = "Armature|Bloom";
 
     private readonly Dictionary<string, PendingTrace> pending =
         new Dictionary<string, PendingTrace>();
+    private readonly Dictionary<string, GameObject> completedVisuals =
+        new Dictionary<string, GameObject>();
     private readonly HashSet<string> completing = new HashSet<string>();
     private TraceSaveData saveData = new TraceSaveData();
     private GameObject manualBubble;
+    private GameObject manualBubbleGroup;
     private Coroutine manualBubbleRoutine;
 
     private string SavePath =>
@@ -77,6 +85,12 @@ public class TraceManager : MonoBehaviour
         ClearLegacyVault();
         Load();
         RestoreCompletedTraces();
+    }
+
+    public void Initialize(AnimationManager hostAnimationManager)
+    {
+        animationManager = hostAnimationManager;
+        animationManager?.SetTraceManager(this);
     }
 
     public bool BeginTrace(string traceId)
@@ -129,7 +143,13 @@ public class TraceManager : MonoBehaviour
 
         if (manualBubble == null)
         {
-            manualBubble = InstantiateTemplate(bubbleTemplate, transform, "GetBubble Preview");
+            manualBubbleGroup = new GameObject("GetBubble Preview Group");
+            manualBubbleGroup.transform.SetParent(transform, false);
+            ApplyVisualFrame(manualBubbleGroup.transform);
+            manualBubble = InstantiateTemplate(
+                bubbleTemplate,
+                manualBubbleGroup.transform,
+                "GetBubble Preview");
         }
 
         ShowBubble(manualBubble);
@@ -145,14 +165,41 @@ public class TraceManager : MonoBehaviour
         return JsonUtility.ToJson(saveData);
     }
 
+    public bool DeleteTrace(string traceId)
+    {
+        if (string.IsNullOrWhiteSpace(traceId) || completing.Contains(traceId))
+        {
+            return false;
+        }
+
+        int removed = saveData.traces.RemoveAll(record => record.id == traceId);
+        if (removed == 0)
+        {
+            return false;
+        }
+
+        if (completedVisuals.TryGetValue(traceId, out GameObject visual))
+        {
+            completedVisuals.Remove(traceId);
+            if (visual != null)
+            {
+                Destroy(visual);
+            }
+        }
+
+        Save();
+        return true;
+    }
+
     private PendingTrace CreateVisuals(string traceId)
     {
         GameObject group = new GameObject($"Pending Trace {traceId}");
         group.transform.SetParent(transform, false);
+        ApplyVisualFrame(group.transform);
 
         GameObject bubble = InstantiateTemplate(
             bubbleTemplate,
-            transform,
+            group.transform,
             "Trace Bubble");
         GameObject pot = InstantiateTemplate(potTemplate, group.transform, "Trace Pot");
         GameObject flower = InstantiateTemplate(
@@ -193,34 +240,56 @@ public class TraceManager : MonoBehaviour
         }
 
         trace.flower.SetActive(true);
-        Vector3 flowerStart = trace.flower.transform.localPosition;
         Animator flowerAnimator = trace.flower.GetComponentInChildren<Animator>(true);
         if (flowerAnimator != null)
         {
             flowerAnimator.enabled = true;
             flowerAnimator.speed = 1f;
             flowerAnimator.Play(FlowerBloomState, 0, 0f);
+            flowerAnimator.Update(0f);
         }
 
+        Vector3 flowerStart = trace.flower.transform.localPosition;
         float elapsed = 0f;
-        while (elapsed < flowerGrowthSeconds)
+        bool enteredBloom = false;
+        while (elapsed < 10f)
         {
             elapsed += Time.deltaTime;
+            float animationProgress = Mathf.Clamp01(elapsed / flowerGrowthSeconds);
+            if (flowerAnimator != null)
+            {
+                AnimatorStateInfo state = flowerAnimator.GetCurrentAnimatorStateInfo(0);
+                if (state.IsName(FlowerBloomState))
+                {
+                    enteredBloom = true;
+                    animationProgress = Mathf.Clamp01(state.normalizedTime);
+                }
+                else if (enteredBloom)
+                {
+                    break;
+                }
+            }
+
             float progress = Mathf.SmoothStep(
                 0f,
                 1f,
-                Mathf.Clamp01(elapsed / flowerGrowthSeconds));
+                animationProgress);
             trace.flower.transform.localPosition = Vector3.Lerp(
                 flowerStart,
                 grownFlowerLocalPosition,
                 progress);
+
+            if ((flowerAnimator == null && animationProgress >= 1f) ||
+                (enteredBloom && animationProgress >= 1f))
+            {
+                break;
+            }
+
             yield return null;
         }
 
-        if (flowerAnimator != null)
-        {
-            flowerAnimator.speed = 0f;
-        }
+        trace.flower.transform.localPosition = grownFlowerLocalPosition;
+        HoldFlowerOpen(flowerAnimator);
 
         MoveGroupSoPotIsAt(trace, trace.targetPotLocalPosition);
 
@@ -231,6 +300,7 @@ public class TraceManager : MonoBehaviour
             content = content,
             potLocalPosition = trace.targetPotLocalPosition
         });
+        completedVisuals[trace.id] = trace.group;
         Save();
         completing.Remove(trace.id);
         pending.Remove(trace.id);
@@ -247,6 +317,7 @@ public class TraceManager : MonoBehaviour
         {
             GameObject group = new GameObject($"Saved Trace {record.id}");
             group.transform.SetParent(transform, false);
+            ApplyVisualFrame(group.transform);
             GameObject pot = InstantiateTemplate(potTemplate, group.transform, "Trace Pot");
             GameObject flower = InstantiateTemplate(
                 flowerTemplate,
@@ -258,13 +329,7 @@ public class TraceManager : MonoBehaviour
             flower.transform.localPosition = grownFlowerLocalPosition;
 
             Animator flowerAnimator = flower.GetComponentInChildren<Animator>(true);
-            if (flowerAnimator != null)
-            {
-                flowerAnimator.enabled = true;
-                flowerAnimator.Play(FlowerBloomState, 0, 1f);
-                flowerAnimator.Update(0f);
-                flowerAnimator.speed = 0f;
-            }
+            HoldFlowerOpen(flowerAnimator);
 
             PendingTrace restored = new PendingTrace
             {
@@ -273,6 +338,7 @@ public class TraceManager : MonoBehaviour
                 flower = flower
             };
             MoveGroupSoPotIsAt(restored, record.potLocalPosition);
+            completedVisuals[record.id] = group;
         }
     }
 
@@ -282,6 +348,28 @@ public class TraceManager : MonoBehaviour
             trace.group.transform.TransformPoint(trace.pot.transform.localPosition);
         Vector3 targetWorldPosition = transform.TransformPoint(targetPotPosition);
         trace.group.transform.position += targetWorldPosition - currentPotPosition;
+    }
+
+    private void ApplyVisualFrame(Transform target)
+    {
+        target.localPosition = visualOrigin;
+        target.localRotation = Quaternion.identity;
+        target.localScale = visualScale;
+    }
+
+    private static void HoldFlowerOpen(Animator flowerAnimator)
+    {
+        if (flowerAnimator == null)
+        {
+            return;
+        }
+
+        flowerAnimator.enabled = true;
+        flowerAnimator.keepAnimatorStateOnDisable = true;
+        flowerAnimator.speed = 1f;
+        flowerAnimator.Play(FlowerBloomState, 0, 0.999f);
+        flowerAnimator.Update(0f);
+        flowerAnimator.enabled = false;
     }
 
     private Vector3 ChooseSavedPosition()
@@ -446,6 +534,17 @@ public class TraceManager : MonoBehaviour
                 JsonUtility.FromJson<TraceSaveData>(File.ReadAllText(SavePath));
             saveData = loaded ?? new TraceSaveData();
             saveData.traces ??= new List<TraceRecord>();
+
+            if (saveData.version < CurrentSaveVersion)
+            {
+                foreach (TraceRecord record in saveData.traces)
+                {
+                    record.potLocalPosition *= LegacyVisualScale;
+                }
+
+                saveData.version = CurrentSaveVersion;
+                Save();
+            }
         }
         catch (Exception exception)
         {

@@ -15,12 +15,11 @@ public class LanClientConnector : MonoBehaviour
     [SerializeField] private TMP_Text connectionStatusText;
 
     private NetworkManager networkManager;
+    private bool callbacksSubscribed;
     private string currentStatus = "Disconnected";
 
     private void Awake()
     {
-        networkManager = NetworkManager.Singleton;
-
         if (connectButton != null)
         {
             connectButton.onClick.AddListener(StartClient);
@@ -31,25 +30,12 @@ public class LanClientConnector : MonoBehaviour
 
     private void OnEnable()
     {
-        if (networkManager == null)
-        {
-            networkManager = NetworkManager.Singleton;
-        }
-
-        if (networkManager != null)
-        {
-            networkManager.OnClientConnectedCallback += HandleClientConnected;
-            networkManager.OnClientDisconnectCallback += HandleClientDisconnected;
-        }
+        ResolveNetworkManager();
     }
 
     private void OnDisable()
     {
-        if (networkManager != null)
-        {
-            networkManager.OnClientConnectedCallback -= HandleClientConnected;
-            networkManager.OnClientDisconnectCallback -= HandleClientDisconnected;
-        }
+        UnsubscribeFromNetworkManager();
     }
 
     private void OnDestroy()
@@ -62,7 +48,7 @@ public class LanClientConnector : MonoBehaviour
 
     public void StartClient()
     {
-        if (networkManager == null)
+        if (!ResolveNetworkManager())
         {
             SetStatus("Missing NetworkManager");
             return;
@@ -100,6 +86,41 @@ public class LanClientConnector : MonoBehaviour
             SetStatus("Failed to start Client");
             SetConnectButtonInteractable(true);
         }
+    }
+
+    private bool ResolveNetworkManager()
+    {
+        NetworkManager singleton = NetworkManager.Singleton;
+        if (networkManager != singleton)
+        {
+            UnsubscribeFromNetworkManager();
+            networkManager = singleton;
+        }
+
+        if (networkManager == null)
+        {
+            return false;
+        }
+
+        if (!callbacksSubscribed)
+        {
+            networkManager.OnClientConnectedCallback += HandleClientConnected;
+            networkManager.OnClientDisconnectCallback += HandleClientDisconnected;
+            callbacksSubscribed = true;
+        }
+
+        return true;
+    }
+
+    private void UnsubscribeFromNetworkManager()
+    {
+        if (callbacksSubscribed && networkManager != null)
+        {
+            networkManager.OnClientConnectedCallback -= HandleClientConnected;
+            networkManager.OnClientDisconnectCallback -= HandleClientDisconnected;
+        }
+
+        callbacksSubscribed = false;
     }
 
     public void BindUI(

@@ -24,6 +24,11 @@ public class AnimationManager : MonoBehaviour
         traceManager = GetComponentInParent<TraceManager>();
     }
 
+    public void SetTraceManager(TraceManager manager)
+    {
+        traceManager = manager;
+    }
+
     public void Play(RobotAnimation animation)
     {
         if (robotAnimator == null)
