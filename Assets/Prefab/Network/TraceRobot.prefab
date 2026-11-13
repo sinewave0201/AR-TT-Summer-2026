@@ -12076,9 +12076,8 @@ MonoBehaviour:
   visualScale: {x: 1, y: 1, z: 1}
   animationManager: {fileID: 0}
   flowerGrowthSeconds: 5
-  grownFlowerLocalPosition: {x: 0.734, y: 0.135, z: -2.382}
-  minimumRadius: 0.225
-  maximumRadius: 0.525
+  flowerRiseDistance: 1
+  placementArea: {fileID: 0}
   minimumPotSpacing: 0.0975
 --- !u!1 &6595121042313178814
 GameObject:

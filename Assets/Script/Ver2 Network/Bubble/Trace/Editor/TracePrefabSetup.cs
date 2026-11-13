@@ -61,8 +61,6 @@ internal static class TracePrefabSetup
             GameObject bubbleSource = oldBloom.gameObject;
             GameObject potSource = GetObject(bloomData, "pot");
             GameObject flowerSource = GetObject(bloomData, "flower");
-            Vector3 grownFlowerPosition =
-                bloomData.FindProperty("grownFlowerLocalPosition").vector3Value;
             if (potSource == null || flowerSource == null)
             {
                 Debug.LogError("TTsettingPrefab is missing BubbleBloom's pot/flower references.");
@@ -97,8 +95,7 @@ internal static class TracePrefabSetup
                 traceData.FindProperty("flowerTemplate").objectReferenceValue = flower;
                 traceData.FindProperty("visualOrigin").vector3Value = Vector3.zero;
                 traceData.FindProperty("visualScale").vector3Value = Vector3.one;
-                traceData.FindProperty("grownFlowerLocalPosition").vector3Value =
-                    grownFlowerPosition;
+                traceData.FindProperty("flowerRiseDistance").floatValue = 1f;
                 traceData.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(root, OutputPath);

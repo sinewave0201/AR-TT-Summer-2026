@@ -44,19 +44,16 @@ public class TraceManager : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private AnimationManager animationManager;
     [SerializeField, Min(0.1f)] private float flowerGrowthSeconds = 5f;
-    [SerializeField] private Vector3 grownFlowerLocalPosition =
-        new Vector3(0.734f, 0.135f, -2.382f);
+    [SerializeField, Min(0f)] private float flowerRiseDistance = 1f;
 
     [Header("Completed trace placement")]
-    [SerializeField, Min(0f)] private float minimumRadius = 0.225f;
-    [SerializeField, Min(0.1f)] private float maximumRadius = 0.525f;
+    [SerializeField] private BoxCollider placementArea;
     [SerializeField, Min(0f)] private float minimumPotSpacing = 0.0975f;
 
     private const string SaveFileName = "trace_vault.json";
     private const string LegacySaveFileName = "bubble_vault.json";
-    private const int CurrentSaveVersion = 2;
-    private const float LegacyVisualScale = 0.15f;
-    private const string BubbleAppearTrigger = "Appear";
+    private const int CurrentSaveVersion = 3;
+    private const string BubbleAppearState = "Appear";
     private const string BubbleBloomState = "Bloom";
     private const string FlowerBloomState = "Armature|Bloom";
 
@@ -100,14 +97,14 @@ public class TraceManager : MonoBehaviour
             return false;
         }
 
-        if (!TemplatesAreValid())
+        if (!TemplatesAreValid() || !PlacementAreaIsValid())
         {
             return false;
         }
 
         PendingTrace trace = CreateVisuals(traceId);
         trace.createdAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-        trace.targetPotLocalPosition = ChooseSavedPosition();
+        trace.targetPotLocalPosition = ChooseSavedPosition(trace.pot);
         pending.Add(traceId, trace);
 
         animationManager?.Play(AnimationManager.RobotAnimation.GetBubble);
@@ -131,7 +128,13 @@ public class TraceManager : MonoBehaviour
     {
         foreach (PendingTrace trace in pending.Values)
         {
-            ShowBubble(trace.bubble);
+            // CompleteSequence owns the bubble Animator once completion starts.
+            // Do not let a delayed GetBubble animation event restart Appear and
+            // interrupt Bloom.
+            if (!completing.Contains(trace.id))
+            {
+                ShowBubble(trace.bubble);
+            }
             return;
         }
 
@@ -229,6 +232,10 @@ public class TraceManager : MonoBehaviour
         if (bubbleAnimator != null)
         {
             bubbleAnimator.enabled = true;
+            yield return WaitForAnimation(
+                bubbleAnimator,
+                BubbleAppearState,
+                10f);
             bubbleAnimator.Play(BubbleBloomState, 0, 0f);
             bubbleAnimator.Update(0f);
             yield return WaitForAnimation(bubbleAnimator, BubbleBloomState, 10f);
@@ -243,53 +250,37 @@ public class TraceManager : MonoBehaviour
         Animator flowerAnimator = trace.flower.GetComponentInChildren<Animator>(true);
         if (flowerAnimator != null)
         {
-            flowerAnimator.enabled = true;
-            flowerAnimator.speed = 1f;
-            flowerAnimator.Play(FlowerBloomState, 0, 0f);
-            flowerAnimator.Update(0f);
+            flowerAnimator.enabled = false;
         }
 
         Vector3 flowerStart = trace.flower.transform.localPosition;
+        Vector3 flowerEnd = flowerStart + Vector3.up * flowerRiseDistance;
         float elapsed = 0f;
-        bool enteredBloom = false;
-        while (elapsed < 10f)
+        while (elapsed < flowerGrowthSeconds)
         {
             elapsed += Time.deltaTime;
             float animationProgress = Mathf.Clamp01(elapsed / flowerGrowthSeconds);
-            if (flowerAnimator != null)
-            {
-                AnimatorStateInfo state = flowerAnimator.GetCurrentAnimatorStateInfo(0);
-                if (state.IsName(FlowerBloomState))
-                {
-                    enteredBloom = true;
-                    animationProgress = Mathf.Clamp01(state.normalizedTime);
-                }
-                else if (enteredBloom)
-                {
-                    break;
-                }
-            }
-
             float progress = Mathf.SmoothStep(
                 0f,
                 1f,
                 animationProgress);
             trace.flower.transform.localPosition = Vector3.Lerp(
                 flowerStart,
-                grownFlowerLocalPosition,
+                flowerEnd,
                 progress);
-
-            if ((flowerAnimator == null && animationProgress >= 1f) ||
-                (enteredBloom && animationProgress >= 1f))
-            {
-                break;
-            }
-
             yield return null;
         }
 
-        trace.flower.transform.localPosition = grownFlowerLocalPosition;
-        HoldFlowerOpen(flowerAnimator);
+        trace.flower.transform.localPosition = flowerEnd;
+        if (flowerAnimator != null)
+        {
+            flowerAnimator.enabled = true;
+            flowerAnimator.speed = 1f;
+            flowerAnimator.Play(FlowerBloomState, 0, 0f);
+            flowerAnimator.Update(0f);
+            yield return WaitForAnimation(flowerAnimator, FlowerBloomState, 10f);
+            HoldFlowerOpen(flowerAnimator);
+        }
 
         MoveGroupSoPotIsAt(trace, trace.targetPotLocalPosition);
 
@@ -326,7 +317,7 @@ public class TraceManager : MonoBehaviour
 
             pot.SetActive(true);
             flower.SetActive(true);
-            flower.transform.localPosition = grownFlowerLocalPosition;
+            flower.transform.localPosition += Vector3.up * flowerRiseDistance;
 
             Animator flowerAnimator = flower.GetComponentInChildren<Animator>(true);
             HoldFlowerOpen(flowerAnimator);
@@ -372,28 +363,27 @@ public class TraceManager : MonoBehaviour
         flowerAnimator.enabled = false;
     }
 
-    private Vector3 ChooseSavedPosition()
+    private Vector3 ChooseSavedPosition(GameObject pot)
     {
-        float maxRadius = Mathf.Max(minimumRadius, maximumRadius);
+        Vector3 bestCandidate = Vector3.zero;
+        float bestClearanceSquared = -1f;
+
         for (int attempt = 0; attempt < 24; attempt++)
         {
-            float angle = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
-            float radius = UnityEngine.Random.Range(minimumRadius, maxRadius);
-            Vector3 candidate = new Vector3(
-                Mathf.Cos(angle) * radius,
-                0f,
-                Mathf.Sin(angle) * radius);
+            Vector3 candidate = ChoosePositionInPlacementArea(pot);
 
             bool overlaps = false;
+            float nearestPotSquared = float.PositiveInfinity;
             foreach (TraceRecord record in saveData.traces)
             {
                 Vector2 difference = new Vector2(
                     candidate.x - record.potLocalPosition.x,
                     candidate.z - record.potLocalPosition.z);
-                if (difference.sqrMagnitude < minimumPotSpacing * minimumPotSpacing)
+                float distanceSquared = difference.sqrMagnitude;
+                nearestPotSquared = Mathf.Min(nearestPotSquared, distanceSquared);
+                if (distanceSquared < minimumPotSpacing * minimumPotSpacing)
                 {
                     overlaps = true;
-                    break;
                 }
             }
 
@@ -401,13 +391,97 @@ public class TraceManager : MonoBehaviour
             {
                 return candidate;
             }
+
+            if (nearestPotSquared > bestClearanceSquared)
+            {
+                bestCandidate = candidate;
+                bestClearanceSquared = nearestPotSquared;
+            }
         }
 
-        float fallbackAngle = saveData.traces.Count * 2.39996323f;
-        return new Vector3(
-            Mathf.Cos(fallbackAngle) * maxRadius,
-            0f,
-            Mathf.Sin(fallbackAngle) * maxRadius);
+        // When the box is crowded, remain inside it and use the sampled point
+        // with the most clearance.
+        return bestCandidate;
+    }
+
+    private Vector3 ChoosePositionInPlacementArea(GameObject pot)
+    {
+        Vector3 center = placementArea.center;
+        Vector3 halfSize = placementArea.size * 0.5f;
+        GetPotBoundsOffsetsInPlacementSpace(
+            pot,
+            out Vector3 minimumOffset,
+            out Vector3 maximumOffset);
+
+        float minimumX = center.x - halfSize.x - minimumOffset.x;
+        float maximumX = center.x + halfSize.x - maximumOffset.x;
+        float minimumZ = center.z - halfSize.z - minimumOffset.z;
+        float maximumZ = center.z + halfSize.z - maximumOffset.z;
+
+        if (minimumX > maximumX || minimumZ > maximumZ)
+        {
+            Debug.LogError(
+                "The pot is too large to fit completely inside the Placement Area.",
+                this);
+            minimumX = maximumX = center.x;
+            minimumZ = maximumZ = center.z;
+        }
+
+        Vector3 areaLocalPosition = new Vector3(
+            UnityEngine.Random.Range(minimumX, maximumX),
+            center.y - halfSize.y - minimumOffset.y,
+            UnityEngine.Random.Range(minimumZ, maximumZ));
+
+        Vector3 worldPosition =
+            placementArea.transform.TransformPoint(areaLocalPosition);
+        return transform.InverseTransformPoint(worldPosition);
+    }
+
+    private void GetPotBoundsOffsetsInPlacementSpace(
+        GameObject pot,
+        out Vector3 minimumOffset,
+        out Vector3 maximumOffset)
+    {
+        Vector3 potPivot = placementArea.transform.InverseTransformPoint(
+            pot.transform.position);
+        minimumOffset = Vector3.zero;
+        maximumOffset = Vector3.zero;
+
+        Renderer[] renderers = pot.GetComponentsInChildren<Renderer>(true);
+        bool foundBounds = false;
+        foreach (Renderer renderer in renderers)
+        {
+            Bounds bounds = renderer.bounds;
+            Vector3 boundsMinimum = bounds.min;
+            Vector3 boundsMaximum = bounds.max;
+            for (int corner = 0; corner < 8; corner++)
+            {
+                Vector3 worldCorner = new Vector3(
+                    (corner & 1) == 0 ? boundsMinimum.x : boundsMaximum.x,
+                    (corner & 2) == 0 ? boundsMinimum.y : boundsMaximum.y,
+                    (corner & 4) == 0 ? boundsMinimum.z : boundsMaximum.z);
+                Vector3 offset = placementArea.transform.InverseTransformPoint(
+                    worldCorner) - potPivot;
+
+                if (!foundBounds)
+                {
+                    minimumOffset = maximumOffset = offset;
+                    foundBounds = true;
+                }
+                else
+                {
+                    minimumOffset = Vector3.Min(minimumOffset, offset);
+                    maximumOffset = Vector3.Max(maximumOffset, offset);
+                }
+            }
+        }
+
+        if (!foundBounds)
+        {
+            Debug.LogWarning(
+                "The pot has no Renderer, so placement uses its pivot as its bounds.",
+                pot);
+        }
     }
 
     private static GameObject InstantiateTemplate(
@@ -442,8 +516,8 @@ public class TraceManager : MonoBehaviour
 
         animator.enabled = true;
         animator.SetBool("End", false);
-        animator.ResetTrigger(BubbleAppearTrigger);
-        animator.SetTrigger(BubbleAppearTrigger);
+        animator.Play(BubbleAppearState, 0, 0f);
+        animator.Update(0f);
     }
 
     private static void SetBubbleText(GameObject bubble, string content)
@@ -508,6 +582,19 @@ public class TraceManager : MonoBehaviour
         return false;
     }
 
+    private bool PlacementAreaIsValid()
+    {
+        if (placementArea != null)
+        {
+            return true;
+        }
+
+        Debug.LogError(
+            "TraceManager needs a Placement Area BoxCollider.",
+            this);
+        return false;
+    }
+
     private void Save()
     {
         try
@@ -535,14 +622,9 @@ public class TraceManager : MonoBehaviour
             saveData = loaded ?? new TraceSaveData();
             saveData.traces ??= new List<TraceRecord>();
 
-            if (saveData.version < CurrentSaveVersion)
+            if (saveData.version != CurrentSaveVersion)
             {
-                foreach (TraceRecord record in saveData.traces)
-                {
-                    record.potLocalPosition *= LegacyVisualScale;
-                }
-
-                saveData.version = CurrentSaveVersion;
+                saveData = new TraceSaveData();
                 Save();
             }
         }
