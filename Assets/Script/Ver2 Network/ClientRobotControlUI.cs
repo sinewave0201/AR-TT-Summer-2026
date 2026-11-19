@@ -60,6 +60,7 @@ public class ClientRobotControlUI : MonoBehaviour
 
         InheritNetworkBehavior.TraceHistoryReceived += DisplayHistory;
         InheritNetworkBehavior.TraceDeleted += RemoveTraceRow;
+        InheritNetworkBehavior.TraceDestroyed += RemoveTraceRow;
         StartCoroutine(RequestHistoryWhenConnected());
     }
 
@@ -346,21 +347,53 @@ public class ClientRobotControlUI : MonoBehaviour
         GetOrAddLayout(create.gameObject).preferredWidth = 92f;
         create.onClick.AddListener(() =>
         {
-            InheritNetworkBehavior currentBridge = GetBridge();
-            if (currentBridge == null)
-            {
-                return;
-            }
-
-            currentBridge.RequestCompleteTrace(traceId, input.text);
             input.interactable = false;
-            create.interactable = false;
-            TMP_Text label = create.GetComponentInChildren<TMP_Text>(true);
-            if (label != null)
+            create.gameObject.SetActive(false);
+
+            Button trace = CreateControlButton(row.transform, "TRACE", null);
+            Button destroy = CreateControlButton(row.transform, "DESTROY", null);
+            GetOrAddLayout(trace.gameObject).preferredWidth = 82f;
+            GetOrAddLayout(destroy.gameObject).preferredWidth = 92f;
+
+            trace.onClick.AddListener(() =>
             {
-                label.text = "GROWING";
-            }
-            StartCoroutine(UnlockNewTraceAfterGrowth(traceId, row.transform, label));
+                InheritNetworkBehavior currentBridge = GetBridge();
+                if (currentBridge == null)
+                {
+                    return;
+                }
+
+                currentBridge.RequestCompleteTrace(traceId, input.text);
+                trace.interactable = false;
+                destroy.interactable = false;
+                destroy.gameObject.SetActive(false);
+
+                TMP_Text label = trace.GetComponentInChildren<TMP_Text>(true);
+                if (label != null)
+                {
+                    label.text = "TRACING";
+                }
+                StartCoroutine(
+                    UnlockNewTraceAfterGrowth(traceId, row.transform, label));
+            });
+
+            destroy.onClick.AddListener(() =>
+            {
+                InheritNetworkBehavior currentBridge = GetBridge();
+                if (currentBridge == null)
+                {
+                    return;
+                }
+
+                trace.interactable = false;
+                destroy.interactable = false;
+                currentBridge.RequestDestroyTrace(traceId);
+
+                if (newTraceButton != null)
+                {
+                    newTraceButton.interactable = true;
+                }
+            });
         });
     }
 
@@ -421,7 +454,7 @@ public class ClientRobotControlUI : MonoBehaviour
         yield return new WaitForSeconds(6.5f);
         if (buttonLabel != null)
         {
-            buttonLabel.text = "CREATED";
+            buttonLabel.text = "TRACED";
         }
         if (row != null)
         {
@@ -660,5 +693,6 @@ public class ClientRobotControlUI : MonoBehaviour
     {
         InheritNetworkBehavior.TraceHistoryReceived -= DisplayHistory;
         InheritNetworkBehavior.TraceDeleted -= RemoveTraceRow;
+        InheritNetworkBehavior.TraceDestroyed -= RemoveTraceRow;
     }
 }

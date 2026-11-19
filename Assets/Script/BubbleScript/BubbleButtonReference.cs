@@ -1,19 +1,14 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BubbleButtonReference :
-    MonoBehaviour,
-    IPointerDownHandler,
-    IPointerUpHandler
+public class BubbleButtonReference : MonoBehaviour
 {
     [SerializeField] private TMP_Text buttonText;
 
     private Button button;
     private CanvasGroup canvasGroup;
     private BubbleBehaviorManager bubbleBehaviorManager;
-    private BubbleBloom bubbleBloom;
     private BubbleBehaviorManager.BubbleBehavior displayedBehavior =
         BubbleBehaviorManager.BubbleBehavior.None;
 
@@ -64,27 +59,6 @@ public class BubbleButtonReference :
         }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (bubbleBehaviorManager != null &&
-            bubbleBehaviorManager.CurrentBehavior ==
-            BubbleBehaviorManager.BubbleBehavior.Bloom)
-        {
-            ResolveBloom();
-            bubbleBloom?.SetWatering(true);
-        }
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        bubbleBloom?.SetWatering(false);
-    }
-
-    private void OnDisable()
-    {
-        bubbleBloom?.SetWatering(false);
-    }
-
     public void SetText(string text)
     {
         if (buttonText == null)
@@ -114,16 +88,6 @@ public class BubbleButtonReference :
     {
         bubbleBehaviorManager =
             FindFirstObjectByType<BubbleBehaviorManager>(FindObjectsInactive.Include);
-        ResolveBloom();
-    }
-
-    private void ResolveBloom()
-    {
-        if (bubbleBloom == null)
-        {
-            bubbleBloom =
-                FindFirstObjectByType<BubbleBloom>(FindObjectsInactive.Include);
-        }
     }
 
     private void RefreshForBehavior()
@@ -139,20 +103,14 @@ public class BubbleButtonReference :
         }
 
         displayedBehavior = behavior;
-        bool isBloom =
-            behavior == BubbleBehaviorManager.BubbleBehavior.Bloom;
         bool isBurn =
             behavior == BubbleBehaviorManager.BubbleBehavior.Burn;
 
-        if (isBloom)
-        {
-            SetText("Water the flower");
-        }
-        else if (isBurn)
+        if (isBurn)
         {
             SetText("Reset position");
         }
 
-        SetVisible(isBloom || isBurn);
+        SetVisible(isBurn);
     }
 }

@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Wizard of Oz/WOO Ver1 client windows.unity
     guid: a021d619f943a784ab891fa6ea633c01
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Wizard of Oz/WOO Ver1 host vertical.unity
     guid: c0d265d0b98912b45934faca8ff38bf7
   m_configObjects:

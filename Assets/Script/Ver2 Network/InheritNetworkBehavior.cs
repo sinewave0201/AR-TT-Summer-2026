@@ -10,6 +10,7 @@ public class InheritNetworkBehavior : NetworkBehaviour
 
     public static event Action<string> TraceHistoryReceived;
     public static event Action<string> TraceDeleted;
+    public static event Action<string> TraceDestroyed;
 
     public void Initialize(
         AnimationManager hostAnimationManager,
@@ -54,6 +55,11 @@ public class InheritNetworkBehavior : NetworkBehaviour
     public void RequestDeleteTrace(string traceId)
     {
         RequestDeleteTraceRpc(traceId);
+    }
+
+    public void RequestDestroyTrace(string traceId)
+    {
+        RequestDestroyTraceRpc(traceId);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -131,6 +137,18 @@ public class InheritNetworkBehavior : NetworkBehaviour
         ReceiveTraceDeletedRpc(traceId);
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RequestDestroyTraceRpc(string traceId)
+    {
+        if (traceManager == null || !traceManager.DestroyTrace(traceId))
+        {
+            Debug.LogWarning("Host could not destroy the requested bubble.", this);
+            return;
+        }
+
+        ReceiveTraceDestroyedRpc(traceId);
+    }
+
     [Rpc(SendTo.NotServer)]
     private void ReceiveTraceHistoryRpc(string json)
     {
@@ -141,5 +159,11 @@ public class InheritNetworkBehavior : NetworkBehaviour
     private void ReceiveTraceDeletedRpc(string traceId)
     {
         TraceDeleted?.Invoke(traceId);
+    }
+
+    [Rpc(SendTo.NotServer)]
+    private void ReceiveTraceDestroyedRpc(string traceId)
+    {
+        TraceDestroyed?.Invoke(traceId);
     }
 }

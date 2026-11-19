@@ -8544,6 +8544,8 @@ MonoBehaviour:
   visualOrigin: {x: 0, y: 0, z: 0}
   visualScale: {x: 1, y: 1, z: 1}
   animationManager: {fileID: 0}
+  destroyEffect: {fileID: 3077343761403282166, guid: f78aaaec3b393e24ca74cd6de8194347, type: 3}
+  destroyEffectLifetime: 6
   flowerGrowthSeconds: 5
   flowerRiseDistance: 1
   placementArea: {fileID: 4165662279934423700}

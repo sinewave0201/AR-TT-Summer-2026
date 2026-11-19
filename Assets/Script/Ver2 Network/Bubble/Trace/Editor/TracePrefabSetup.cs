@@ -5,10 +5,11 @@ using UnityEngine;
 [InitializeOnLoad]
 internal static class TracePrefabSetup
 {
-    // Reuse the existing asset path/guid so scene and build references remain stable.
     internal const string OutputPath = "Assets/Prefab/Network/TraceRobot.prefab";
     private const string OldSettingsPath = "Assets/Prefab/TTsettingPrefab.prefab";
-    private const string SessionKey = "ARTT.TracePrefabSetup.v3";
+    private const string DestroyEffectPath =
+        "Assets/Art/FreeQuickEffectsVol1/Prefabs/vfx_Impact_01.prefab";
+    private const string SessionKey = "ARTT.TracePrefabSetup.v4";
 
     static TracePrefabSetup()
     {
@@ -50,25 +51,25 @@ internal static class TracePrefabSetup
         GameObject oldRoot = PrefabUtility.LoadPrefabContents(OldSettingsPath);
         try
         {
-            BubbleBloom oldBloom = oldRoot.GetComponentInChildren<BubbleBloom>(true);
+            BubbleBloom oldBloom =
+                oldRoot.GetComponentInChildren<BubbleBloom>(true);
             if (oldBloom == null)
             {
-                Debug.LogError("Trace setting setup could not find BubbleBloom.");
+                Debug.LogError(
+                    "Trace setting setup could not find BubbleBloom.");
                 return;
             }
 
-            SerializedObject bloomData = new SerializedObject(oldBloom);
-            GameObject bubbleSource = oldBloom.gameObject;
-            GameObject potSource = GetObject(bloomData, "pot");
-            GameObject flowerSource = GetObject(bloomData, "flower");
-            if (potSource == null || flowerSource == null)
-            {
-                Debug.LogError("TTsettingPrefab is missing BubbleBloom's pot/flower references.");
-                return;
-            }
+            TraceManager oldTraceManager =
+                oldRoot.GetComponentInChildren<TraceManager>(true);
+            SerializedObject oldTraceData = oldTraceManager != null
+                ? new SerializedObject(oldTraceManager)
+                : null;
+            GameObject destroyEffect = oldTraceData?
+                .FindProperty("destroyEffect")?.objectReferenceValue as GameObject;
+            destroyEffect ??=
+                AssetDatabase.LoadAssetAtPath<GameObject>(DestroyEffectPath);
 
-            // Keep the old Setting scale. The placement manager supplies the old
-            // Setting/Robot position and rotation relationship at runtime.
             GameObject root = new GameObject("TraceRobot");
             try
             {
@@ -78,24 +79,22 @@ internal static class TracePrefabSetup
                 templates.transform.SetParent(root.transform, false);
 
                 GameObject bubble = DuplicateTemplate(
-                    bubbleSource, templates.transform, "Bubble Template");
+                    oldBloom.gameObject,
+                    templates.transform,
+                    "Bubble Template");
                 RemoveLegacyInterfaces(bubble);
-                GameObject pot = DuplicateTemplate(
-                    potSource, templates.transform, "Pot Template");
-                RemoveLegacyInterfaces(pot);
-                GameObject flower = DuplicateTemplate(
-                    flowerSource, templates.transform, "Flower Template");
-                RemoveLegacyInterfaces(flower);
                 templates.SetActive(false);
 
                 TraceManager traceManager = root.AddComponent<TraceManager>();
                 SerializedObject traceData = new SerializedObject(traceManager);
-                traceData.FindProperty("bubbleTemplate").objectReferenceValue = bubble;
-                traceData.FindProperty("potTemplate").objectReferenceValue = pot;
-                traceData.FindProperty("flowerTemplate").objectReferenceValue = flower;
-                traceData.FindProperty("visualOrigin").vector3Value = Vector3.zero;
-                traceData.FindProperty("visualScale").vector3Value = Vector3.one;
-                traceData.FindProperty("flowerRiseDistance").floatValue = 1f;
+                traceData.FindProperty("bubbleTemplate").objectReferenceValue =
+                    bubble;
+                traceData.FindProperty("visualOrigin").vector3Value =
+                    Vector3.zero;
+                traceData.FindProperty("visualScale").vector3Value =
+                    Vector3.one;
+                traceData.FindProperty("destroyEffect").objectReferenceValue =
+                    destroyEffect;
                 traceData.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(root, OutputPath);
@@ -112,12 +111,6 @@ internal static class TracePrefabSetup
         {
             PrefabUtility.UnloadPrefabContents(oldRoot);
         }
-    }
-
-    private static GameObject GetObject(SerializedObject data, string propertyName)
-    {
-        SerializedProperty property = data.FindProperty(propertyName);
-        return property != null ? property.objectReferenceValue as GameObject : null;
     }
 
     private static GameObject DuplicateTemplate(
@@ -137,10 +130,9 @@ internal static class TracePrefabSetup
 
     private static void RemoveLegacyInterfaces(GameObject target)
     {
-        foreach (MonoBehaviour behaviour in target.GetComponentsInChildren<MonoBehaviour>(true))
+        foreach (MonoBehaviour behaviour in
+                 target.GetComponentsInChildren<MonoBehaviour>(true))
         {
-            // Remove old project interfaces while keeping rendering components such
-            // as TextMeshProUGUI, which is also a MonoBehaviour.
             if (behaviour != null &&
                 behaviour.GetType().Assembly == typeof(BubbleBloom).Assembly)
             {
